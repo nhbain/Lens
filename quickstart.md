@@ -37,26 +37,44 @@ Lens is a Tauri v2 desktop app for tracking progress through markdown documents 
 - `progress/calculator.ts` - propagateStatusChange, deriveParentStatus
 - `progress/index.ts` - Public API
 
+**Navigation** - Scroll position management
+- `navigation/types.ts` - ScrollPosition interfaces
+- `navigation/scroll-manager.ts` - Position tracking and restoration
+- `navigation/index.ts` - Public API
+
+**Settings** - Settings persistence
+- `settings/types.ts` - Settings data structures
+- `settings/settings-manager.ts` - Settings persistence and retrieval
+- `settings/index.ts` - Public API
+
 ### Components (in `app/src/components/`)
+
+**Dashboard** - Main dashboard view
+- `Dashboard/Dashboard.tsx` - Dashboard container
+- `Dashboard/FileCard.tsx` - Individual file card
+- `Dashboard/ProgressBar.tsx` - Progress visualization
+- `Dashboard/ResumeSection.tsx` - In-progress items for quick resume
 
 **DocumentView** - Renders trackable items with status
 - `DocumentView/DocumentView.tsx` - Main document viewer
 - `DocumentView/TrackableItemRow.tsx` - Individual item row
 
+**Settings** - Application settings UI
+- `Settings/Settings.tsx` - Settings container
+- `Settings/WatchedDirectoriesSection.tsx` - Directory watching config
+
 **App Integration**
 - `App.tsx` - Main app with file list and document view
 
 ### Task Lists
-- `tasks/tasks-story-lens-008.md` - Dashboard View (next story)
-- `tasks/tasks-story-lens-009.md` - Resume Functionality
-- `tasks/tasks-story-lens-010.md` - Settings
+- `tasks/tasks-story-lens-010.md` - Settings (remaining story)
 
 ## Quick Commands
 
 ```bash
 cd app
 npm install
-npm run test          # 780 tests
+npm run test          # 947 tests
 npm run lint          # ESLint
 npm run tauri dev     # Run app
 ```

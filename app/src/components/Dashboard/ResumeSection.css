@@ -1,14 +1,15 @@
 /**
- * ResumeSection component styles.
+ * ResumeSection component styles - Dark OLED Luxury Theme
  * Prominent section at the top of the dashboard for quick resume.
  */
 
 .resume-section {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background-color: var(--color-surface-accent, #f8f9fa);
-  border: 1px solid var(--color-border-accent, #e1e4e8);
+  background-color: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 8px;
+  border-left: 3px solid var(--color-in-progress);
 }
 
 .resume-section__header {
@@ -22,7 +23,7 @@
   margin: 0;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-primary, #1a1a1a);
+  color: var(--color-text-primary);
   letter-spacing: 0.01em;
 }
 
@@ -30,22 +31,22 @@
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-link, #0366d6);
+  color: var(--color-accent);
   background: none;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 .resume-section__show-all:hover {
-  background-color: var(--color-surface-hover, rgba(3, 102, 214, 0.1));
-  color: var(--color-link-hover, #0256b4);
+  background-color: var(--color-accent-glow);
+  color: var(--color-accent-hover);
 }
 
 .resume-section__show-all:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-focus-ring, #4a90d9);
+  box-shadow: 0 0 0 2px var(--color-accent-ring);
 }
 
 .resume-section__content {
@@ -74,7 +75,7 @@
 
 .resume-section__loading-text {
   font-size: 0.875rem;
-  color: var(--color-text-secondary, #666666);
+  color: var(--color-text-secondary);
 }
 
 .resume-section__empty {
@@ -85,12 +86,7 @@
 .resume-section__empty-text {
   margin: 0;
   font-size: 0.875rem;
-  color: var(--color-text-secondary, #666666);
-}
-
-/* Accent border on the left */
-.resume-section {
-  border-left: 3px solid var(--color-in-progress, #ffc107);
+  color: var(--color-text-secondary);
 }
 
 /* Responsive adjustments */
@@ -106,34 +102,4 @@
   }
 }
 
-/* ==============================
-   Dark Mode
-   ============================== */
-
-@media (prefers-color-scheme: dark) {
-  .resume-section {
-    background-color: #2f2f2f;
-    border-color: #404040;
-  }
-
-  .resume-section__title {
-    color: #f3f4f6;
-  }
-
-  .resume-section__show-all {
-    color: #60a5fa;
-  }
-
-  .resume-section__show-all:hover {
-    background-color: rgba(96, 165, 250, 0.1);
-    color: #93c5fd;
-  }
-
-  .resume-section__loading-text {
-    color: #9ca3af;
-  }
-
-  .resume-section__empty-text {
-    color: #9ca3af;
-  }
-}
+/* Dark theme is now the default - no media query needed */

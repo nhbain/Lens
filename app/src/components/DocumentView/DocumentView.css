@@ -1,5 +1,5 @@
 /**
- * DocumentView component styles.
+ * DocumentView component styles - Dark OLED Luxury Theme
  * Renders parsed markdown documents with trackable items.
  */
 
@@ -26,22 +26,24 @@
 
 .document-view-header {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border-subtle);
   flex-shrink: 0;
+  background: var(--color-surface-1);
 }
 
 .document-view-title {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #111827;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
 }
 
 .document-view-filepath {
   margin: 0.25rem 0 0;
   font-size: 0.75rem;
-  color: #6b7280;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--color-text-muted);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -67,14 +69,14 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .document-view-loading-spinner {
   width: 2rem;
   height: 2rem;
-  border: 3px solid #e5e7eb;
-  border-top-color: #3b82f6;
+  border: 3px solid var(--color-surface-3);
+  border-top-color: var(--color-accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -98,13 +100,13 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-primary);
 }
 
 .document-view-empty-message {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 /* ==========================================================================
@@ -118,7 +120,7 @@
   padding: 0.5rem 1.5rem;
   padding-left: calc(1.5rem + var(--indent-level, 0) * 1.25rem);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s, border-left-color 0.15s, opacity 0.15s, transform 0.1s;
   border: none;
   background: none;
   width: 100%;
@@ -126,31 +128,31 @@
 }
 
 .trackable-item-row:hover {
-  background-color: #f3f4f6;
+  background-color: var(--color-surface-2);
 }
 
 .trackable-item-row:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: -2px;
-  background-color: #eff6ff;
+  outline: none;
+  background-color: var(--color-accent-muted);
+  box-shadow: inset 0 0 0 2px var(--color-accent-ring);
 }
 
 .trackable-item-row--focused {
-  background-color: #eff6ff;
+  background-color: var(--color-accent-muted);
   animation: highlight-pulse 2s ease-out;
 }
 
 @keyframes highlight-pulse {
   0% {
-    background-color: #dbeafe;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    background-color: var(--color-accent-muted);
+    box-shadow: 0 0 0 3px var(--color-accent-ring);
   }
   50% {
-    background-color: #eff6ff;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background-color: var(--color-accent-muted);
+    box-shadow: 0 0 0 3px rgba(0, 240, 244, 0.1);
   }
   100% {
-    background-color: #eff6ff;
+    background-color: var(--color-accent-muted);
     box-shadow: none;
   }
 }
@@ -169,14 +171,14 @@
   font-weight: 600;
   border-radius: 0.25rem;
   flex-shrink: 0;
-  background-color: #e5e7eb;
-  color: #374151;
+  background-color: var(--color-surface-3);
+  color: var(--color-text-secondary);
 }
 
-/* Header badges */
+/* Header badges - cyan tint */
 .item-type-badge--header {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--color-accent-muted);
+  color: var(--color-accent);
 }
 
 .item-type-badge--h1 {
@@ -198,14 +200,14 @@
 
 /* List item badges */
 .item-type-badge--listItem {
-  background-color: #f3f4f6;
-  color: #4b5563;
+  background-color: var(--color-surface-3);
+  color: var(--color-text-muted);
 }
 
 /* Checkbox badges */
 .item-type-badge--checkbox {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--color-warning-muted);
+  color: var(--color-warning);
   font-size: 1rem;
 }
 
@@ -216,18 +218,20 @@
 .trackable-item-content {
   flex: 1;
   line-height: 1.5;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 /* Typography scale for headers */
 .trackable-item-row--h1 .trackable-item-content {
   font-size: 1.5rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .trackable-item-row--h2 .trackable-item-content {
   font-size: 1.25rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .trackable-item-row--h3 .trackable-item-content {
@@ -259,26 +263,26 @@
 }
 
 .trackable-item-row--in-progress {
-  background-color: #fef9c3;
-  border-left: 3px solid #eab308;
+  background-color: var(--color-accent-muted);
+  border-left: 3px solid var(--color-in-progress);
 }
 
 .trackable-item-row--in-progress:hover {
-  background-color: #fef08a;
+  background-color: rgba(0, 240, 244, 0.12);
 }
 
 .trackable-item-row--complete {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .trackable-item-row--complete .trackable-item-content {
   text-decoration: line-through;
-  color: #6b7280;
+  color: var(--color-text-muted);
 }
 
 .trackable-item-row--complete .item-type-badge {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: var(--color-success-muted);
+  color: var(--color-success);
 }
 
 /* ==========================================================================
@@ -287,16 +291,6 @@
 
 .trackable-item-row:active {
   transform: scale(0.99);
-  transition: transform 0.1s ease;
-}
-
-/* Status transition animation */
-.trackable-item-row {
-  transition:
-    background-color 0.15s ease,
-    border-left-color 0.15s ease,
-    opacity 0.2s ease,
-    transform 0.1s ease;
 }
 
 /* ==========================================================================
@@ -305,7 +299,7 @@
 
 .trackable-item-row--disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.4;
   pointer-events: none;
 }
 
@@ -313,96 +307,4 @@
   opacity: 0.7;
 }
 
-/* ==========================================================================
-   Dark Mode
-   ========================================================================== */
-
-@media (prefers-color-scheme: dark) {
-  .document-view-header {
-    border-bottom-color: #374151;
-  }
-
-  .document-view-title {
-    color: #f9fafb;
-  }
-
-  .document-view-filepath {
-    color: #9ca3af;
-  }
-
-  .document-view-loading-indicator {
-    color: #9ca3af;
-  }
-
-  .document-view-loading-spinner {
-    border-color: #374151;
-    border-top-color: #60a5fa;
-  }
-
-  .document-view-empty-title {
-    color: #d1d5db;
-  }
-
-  .document-view-empty-message {
-    color: #9ca3af;
-  }
-
-  .trackable-item-row:hover {
-    background-color: #1f2937;
-  }
-
-  .trackable-item-row:focus {
-    outline-color: #60a5fa;
-    background-color: #1e3a5f;
-  }
-
-  .trackable-item-row--focused {
-    background-color: #1e3a5f;
-  }
-
-  .item-type-badge {
-    background-color: #374151;
-    color: #d1d5db;
-  }
-
-  .item-type-badge--header {
-    background-color: #1e3a5f;
-    color: #93c5fd;
-  }
-
-  .item-type-badge--listItem {
-    background-color: #374151;
-    color: #9ca3af;
-  }
-
-  .item-type-badge--checkbox {
-    background-color: #422006;
-    color: #fcd34d;
-  }
-
-  .trackable-item-content {
-    color: #f3f4f6;
-  }
-
-  .trackable-item-row--in-progress {
-    background-color: #422006;
-    border-left-color: #f59e0b;
-  }
-
-  .trackable-item-row--in-progress:hover {
-    background-color: #713f12;
-  }
-
-  .trackable-item-row--complete .trackable-item-content {
-    color: #9ca3af;
-  }
-
-  .trackable-item-row--complete .item-type-badge {
-    background-color: #14532d;
-    color: #86efac;
-  }
-
-  .trackable-item-row--disabled {
-    opacity: 0.4;
-  }
-}
+/* Dark theme is now the default - no media query needed */

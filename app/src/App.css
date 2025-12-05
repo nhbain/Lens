@@ -1,17 +1,60 @@
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+/* Google Fonts: Satoshi + JetBrains Mono */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-  color: #0f0f0f;
-  background-color: #f6f6f6;
+:root {
+  /* OLED Black Foundations */
+  --color-black: #000000;
+  --color-surface-1: #0a0a0a;
+  --color-surface-2: #111111;
+  --color-surface-3: #1a1a1a;
+
+  /* Cyan Accent */
+  --color-accent: #00F0F4;
+  --color-accent-hover: #00D4D8;
+  --color-accent-muted: #0A3A3B;
+  --color-accent-glow: rgba(0, 240, 244, 0.15);
+  --color-accent-ring: rgba(0, 240, 244, 0.25);
+
+  /* Text Hierarchy */
+  --color-text-primary: #FAFAFA;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #52525B;
+
+  /* Borders */
+  --color-border: #27272A;
+  --color-border-subtle: #1F1F23;
+
+  /* Status Colors */
+  --color-success: #22C55E;
+  --color-success-muted: #0A2E1A;
+  --color-warning: #EAB308;
+  --color-warning-muted: #2E2508;
+  --color-error: #EF4444;
+  --color-error-muted: #2E0A0A;
+  --color-in-progress: #00F0F4;
+
+  /* Typography */
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+
+  /* Dark OLED Theme */
+  color: var(--color-text-primary);
+  background-color: var(--color-black);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Monospace font utility */
+code, pre, .mono {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 .container {
@@ -30,11 +73,14 @@
 .app-header h1 {
   margin: 0 0 0.5rem 0;
   font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
 }
 
 .app-header p {
   margin: 0;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 /* Back button */
@@ -44,17 +90,24 @@
   top: 2.5rem;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
-  color: #3b82f6;
-  background: none;
-  border: 1px solid #3b82f6;
+  font-weight: 500;
+  color: var(--color-accent);
+  background: transparent;
+  border: 1px solid var(--color-accent);
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
 }
 
 .back-button:hover {
-  background: #3b82f6;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-black);
+  box-shadow: 0 0 20px var(--color-accent-glow);
+}
+
+.back-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-accent-ring);
 }
 
 /* Settings icon button */
@@ -63,25 +116,25 @@
   right: 0;
   top: 0;
   padding: 0.5rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   background: none;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: color 0.2s, background-color 0.2s;
+  transition: color 0.15s, background-color 0.15s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .settings-icon-button:hover {
-  color: #3b82f6;
-  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-accent);
+  background: var(--color-accent-glow);
 }
 
 .settings-icon-button:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-accent-ring);
 }
 
 /* Document section */
@@ -106,16 +159,22 @@
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 500;
-  color: white;
-  background-color: #3b82f6;
+  color: var(--color-black);
+  background-color: var(--color-accent);
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s, box-shadow 0.15s;
 }
 
 .file-import-button:hover:not(:disabled) {
-  background-color: #2563eb;
+  background-color: var(--color-accent-hover);
+  box-shadow: 0 0 20px var(--color-accent-glow);
+}
+
+.file-import-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-accent-ring);
 }
 
 .file-import-button:disabled {
@@ -134,15 +193,22 @@
   display: flex;
   align-items: center;
   padding: 0.75rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   margin-bottom: 0.5rem;
-  background: white;
+  background: var(--color-surface-2);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.tracked-file-item:hover {
+  border-color: var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .tracked-file-item.selected {
-  border-color: #3b82f6;
-  background: #eff6ff;
+  border-color: var(--color-accent);
+  background: var(--color-accent-muted);
+  box-shadow: 0 0 0 1px var(--color-accent);
 }
 
 .tracked-file-info {
@@ -159,18 +225,18 @@
 
 .tracked-file-name {
   font-weight: 500;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .tracked-file-path {
   font-size: 0.75rem;
-  color: #6b7280;
-  font-family: monospace;
+  color: var(--color-text-muted);
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .tracked-file-items {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   margin-top: 0.25rem;
 }
 
@@ -178,32 +244,33 @@
   width: 28px;
   height: 28px;
   border: none;
-  background: #f3f4f6;
+  background: var(--color-surface-3);
   border-radius: 4px;
   cursor: pointer;
   font-size: 1.25rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-left: 0.5rem;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 .tracked-file-remove:hover {
-  background: #fecaca;
-  color: #dc2626;
+  background: var(--color-error-muted);
+  color: var(--color-error);
 }
 
 /* Empty state */
 .tracked-files-empty {
   text-align: center;
   padding: 2rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .tracked-files-hint {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 /* Message */
@@ -216,21 +283,21 @@
 }
 
 .message-error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: var(--color-error-muted);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--color-error);
 }
 
 .message-info {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #2563eb;
+  background: var(--color-accent-muted);
+  border: 1px solid rgba(0, 240, 244, 0.3);
+  color: var(--color-accent);
 }
 
 .message-success {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #16a34a;
+  background: var(--color-success-muted);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: var(--color-success);
 }
 
 .message-text {
@@ -246,78 +313,11 @@
   opacity: 0.5;
   padding: 0;
   margin-left: 0.5rem;
+  transition: opacity 0.15s;
 }
 
 .message-dismiss:hover {
   opacity: 1;
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #1f1f1f;
-  }
-
-  .app-header p {
-    color: #9ca3af;
-  }
-
-  .tracked-file-item {
-    background: #2f2f2f;
-    border-color: #404040;
-  }
-
-  .tracked-file-item.selected {
-    border-color: #3b82f6;
-    background: #1e3a5f;
-  }
-
-  .tracked-file-name {
-    color: #f3f4f6;
-  }
-
-  .tracked-file-remove {
-    background: #404040;
-    color: #9ca3af;
-  }
-
-  .tracked-file-remove:hover {
-    background: #7f1d1d;
-    color: #fecaca;
-  }
-
-  .message-error {
-    background: #450a0a;
-    border-color: #7f1d1d;
-  }
-
-  .message-info {
-    background: #1e3a5f;
-    border-color: #1d4ed8;
-  }
-
-  .message-success {
-    background: #14532d;
-    border-color: #166534;
-  }
-
-  .back-button {
-    color: #60a5fa;
-    border-color: #60a5fa;
-  }
-
-  .back-button:hover {
-    background: #60a5fa;
-    color: #1f1f1f;
-  }
-
-  .settings-icon-button {
-    color: #9ca3af;
-  }
-
-  .settings-icon-button:hover {
-    color: #60a5fa;
-    background: rgba(96, 165, 250, 0.1);
-  }
-}
+/* Dark theme is now the default - no media query needed */

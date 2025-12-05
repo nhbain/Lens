@@ -88,6 +88,13 @@
 - **Dependencies:** STORY-LENS-005
 - **Technical Notes:** Store settings in separate config file in app data directory.
 
+#### 11. STORY-LENS-011: Dark OLED Luxury UI Redesign
+- **User Story:** As a user, I want a premium dark interface optimized for OLED displays so that the app feels luxurious and is easier on my eyes in low-light environments.
+- **Summary:** Redesign all UI components with a dark OLED luxury aesthetic featuring true blacks (#000000), cyan accent color (#00F0F4), premium typography (Satoshi font), subtle animations (150-200ms), and refined spacing.
+- **Acceptance Criteria:** All surfaces use true black or near-black backgrounds; cyan accent provides visual hierarchy; Satoshi font family used; WCAG AA contrast compliance; all existing functionality preserved; responsive design maintained.
+- **Dependencies:** None (purely visual changes, can be done in parallel with other work)
+- **Technical Notes:** CSS-only changes to 7 style files + font imports. No component logic changes required. Removes light mode in favor of dark-only premium theme.
+
 ## Implementation Order
 
 ```
@@ -106,6 +113,7 @@ Critical Path:
 Parallel Work (after dependencies met):
 - STORY-LENS-006 can start once STORY-LENS-002 is complete (parallel with 003/004)
 - STORY-LENS-008 can partially develop UI while waiting for full data layer
+- STORY-LENS-011 can run in parallel (CSS-only, no dependencies)
 ```
 
 ## Technical Breakdown by Component
@@ -124,6 +132,7 @@ Parallel Work (after dependencies met):
 - STORY-LENS-008: Dashboard component
 - STORY-LENS-009: Navigation, scroll management
 - STORY-LENS-010: Settings view
+- STORY-LENS-011: Dark OLED Luxury UI redesign (CSS)
 
 ### Data Layer
 - STORY-LENS-003: State file schema, persistence logic

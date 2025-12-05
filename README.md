@@ -55,22 +55,28 @@ Lens is a Tauri v2 desktop application with a React frontend. The app tracks pro
 ┌─────────────────────────────────────────────────────────────┐
 │                        Tauri Shell                          │
 │  ┌───────────────────────────────────────────────────────┐  │
-│  │                   React Frontend                       │  │
+│  │                   React Frontend                      │  │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌──────────────┐   │  │
 │  │  │    App      │  │  Dashboard  │  │ DocumentView │   │  │
-│  │  │ Components  │  │  (planned)  │  │  (planned)   │   │  │
+│  │  │ Components  │  │             │  │              │   │  │
 │  │  └──────┬──────┘  └─────────────┘  └──────────────┘   │  │
-│  │         │                                              │  │
+│  │         │                                             │  │
 │  │  ┌──────┴──────────────────────────────────────────┐  │  │
-│  │  │                   Lib Modules                    │  │  │
+│  │  │                   Lib Modules                   │  │  │
 │  │  │  ┌─────────┐  ┌─────────┐  ┌─────────┐          │  │  │
 │  │  │  │ parser  │  │  state  │  │  files  │          │  │  │
 │  │  │  └─────────┘  └─────────┘  └─────────┘          │  │  │
+│  │  │  ┌─────────┐  ┌──────────┐  ┌────────────┐      │  │  │
+│  │  │  │ watcher │  │ progress │  │ navigation │      │  │  │
+│  │  │  └─────────┘  └──────────┘  └────────────┘      │  │  │
+│  │  │  ┌──────────┐                                   │  │  │
+│  │  │  │ settings │                                   │  │  │
+│  │  │  └──────────┘                                   │  │  │
 │  │  └─────────────────────────────────────────────────┘  │  │
 │  └───────────────────────────────────────────────────────┘  │
-│                              │                               │
-│                    Tauri Plugin APIs                         │
-│              (dialog, fs, path, shell)                       │
+│                              │                              │
+│                    Tauri Plugin APIs                        │
+│              (dialog, fs, path, shell)                      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -83,16 +89,30 @@ lens/
 │   │   ├── App.tsx               # Root component
 │   │   ├── App.css               # Global styles
 │   │   ├── components/           # React components
+│   │   │   ├── Dashboard/        # Dashboard view components
+│   │   │   ├── DocumentView/     # Document viewer components
+│   │   │   ├── Settings/         # Settings UI components
+│   │   │   ├── UndoToast/        # Undo notification component
 │   │   │   ├── FileImportButton.tsx
-│   │   │   ├── TrackedFilesList.tsx
-│   │   │   └── *.test.tsx        # Component tests
+│   │   │   └── TrackedFilesList.tsx
 │   │   ├── hooks/                # Custom React hooks
-│   │   │   └── useFileImport.ts
+│   │   │   ├── useDashboard.ts
+│   │   │   ├── useDocumentView.ts
+│   │   │   ├── useFileImport.ts
+│   │   │   ├── useInProgressItems.ts
+│   │   │   ├── useItemStatus.ts
+│   │   │   ├── useKeyboardNavigation.ts
+│   │   │   ├── useScrollPosition.ts
+│   │   │   ├── useSettings.ts
+│   │   │   └── useUndo.ts
 │   │   ├── lib/                  # Core business logic
 │   │   │   ├── parser/           # Markdown parsing
 │   │   │   ├── state/            # State persistence
 │   │   │   ├── files/            # File import & tracking
-│   │   │   └── watcher/          # Directory watching
+│   │   │   ├── watcher/          # Directory watching
+│   │   │   ├── progress/         # Status tracking & parent calculation
+│   │   │   ├── navigation/       # Scroll position management
+│   │   │   └── settings/         # Settings persistence
 │   │   └── test/                 # Test utilities
 │   ├── src-tauri/                # Rust backend
 │   │   ├── src/lib.rs            # Tauri plugin registration
@@ -224,6 +244,73 @@ const result = await addWatchedDirectory('/path/to/docs')
 - `connectEventHandler()` - Connect watcher to tracked files module
 - `onTrackedFileAdded(callback)` - Listen for auto-tracked files
 
+### `lib/progress` - Status Tracking & Parent Calculation
+
+Manages item status transitions and calculates parent progress from children.
+
+```typescript
+import {
+  getNextStatus,
+  propagateStatusChange,
+  deriveParentStatus,
+  calculateChildrenProgress
+} from './lib/progress'
+
+// Cycle through statuses: not-started -> in-progress -> complete
+const nextStatus = getNextStatus('not-started') // 'in-progress'
+
+// Calculate parent status from children
+const parentStatus = deriveParentStatus(childItems)
+
+// Get progress percentage
+const progress = calculateChildrenProgress(childItems)
+```
+
+**Key exports:**
+- `getNextStatus(status)` - Get next status in cycle
+- `getPreviousStatus(status)` - Get previous status in cycle
+- `propagateStatusChange(items, itemId, newStatus)` - Update item and propagate to parents
+- `deriveParentStatus(children)` - Calculate parent status from children
+- `calculateChildrenProgress(children)` - Calculate completion percentage
+
+### `lib/navigation` - Scroll Position Management
+
+Tracks and restores scroll positions for document navigation.
+
+```typescript
+import { saveScrollPosition, getScrollPosition } from './lib/navigation'
+
+// Save current position
+saveScrollPosition('/path/to/doc.md', { top: 100, itemId: 'h2-3' })
+
+// Restore position
+const position = getScrollPosition('/path/to/doc.md')
+```
+
+**Key exports:**
+- `saveScrollPosition(path, position)` - Save scroll position for a file
+- `getScrollPosition(path)` - Get saved scroll position
+- `clearScrollPosition(path)` - Clear saved position
+
+### `lib/settings` - Settings Persistence
+
+Manages application settings persistence.
+
+```typescript
+import { loadSettings, saveSettings } from './lib/settings'
+
+// Load settings
+const settings = await loadSettings()
+
+// Save settings
+await saveSettings({ theme: 'dark', ...settings })
+```
+
+**Key exports:**
+- `loadSettings()` - Load settings from disk
+- `saveSettings(settings)` - Save settings to disk
+- `getDefaultSettings()` - Get default settings object
+
 ## Components
 
 ### `FileImportButton`
@@ -283,7 +370,7 @@ npm run test -- --coverage
 - Integration tests verify full workflows
 
 ```
-Current test count: 441 tests across 19 files
+Current test count: 947 tests across 41 files
 ```
 
 ### Mocking Tauri APIs
@@ -311,13 +398,13 @@ vi.mock('@tauri-apps/plugin-fs', () => ({
 - [x] **STORY-LENS-003** - State Persistence Layer
 - [x] **STORY-LENS-004** - File Import & Manual Management
 - [x] **STORY-LENS-005** - Directory Watching & Auto-Discovery
+- [x] **STORY-LENS-006** - Document View & Item Display
+- [x] **STORY-LENS-007** - Progress Tracking Interactions
+- [x] **STORY-LENS-008** - Dashboard View
+- [x] **STORY-LENS-009** - Resume & Quick Navigation
 
 ### Remaining Stories
 
-- [ ] **STORY-LENS-006** - Document View & Item Display
-- [ ] **STORY-LENS-007** - Progress Tracking Interactions
-- [ ] **STORY-LENS-008** - Dashboard View
-- [ ] **STORY-LENS-009** - Resume & Quick Navigation
 - [ ] **STORY-LENS-010** - Settings & Configuration UI
 
 See `tasks/` directory for detailed task breakdowns.

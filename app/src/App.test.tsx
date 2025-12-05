@@ -8,10 +8,6 @@ import { describe, it, expect } from 'vitest'
 const MockApp = () => {
   return (
     <main className="container">
-      <header className="app-header">
-        <h1>Lens</h1>
-        <p>Markdown Progress Tracker</p>
-      </header>
       <section className="app-actions">
         <button type="button" className="file-import-button">
           Add File
