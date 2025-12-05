@@ -1,0 +1,323 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color: #0f0f0f;
+  background-color: #f6f6f6;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header */
+.app-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.app-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+}
+
+.app-header p {
+  margin: 0;
+  color: #666;
+}
+
+/* Back button */
+.back-button {
+  position: absolute;
+  left: 2rem;
+  top: 2.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #3b82f6;
+  background: none;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.back-button:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Settings icon button */
+.settings-icon-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 0.5rem;
+  color: #6b7280;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-icon-button:hover {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.settings-icon-button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Document section */
+.app-document {
+  margin-top: 1rem;
+}
+
+/* Actions */
+.app-actions {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Files section */
+.app-files h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* File import button */
+.file-import-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background-color: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.file-import-button:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.file-import-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Tracked files list */
+.tracked-files-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tracked-file-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  background: white;
+}
+
+.tracked-file-item.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.tracked-file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tracked-file-name {
+  font-weight: 500;
+  color: #111827;
+}
+
+.tracked-file-path {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-family: monospace;
+}
+
+.tracked-file-items {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+}
+
+.tracked-file-remove {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: #f3f4f6;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+}
+
+.tracked-file-remove:hover {
+  background: #fecaca;
+  color: #dc2626;
+}
+
+/* Empty state */
+.tracked-files-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.tracked-files-hint {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* Message */
+.message {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.message-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.message-info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #2563eb;
+}
+
+.message-success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+}
+
+.message-text {
+  flex: 1;
+}
+
+.message-dismiss {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.5;
+  padding: 0;
+  margin-left: 0.5rem;
+}
+
+.message-dismiss:hover {
+  opacity: 1;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f6f6f6;
+    background-color: #1f1f1f;
+  }
+
+  .app-header p {
+    color: #9ca3af;
+  }
+
+  .tracked-file-item {
+    background: #2f2f2f;
+    border-color: #404040;
+  }
+
+  .tracked-file-item.selected {
+    border-color: #3b82f6;
+    background: #1e3a5f;
+  }
+
+  .tracked-file-name {
+    color: #f3f4f6;
+  }
+
+  .tracked-file-remove {
+    background: #404040;
+    color: #9ca3af;
+  }
+
+  .tracked-file-remove:hover {
+    background: #7f1d1d;
+    color: #fecaca;
+  }
+
+  .message-error {
+    background: #450a0a;
+    border-color: #7f1d1d;
+  }
+
+  .message-info {
+    background: #1e3a5f;
+    border-color: #1d4ed8;
+  }
+
+  .message-success {
+    background: #14532d;
+    border-color: #166534;
+  }
+
+  .back-button {
+    color: #60a5fa;
+    border-color: #60a5fa;
+  }
+
+  .back-button:hover {
+    background: #60a5fa;
+    color: #1f1f1f;
+  }
+
+  .settings-icon-button {
+    color: #9ca3af;
+  }
+
+  .settings-icon-button:hover {
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.1);
+  }
+}

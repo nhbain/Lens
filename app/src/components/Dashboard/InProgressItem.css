@@ -1,0 +1,138 @@
+/**
+ * InProgressItem component styles.
+ * Compact display for resume section items.
+ */
+
+.in-progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 6px;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e0e0e0);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.in-progress-item:hover {
+  background-color: var(--color-surface-hover, #f5f5f5);
+  border-color: var(--color-border-hover, #c0c0c0);
+}
+
+.in-progress-item:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring, #4a90d9);
+}
+
+.in-progress-item:active {
+  background-color: var(--color-surface-active, #ebebeb);
+}
+
+.in-progress-item__content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.in-progress-item__type {
+  flex-shrink: 0;
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #666666);
+  width: 1rem;
+  text-align: center;
+}
+
+.in-progress-item__text {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary, #1a1a1a);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.in-progress-item__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.in-progress-item__file {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #666666);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60%;
+}
+
+.in-progress-item__time {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary, #999999);
+  flex-shrink: 0;
+}
+
+/* Status indicator (optional, for emphasis) */
+.in-progress-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background-color: var(--color-in-progress, #ffc107);
+  border-radius: 0 2px 2px 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.in-progress-item {
+  position: relative;
+}
+
+.in-progress-item:hover::before {
+  opacity: 1;
+}
+
+/* ==============================
+   Dark Mode
+   ============================== */
+
+@media (prefers-color-scheme: dark) {
+  .in-progress-item {
+    background-color: #374151;
+    border-color: #4b5563;
+  }
+
+  .in-progress-item:hover {
+    background-color: #4b5563;
+    border-color: #6b7280;
+  }
+
+  .in-progress-item:active {
+    background-color: #525f70;
+  }
+
+  .in-progress-item__type {
+    color: #9ca3af;
+  }
+
+  .in-progress-item__text {
+    color: #f3f4f6;
+  }
+
+  .in-progress-item__file {
+    color: #9ca3af;
+  }
+
+  .in-progress-item__time {
+    color: #6b7280;
+  }
+}

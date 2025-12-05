@@ -1,0 +1,482 @@
+/**
+ * Dashboard styles.
+ * Includes styles for Dashboard, FileCard, ProgressBar, and SortControls.
+ */
+
+/* Dashboard container */
+.dashboard {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Dashboard header */
+.dashboard__header {
+  margin-bottom: 1.5rem;
+}
+
+.dashboard__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.dashboard__summary {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.dashboard__summary-highlight {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+/* Add file button */
+.dashboard__add-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #3b82f6;
+  background: transparent;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dashboard__add-button:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+.dashboard__add-button--primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.dashboard__add-button--primary:hover {
+  background: #2563eb;
+}
+
+/* Controls section */
+.dashboard__controls {
+  margin-bottom: 1rem;
+}
+
+/* File grid */
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .dashboard__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Empty state */
+.dashboard__empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px dashed #d1d5db;
+}
+
+.dashboard__empty-message {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #374151;
+}
+
+.dashboard__empty-hint {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Loading state */
+.dashboard__loading {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+/* Error state */
+.dashboard__error {
+  padding: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+}
+
+.dashboard__error-message {
+  margin: 0;
+  color: #dc2626;
+}
+
+/* ==============================
+   FileCard Component
+   ============================== */
+
+.file-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.file-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.file-card:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.file-card--selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.file-card--in-progress {
+  border-left: 3px solid #f59e0b;
+}
+
+/* FileCard header */
+.file-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.file-card__name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  word-break: break-word;
+}
+
+/* In-progress badge */
+.file-card__badge {
+  flex-shrink: 0;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 9999px;
+}
+
+.file-card__badge--in-progress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* FileCard path */
+.file-card__path {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: #6b7280;
+  word-break: break-all;
+}
+
+/* FileCard progress */
+.file-card__progress {
+  margin-bottom: 0.75rem;
+}
+
+.file-card__progress-text {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* FileCard footer */
+.file-card__footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.file-card__meta {
+  /* Individual meta items */
+}
+
+/* ==============================
+   ProgressBar Component
+   ============================== */
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress-bar__track {
+  flex: 1;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease-out;
+}
+
+/* Size variants */
+.progress-bar--small .progress-bar__track {
+  height: 4px;
+}
+
+.progress-bar--medium .progress-bar__track {
+  height: 8px;
+}
+
+.progress-bar--large .progress-bar__track {
+  height: 12px;
+}
+
+/* Color variants */
+.progress-bar__fill--low {
+  background: #3b82f6;
+}
+
+.progress-bar__fill--medium {
+  background: #f59e0b;
+}
+
+.progress-bar__fill--high {
+  background: #10b981;
+}
+
+.progress-bar__fill--complete {
+  background: #10b981;
+}
+
+/* Animation */
+.progress-bar--animated .progress-bar__fill {
+  transition: width 0.5s ease-out;
+}
+
+/* Label */
+.progress-bar__label {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+/* ==============================
+   SortControls Component
+   ============================== */
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-controls__label {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.sort-controls__select {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  color: #374151;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sort-controls__select:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-color: #3b82f6;
+}
+
+.sort-controls__direction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  color: #374151;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sort-controls__direction:hover {
+  background: #f3f4f6;
+}
+
+.sort-controls__direction:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ==============================
+   Dark Mode
+   ============================== */
+
+@media (prefers-color-scheme: dark) {
+  .dashboard__summary {
+    color: #9ca3af;
+  }
+
+  .dashboard__summary-highlight {
+    color: #60a5fa;
+  }
+
+  .dashboard__add-button {
+    color: #60a5fa;
+    border-color: #60a5fa;
+  }
+
+  .dashboard__add-button:hover {
+    background: #60a5fa;
+    color: #1f1f1f;
+  }
+
+  .dashboard__add-button--primary {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .dashboard__empty {
+    background: #2f2f2f;
+    border-color: #404040;
+  }
+
+  .dashboard__empty-message {
+    color: #f3f4f6;
+  }
+
+  .dashboard__empty-hint {
+    color: #9ca3af;
+  }
+
+  .dashboard__loading {
+    color: #9ca3af;
+  }
+
+  .dashboard__error {
+    background: #450a0a;
+    border-color: #7f1d1d;
+  }
+
+  .dashboard__error-message {
+    color: #fecaca;
+  }
+
+  /* FileCard dark mode */
+  .file-card {
+    background: #2f2f2f;
+    border-color: #404040;
+  }
+
+  .file-card:hover {
+    border-color: #60a5fa;
+  }
+
+  .file-card--selected {
+    border-color: #3b82f6;
+    background: #1e3a5f;
+  }
+
+  .file-card__name {
+    color: #f3f4f6;
+  }
+
+  .file-card__badge--in-progress {
+    background: #78350f;
+    color: #fcd34d;
+  }
+
+  .file-card__path {
+    color: #9ca3af;
+  }
+
+  .file-card__progress-text {
+    color: #9ca3af;
+  }
+
+  .file-card__footer {
+    color: #6b7280;
+    border-top-color: #404040;
+  }
+
+  /* ProgressBar dark mode */
+  .progress-bar__track {
+    background: #404040;
+  }
+
+  .progress-bar__label {
+    color: #d1d5db;
+  }
+
+  /* SortControls dark mode */
+  .sort-controls__label {
+    color: #9ca3af;
+  }
+
+  .sort-controls__select {
+    color: #f3f4f6;
+    background: #2f2f2f;
+    border-color: #404040;
+  }
+
+  .sort-controls__direction {
+    color: #f3f4f6;
+    background: #2f2f2f;
+    border-color: #404040;
+  }
+
+  .sort-controls__direction:hover {
+    background: #404040;
+  }
+}
