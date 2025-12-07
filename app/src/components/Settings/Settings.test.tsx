@@ -14,9 +14,18 @@ import type { WatchedDirectory } from '@/lib/watcher/types'
 const createMockSettings = (
   overrides: Partial<AppSettings> = {}
 ): AppSettings => ({
-  version: 1,
+  version: 2,
   filePatterns: ['*.md', '*.markdown'],
   theme: 'system',
+  animationIntensity: 'full',
+  themeColors: {
+    accentPrimary: null,
+    accentSecondary: null,
+    accentWarning: null,
+    surfaceBase: null,
+    surfaceElevated: null,
+    surfaceCard: null,
+  },
   createdAt: '2025-01-01T00:00:00.000Z',
   updatedAt: '2025-01-01T00:00:00.000Z',
   ...overrides,
@@ -65,10 +74,16 @@ const MockSettings = ({
   onAddPattern,
   onRemovePattern,
   onThemeChange,
+  onAnimationIntensityChange,
+  onThemeColorChange,
+  onResetThemeSettings,
   onClearData,
   onExportData,
   onImportData,
 }: SettingsViewProps) => {
+  void onAnimationIntensityChange
+  void onThemeColorChange
+  void onResetThemeSettings
   return (
     <div className="settings">
       <header className="settings__header">
@@ -179,6 +194,9 @@ describe('Settings', () => {
     onAddPattern: vi.fn(),
     onRemovePattern: vi.fn(),
     onThemeChange: vi.fn(),
+    onAnimationIntensityChange: vi.fn(),
+    onThemeColorChange: vi.fn(),
+    onResetThemeSettings: vi.fn(),
     onClearData: vi.fn(),
     onExportData: vi.fn(),
     onImportData: vi.fn(),

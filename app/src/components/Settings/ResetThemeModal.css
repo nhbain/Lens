@@ -1,0 +1,16 @@
+/**
+ * ResetThemeModal component styles.
+ */
+
+.reset-theme-modal__message {
+  margin: 0 0 1.5rem 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.reset-theme-modal__actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}

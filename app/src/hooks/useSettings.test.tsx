@@ -39,9 +39,18 @@ const mockUpdateTheme = vi.mocked(updateTheme)
 const createMockSettings = (
   overrides: Partial<AppSettings> = {}
 ): AppSettings => ({
-  version: 1,
+  version: 2,
   filePatterns: ['*.md', '*.markdown'],
   theme: 'system',
+  animationIntensity: 'full',
+  themeColors: {
+    accentPrimary: null,
+    accentSecondary: null,
+    accentWarning: null,
+    surfaceBase: null,
+    surfaceElevated: null,
+    surfaceCard: null,
+  },
   createdAt: '2025-01-01T00:00:00.000Z',
   updatedAt: '2025-01-01T00:00:00.000Z',
   ...overrides,

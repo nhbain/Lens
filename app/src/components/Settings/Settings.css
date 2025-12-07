@@ -466,7 +466,7 @@
 .file-patterns__input-group {
   display: flex;
   border: none;
-} */
+}
 
 .file-patterns__input {
   flex: 1;
@@ -683,6 +683,18 @@
   color: var(--color-text-primary);
 }
 
+.settings-appearance {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-appearance__reset {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
 .settings-appearance__select {
   padding: 8px 32px 8px 12px;
   border: 1px solid var(--color-border);
@@ -711,6 +723,43 @@
     0 0 0 2px var(--color-black),
     0 0 0 4px var(--color-accent),
     var(--glow-accent);
+}
+
+.settings-appearance__row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.settings-appearance__colors {
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.settings-appearance__colors-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.settings-appearance__colors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+/* Responsive: stack color pickers on small screens */
+@media (max-width: 480px) {
+  .settings-appearance__row {
+    flex-direction: column;
+  }
+
+  .settings-appearance__colors-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ==========================================================================

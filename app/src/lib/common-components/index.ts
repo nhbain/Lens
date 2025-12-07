@@ -38,3 +38,7 @@ export type { TooltipProps, TooltipPosition } from './Tooltip/Tooltip'
 // Modal
 export { Modal } from './Modal/Modal'
 export type { ModalProps, ModalSize } from './Modal/Modal'
+
+// ColorPicker
+export { ColorPicker } from './ColorPicker/ColorPicker'
+export type { ColorPickerProps, ColorPickerSize } from './ColorPicker/ColorPicker'

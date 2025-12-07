@@ -25,6 +25,7 @@
      ========================================================================== */
   --color-accent-secondary: #10B981;
   --color-accent-secondary-hover: #059669;
+  --color-accent-secondary-light: #34D399;
   --color-accent-secondary-muted: #064E3B;
   --color-accent-secondary-glow: rgba(16, 185, 129, 0.2);
 
@@ -47,6 +48,7 @@
   --color-success: #22C55E;
   --color-success-muted: #0A2E1A;
   --color-warning: #EAB308;
+  --color-warning-hover: #FCD34D;
   --color-warning-muted: #2E2508;
   --color-error: #EF4444;
   --color-error-muted: #2E0A0A;
@@ -229,6 +231,49 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ==========================================================================
+   Animation Intensity: Off
+   Disables all animations and transitions
+   ========================================================================== */
+[data-animation="off"] *,
+[data-animation="off"] *::before,
+[data-animation="off"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ==========================================================================
+   Animation Intensity: Reduced
+   Keeps subtle hover/focus transitions but disables entrance animations,
+   breathing glows, and shimmer effects
+   ========================================================================== */
+[data-animation="reduced"] * {
+  /* Disable entrance animations */
+  animation-name: none !important;
+}
+
+/* Re-enable only subtle transitions for hover/focus states */
+[data-animation="reduced"] *,
+[data-animation="reduced"] *::before,
+[data-animation="reduced"] *::after {
+  transition-property: background-color, border-color, color, box-shadow, opacity !important;
+  transition-duration: var(--transition-fast) !important;
+  transition-timing-function: ease-out !important;
+}
+
+/* Disable breathing glow animations */
+[data-animation="reduced"] .breathing-glow,
+[data-animation="reduced"] [class*="breathing"] {
+  animation: none !important;
+}
+
+/* Disable shimmer effects */
+[data-animation="reduced"] .shimmer,
+[data-animation="reduced"] [class*="shimmer"] {
+  animation: none !important;
+  background-size: 100% 100% !important;
 }
 
 /* ==========================================================================

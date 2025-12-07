@@ -6,7 +6,7 @@
 
 import {
   readStateFile,
-  writeStateFileAtomic,
+  writeStateFile,
   backupStateFile,
   restoreFromBackup,
   stateFileExists,
@@ -19,6 +19,8 @@ import {
   type AppSettings,
   type LoadSettingsResult,
   type SettingsOperationResult,
+  type AnimationIntensity,
+  type ThemeColors,
 } from './types'
 
 /**
@@ -144,14 +146,15 @@ export const saveSettings = async (
       await backupStateFile(SETTINGS_FILENAME)
     }
 
-    // Write atomically
+    // Write directly (atomic rename has issues with Tauri plugin-fs)
     const content = JSON.stringify(updatedSettings, null, 2)
-    await writeStateFileAtomic(SETTINGS_FILENAME, content)
+    await writeStateFile(SETTINGS_FILENAME, content)
 
     return { success: true }
   } catch (error) {
+    console.error('[saveSettings] Exception:', error)
     const message =
-      error instanceof Error ? error.message : 'Unknown error saving settings'
+      error instanceof Error ? error.message : String(error) || 'Unknown error saving settings'
     return {
       success: false,
       error: message,
@@ -337,18 +340,195 @@ export const updateTheme = async (
  * @returns Migrated settings
  */
 const migrateSettings = (settings: AppSettings): AppSettings => {
-  const migrated = { ...settings }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const migrated = { ...settings } as any
 
-  // Future migrations would go here:
-  // if (settings.version === 1) {
-  //   // Migrate from v1 to v2
-  //   migrated.newField = defaultValue
-  //   migrated.version = 2
-  // }
+  // Migrate from v1 to v2: add animationIntensity and themeColors
+  if (settings.version === 1) {
+    migrated.animationIntensity = 'full'
+    migrated.themeColors = {
+      accentPrimary: null,
+      accentSecondary: null,
+      surfaceBase: null,
+      surfaceElevated: null,
+      surfaceCard: null,
+    }
+    migrated.version = 2
+  }
 
   // Ensure version is current
   migrated.version = CURRENT_SETTINGS_VERSION
   migrated.updatedAt = new Date().toISOString()
 
-  return migrated
+  return migrated as AppSettings
+}
+
+/**
+ * Updates the animation intensity setting.
+ *
+ * @param intensity - New animation intensity value
+ * @returns Promise resolving to SettingsOperationResult
+ */
+export const updateAnimationIntensity = async (
+  intensity: AnimationIntensity
+): Promise<SettingsOperationResult> => {
+  return updateSetting('animationIntensity', intensity)
+}
+
+/**
+ * Default theme colors for fallback when themeColors is missing.
+ */
+const DEFAULT_THEME_COLORS_FALLBACK: ThemeColors = {
+  accentPrimary: null,
+  accentSecondary: null,
+  accentWarning: null,
+  surfaceBase: null,
+  surfaceElevated: null,
+  surfaceCard: null,
+}
+
+/**
+ * Updates a single theme color.
+ *
+ * @param colorKey - The color field to update
+ * @param value - New color value (hex string) or null for default
+ * @returns Promise resolving to SettingsOperationResult
+ */
+export const updateThemeColor = async (
+  colorKey: keyof ThemeColors,
+  value: string | null
+): Promise<SettingsOperationResult> => {
+  try {
+    const loadResult = await loadSettings()
+
+    if (!loadResult.success || !loadResult.settings) {
+      console.error('[updateThemeColor] Failed to load settings:', loadResult.error)
+      return {
+        success: false,
+        error: loadResult.error ?? 'Failed to load current settings',
+      }
+    }
+
+    // Ensure themeColors has all required fields (handles legacy v2 files without this field)
+    const currentThemeColors: ThemeColors = {
+      ...DEFAULT_THEME_COLORS_FALLBACK,
+      ...(loadResult.settings.themeColors ?? {}),
+    }
+
+    const updatedSettings: AppSettings = {
+      ...loadResult.settings,
+      themeColors: {
+        ...currentThemeColors,
+        [colorKey]: value,
+      },
+    }
+
+    const saveResult = await saveSettings(updatedSettings)
+    if (!saveResult.success) {
+      console.error('[updateThemeColor] Failed to save settings:', saveResult.error)
+    }
+    return saveResult
+  } catch (error) {
+    console.error('[updateThemeColor] Exception:', error)
+    const message =
+      error instanceof Error ? error.message : 'Unknown error updating theme color'
+    return {
+      success: false,
+      error: message,
+    }
+  }
+}
+
+/**
+ * Updates multiple theme colors at once.
+ *
+ * @param colors - Partial theme colors object with values to update
+ * @returns Promise resolving to SettingsOperationResult
+ */
+export const updateThemeColors = async (
+  colors: Partial<ThemeColors>
+): Promise<SettingsOperationResult> => {
+  try {
+    const loadResult = await loadSettings()
+
+    if (!loadResult.success || !loadResult.settings) {
+      console.error('[updateThemeColors] Failed to load settings:', loadResult.error)
+      return {
+        success: false,
+        error: loadResult.error ?? 'Failed to load current settings',
+      }
+    }
+
+    // Ensure themeColors has all required fields (handles legacy v2 files without this field)
+    const currentThemeColors: ThemeColors = {
+      ...DEFAULT_THEME_COLORS_FALLBACK,
+      ...(loadResult.settings.themeColors ?? {}),
+    }
+
+    const updatedSettings: AppSettings = {
+      ...loadResult.settings,
+      themeColors: {
+        ...currentThemeColors,
+        ...colors,
+      },
+    }
+
+    return saveSettings(updatedSettings)
+  } catch (error) {
+    console.error('[updateThemeColors] Exception:', error)
+    const message =
+      error instanceof Error ? error.message : 'Unknown error updating theme colors'
+    return {
+      success: false,
+      error: message,
+    }
+  }
+}
+
+/**
+ * Resets only theme-related settings to defaults.
+ * This includes animationIntensity and themeColors.
+ *
+ * @returns Promise resolving to LoadSettingsResult
+ */
+export const resetThemeSettings = async (): Promise<LoadSettingsResult> => {
+  try {
+    const loadResult = await loadSettings()
+
+    if (!loadResult.success || !loadResult.settings) {
+      return {
+        success: false,
+        error: loadResult.error ?? 'Failed to load current settings',
+      }
+    }
+
+    const defaults = createDefaultSettings()
+    const updatedSettings: AppSettings = {
+      ...loadResult.settings,
+      animationIntensity: defaults.animationIntensity,
+      themeColors: { ...defaults.themeColors },
+    }
+
+    const saveResult = await saveSettings(updatedSettings)
+
+    if (!saveResult.success) {
+      return {
+        success: false,
+        error: saveResult.error,
+      }
+    }
+
+    return {
+      success: true,
+      settings: updatedSettings,
+      usedDefaults: false,
+    }
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : 'Unknown error resetting theme settings'
+    return {
+      success: false,
+      error: message,
+    }
+  }
 }

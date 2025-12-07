@@ -8,21 +8,35 @@ import {
   SETTINGS_FILENAME,
   DEFAULT_FILE_PATTERNS,
   CURRENT_EXPORT_VERSION,
+  DEFAULT_THEME_COLORS,
   createDefaultSettings,
   createEmptyExportData,
   isThemeOption,
+  isAnimationIntensity,
+  isHexColor,
+  isThemeColors,
   isFilePatternArray,
   isAppSettings,
   isExportData,
   type AppSettings,
   type ThemeOption,
+  type AnimationIntensity,
+  type ThemeColors,
   type ExportData,
 } from './types'
 
 describe('settings types', () => {
   describe('constants', () => {
     it('exports CURRENT_SETTINGS_VERSION', () => {
-      expect(CURRENT_SETTINGS_VERSION).toBe(1)
+      expect(CURRENT_SETTINGS_VERSION).toBe(2)
+    })
+
+    it('exports DEFAULT_THEME_COLORS', () => {
+      expect(DEFAULT_THEME_COLORS.accentPrimary).toBe('#00F0F4')
+      expect(DEFAULT_THEME_COLORS.accentSecondary).toBe('#10B981')
+      expect(DEFAULT_THEME_COLORS.surfaceBase).toBe('#0a0a0a')
+      expect(DEFAULT_THEME_COLORS.surfaceElevated).toBe('#111111')
+      expect(DEFAULT_THEME_COLORS.surfaceCard).toBe('#1a1a1a')
     })
 
     it('exports SETTINGS_FILENAME', () => {
@@ -52,6 +66,20 @@ describe('settings types', () => {
     it('creates settings with system theme', () => {
       const settings = createDefaultSettings()
       expect(settings.theme).toBe('system')
+    })
+
+    it('creates settings with full animation intensity', () => {
+      const settings = createDefaultSettings()
+      expect(settings.animationIntensity).toBe('full')
+    })
+
+    it('creates settings with null theme colors (use defaults)', () => {
+      const settings = createDefaultSettings()
+      expect(settings.themeColors.accentPrimary).toBeNull()
+      expect(settings.themeColors.accentSecondary).toBeNull()
+      expect(settings.themeColors.surfaceBase).toBeNull()
+      expect(settings.themeColors.surfaceElevated).toBeNull()
+      expect(settings.themeColors.surfaceCard).toBeNull()
     })
 
     it('creates settings with timestamps', () => {
@@ -98,6 +126,146 @@ describe('settings types', () => {
       expect(isThemeOption(undefined)).toBe(false)
       expect(isThemeOption(123)).toBe(false)
       expect(isThemeOption({})).toBe(false)
+    })
+  })
+
+  describe('isAnimationIntensity', () => {
+    it('returns true for "off"', () => {
+      expect(isAnimationIntensity('off')).toBe(true)
+    })
+
+    it('returns true for "reduced"', () => {
+      expect(isAnimationIntensity('reduced')).toBe(true)
+    })
+
+    it('returns true for "full"', () => {
+      expect(isAnimationIntensity('full')).toBe(true)
+    })
+
+    it('returns false for invalid strings', () => {
+      expect(isAnimationIntensity('none')).toBe(false)
+      expect(isAnimationIntensity('FULL')).toBe(false)
+      expect(isAnimationIntensity('')).toBe(false)
+      expect(isAnimationIntensity('partial')).toBe(false)
+    })
+
+    it('returns false for non-strings', () => {
+      expect(isAnimationIntensity(null)).toBe(false)
+      expect(isAnimationIntensity(undefined)).toBe(false)
+      expect(isAnimationIntensity(123)).toBe(false)
+      expect(isAnimationIntensity({})).toBe(false)
+      expect(isAnimationIntensity(true)).toBe(false)
+    })
+  })
+
+  describe('isHexColor', () => {
+    it('returns true for valid 6-character hex colors', () => {
+      expect(isHexColor('#00F0F4')).toBe(true)
+      expect(isHexColor('#ffffff')).toBe(true)
+      expect(isHexColor('#000000')).toBe(true)
+      expect(isHexColor('#10B981')).toBe(true)
+      expect(isHexColor('#AbCdEf')).toBe(true)
+    })
+
+    it('returns true for valid 3-character hex colors', () => {
+      expect(isHexColor('#FFF')).toBe(true)
+      expect(isHexColor('#000')).toBe(true)
+      expect(isHexColor('#abc')).toBe(true)
+      expect(isHexColor('#123')).toBe(true)
+    })
+
+    it('returns false for hex without #', () => {
+      expect(isHexColor('00F0F4')).toBe(false)
+      expect(isHexColor('FFF')).toBe(false)
+    })
+
+    it('returns false for invalid hex lengths', () => {
+      expect(isHexColor('#FF')).toBe(false)
+      expect(isHexColor('#FFFF')).toBe(false)
+      expect(isHexColor('#FFFFF')).toBe(false)
+      expect(isHexColor('#FFFFFFF')).toBe(false)
+    })
+
+    it('returns false for invalid hex characters', () => {
+      expect(isHexColor('#GGGGGG')).toBe(false)
+      expect(isHexColor('#00G0F4')).toBe(false)
+      expect(isHexColor('#XYZ')).toBe(false)
+    })
+
+    it('returns false for non-strings', () => {
+      expect(isHexColor(null)).toBe(false)
+      expect(isHexColor(undefined)).toBe(false)
+      expect(isHexColor(123)).toBe(false)
+      expect(isHexColor({})).toBe(false)
+    })
+  })
+
+  describe('isThemeColors', () => {
+    it('returns true for valid theme colors with all null', () => {
+      const colors: ThemeColors = {
+        accentPrimary: null,
+        accentSecondary: null,
+        accentWarning: null,
+        surfaceBase: null,
+        surfaceElevated: null,
+        surfaceCard: null,
+      }
+      expect(isThemeColors(colors)).toBe(true)
+    })
+
+    it('returns true for valid theme colors with hex values', () => {
+      const colors: ThemeColors = {
+        accentPrimary: '#00F0F4',
+        accentSecondary: '#10B981',
+        accentWarning: '#F59E0B',
+        surfaceBase: '#0a0a0a',
+        surfaceElevated: '#111111',
+        surfaceCard: '#1a1a1a',
+      }
+      expect(isThemeColors(colors)).toBe(true)
+    })
+
+    it('returns true for mixed null and hex values', () => {
+      const colors: ThemeColors = {
+        accentPrimary: '#00F0F4',
+        accentSecondary: null,
+        accentWarning: null,
+        surfaceBase: '#0a0a0a',
+        surfaceElevated: null,
+        surfaceCard: null,
+      }
+      expect(isThemeColors(colors)).toBe(true)
+    })
+
+    it('returns false for invalid hex values', () => {
+      const colors = {
+        accentPrimary: 'not-a-color',
+        accentSecondary: null,
+        accentWarning: null,
+        surfaceBase: null,
+        surfaceElevated: null,
+        surfaceCard: null,
+      }
+      expect(isThemeColors(colors)).toBe(false)
+    })
+
+    it('returns false for non-objects', () => {
+      expect(isThemeColors(null)).toBe(false)
+      expect(isThemeColors(undefined)).toBe(false)
+      expect(isThemeColors('string')).toBe(false)
+      expect(isThemeColors(123)).toBe(false)
+    })
+
+    it('returns false for wrong value types', () => {
+      const colors = {
+        accentPrimary: 123,
+        accentSecondary: null,
+        accentWarning: null,
+        surfaceBase: null,
+        surfaceElevated: null,
+        surfaceCard: null,
+      }
+      expect(isThemeColors(colors)).toBe(false)
     })
   })
 
@@ -216,6 +384,48 @@ describe('settings types', () => {
       expect(
         isAppSettings({ ...createDefaultSettings(), updatedAt: null })
       ).toBe(false)
+    })
+
+    it('returns true for settings with all valid animation intensities', () => {
+      const intensities: AnimationIntensity[] = ['off', 'reduced', 'full']
+      intensities.forEach((animationIntensity) => {
+        const settings: AppSettings = {
+          ...createDefaultSettings(),
+          animationIntensity,
+        }
+        expect(isAppSettings(settings)).toBe(true)
+      })
+    })
+
+    it('returns false when animationIntensity is invalid', () => {
+      const settings = { ...createDefaultSettings(), animationIntensity: 'invalid' }
+      expect(isAppSettings(settings)).toBe(false)
+    })
+
+    it('returns false when themeColors has invalid values', () => {
+      const settings = {
+        ...createDefaultSettings(),
+        themeColors: {
+          accentPrimary: 'not-a-color',
+          accentSecondary: null,
+          surfaceBase: null,
+          surfaceElevated: null,
+          surfaceCard: null,
+        },
+      }
+      expect(isAppSettings(settings)).toBe(false)
+    })
+
+    it('returns true for v1 settings (without v2 fields) - allows migration', () => {
+      // V1 settings that don't have animationIntensity or themeColors
+      const v1Settings = {
+        version: 1,
+        filePatterns: ['*.md'],
+        theme: 'system',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+      expect(isAppSettings(v1Settings)).toBe(true)
     })
   })
 

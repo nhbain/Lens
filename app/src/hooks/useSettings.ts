@@ -11,8 +11,24 @@ import {
   addFilePattern,
   removeFilePattern,
   updateTheme,
+  updateAnimationIntensity,
+  updateThemeColor,
+  resetThemeSettings,
 } from '@/lib/settings'
-import type { AppSettings, ThemeOption } from '@/lib/settings/types'
+import type { AppSettings, ThemeOption, AnimationIntensity, ThemeColors } from '@/lib/settings/types'
+
+/**
+ * Default theme colors for fallback when themeColors is missing.
+ * Defined outside the hook to avoid recreating on each render.
+ */
+const DEFAULT_THEME_COLORS: ThemeColors = {
+  accentPrimary: null,
+  accentSecondary: null,
+  accentWarning: null,
+  surfaceBase: null,
+  surfaceElevated: null,
+  surfaceCard: null,
+}
 
 /**
  * Options for the useSettings hook.
@@ -42,8 +58,14 @@ export interface UseSettingsResult {
   removePattern: (pattern: string) => Promise<void>
   /** Update the theme */
   setTheme: (theme: ThemeOption) => Promise<void>
+  /** Update animation intensity */
+  setAnimationIntensity: (intensity: AnimationIntensity) => Promise<void>
+  /** Update a single theme color */
+  setThemeColor: (colorKey: keyof ThemeColors, value: string | null) => Promise<void>
   /** Reset settings to defaults */
   reset: () => Promise<void>
+  /** Reset only theme settings to defaults, returns true on success */
+  resetTheme: () => Promise<boolean>
   /** Reload settings from disk */
   reload: () => Promise<void>
   /** Save current settings (for manual save scenarios) */
@@ -208,6 +230,82 @@ export const useSettings = ({
     [settings, onError]
   )
 
+  // Update animation intensity
+  const setAnimationIntensity = useCallback(
+    async (intensity: AnimationIntensity) => {
+      if (!settings) return
+
+      try {
+        const result = await updateAnimationIntensity(intensity)
+
+        if (!result.success) {
+          const errorMsg = result.error ?? 'Failed to update animation intensity'
+          setError(errorMsg)
+          onError?.(errorMsg)
+          return
+        }
+
+        // Update local state
+        setSettings((prev) =>
+          prev
+            ? {
+                ...prev,
+                animationIntensity: intensity,
+                updatedAt: new Date().toISOString(),
+              }
+            : prev
+        )
+        setError(null)
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Unknown error updating animation intensity'
+        setError(message)
+        onError?.(message)
+      }
+    },
+    [settings, onError]
+  )
+
+  // Update a single theme color
+  const setThemeColor = useCallback(
+    async (colorKey: keyof ThemeColors, value: string | null) => {
+      if (!settings) return
+
+      try {
+        const result = await updateThemeColor(colorKey, value)
+
+        if (!result.success) {
+          const errorMsg = result.error ?? 'Failed to update theme color'
+          setError(errorMsg)
+          onError?.(errorMsg)
+          return
+        }
+
+        // Update local state (ensure all themeColors fields exist)
+        setSettings((prev) =>
+          prev
+            ? {
+                ...prev,
+                themeColors: {
+                  ...DEFAULT_THEME_COLORS,
+                  ...prev.themeColors,
+                  [colorKey]: value,
+                },
+                updatedAt: new Date().toISOString(),
+              }
+            : prev
+        )
+        setError(null)
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Unknown error updating theme color'
+        setError(message)
+        onError?.(message)
+      }
+    },
+    [settings, onError]
+  )
+
   // Reset settings to defaults
   const reset = useCallback(async () => {
     setIsLoading(true)
@@ -229,6 +327,34 @@ export const useSettings = ({
         err instanceof Error ? err.message : 'Unknown error resetting settings'
       setError(message)
       onError?.(message)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [onError])
+
+  // Reset only theme settings to defaults
+  const resetTheme = useCallback(async (): Promise<boolean> => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const result = await resetThemeSettings()
+
+      if (!result.success || !result.settings) {
+        const errorMsg = result.error ?? 'Failed to reset theme settings'
+        setError(errorMsg)
+        onError?.(errorMsg)
+        return false
+      }
+
+      setSettings(result.settings)
+      return true
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Unknown error resetting theme settings'
+      setError(message)
+      onError?.(message)
+      return false
     } finally {
       setIsLoading(false)
     }
@@ -264,7 +390,10 @@ export const useSettings = ({
     addPattern,
     removePattern,
     setTheme,
+    setAnimationIntensity,
+    setThemeColor,
     reset,
+    resetTheme,
     reload: load,
     save,
   }

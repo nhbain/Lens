@@ -3,7 +3,7 @@
  */
 
 import type { WatchedDirectory } from '@/lib/watcher/types'
-import type { ThemeOption, StorageStats } from '@/lib/settings/types'
+import type { ThemeOption, StorageStats, AnimationIntensity, ThemeColors } from '@/lib/settings/types'
 
 /**
  * Props for the main Settings component.
@@ -77,6 +77,40 @@ export interface AboutSectionProps {
   theme: ThemeOption
   /** Callback to change theme */
   onThemeChange: (theme: ThemeOption) => void
+}
+
+/**
+ * Props for the AppearanceSection component.
+ */
+export interface AppearanceSectionProps {
+  /** Current theme */
+  theme: ThemeOption
+  /** Callback to change theme */
+  onThemeChange: (theme: ThemeOption) => void
+  /** Current animation intensity */
+  animationIntensity: AnimationIntensity
+  /** Callback to change animation intensity */
+  onAnimationIntensityChange: (intensity: AnimationIntensity) => void
+  /** Current theme colors */
+  themeColors: ThemeColors
+  /** Callback to change a theme color */
+  onThemeColorChange: (colorKey: keyof ThemeColors, value: string | null) => void
+  /** Callback to reset theme settings to defaults */
+  onResetThemeSettings: () => void
+  /** Whether operations are loading */
+  isLoading?: boolean
+}
+
+/**
+ * Props for the ResetThemeModal component.
+ */
+export interface ResetThemeModalProps {
+  /** Whether the modal is open */
+  isOpen: boolean
+  /** Callback when modal should close */
+  onClose: () => void
+  /** Callback to confirm reset, returns true on success */
+  onConfirm: () => Promise<boolean>
 }
 
 /**

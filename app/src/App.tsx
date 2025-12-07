@@ -11,6 +11,7 @@ import type { DashboardFile, DashboardNavigationTarget } from './components/Dash
 import { useFileImport } from './hooks/useFileImport'
 import { useDocumentView } from './hooks/useDocumentView'
 import { useSettings } from './hooks/useSettings'
+import { useThemeApplication } from './hooks/useThemeApplication'
 import { getNextStatus } from './lib/progress'
 import type { TrackedFile, AddFileResult } from './lib/files'
 import type { TrackableItem } from './lib/parser/types'
@@ -59,9 +60,15 @@ export const App = () => {
     addPattern,
     removePattern,
     setTheme,
+    setAnimationIntensity,
+    setThemeColor,
     reset: resetSettings,
+    resetTheme: resetThemeSettings,
     reload: reloadSettings,
   } = useSettings()
+
+  // Apply theme settings to CSS variables
+  useThemeApplication(settings)
 
   // Load watched directories and compute storage stats
   const loadWatchedDirectoriesAndStats = useCallback(async () => {
@@ -343,6 +350,24 @@ export const App = () => {
     setSettingsSuccessMessage('Theme updated successfully')
   }, [setTheme])
 
+  const handleAnimationIntensityChange = useCallback(async (intensity: 'off' | 'reduced' | 'full') => {
+    await setAnimationIntensity(intensity)
+    setSettingsSuccessMessage('Motion setting updated')
+  }, [setAnimationIntensity])
+
+  const handleThemeColorChange = useCallback(async (colorKey: string, value: string | null) => {
+    if (!settings) return
+    await setThemeColor(colorKey as keyof typeof settings.themeColors, value)
+  }, [settings, setThemeColor])
+
+  const handleResetThemeSettings = useCallback(async (): Promise<boolean> => {
+    const success = await resetThemeSettings()
+    if (success) {
+      setSettingsSuccessMessage('Theme settings reset to defaults')
+    }
+    return success
+  }, [resetThemeSettings])
+
   const handleClearData = useCallback(async () => {
     setSettingsLoading(true)
     try {
@@ -373,9 +398,18 @@ export const App = () => {
         exportVersion: 1,
         exportedAt: new Date().toISOString(),
         settings: settings ?? {
-          version: 1,
+          version: 2,
           filePatterns: ['*.md', '*.markdown'],
           theme: 'system',
+          animationIntensity: 'full',
+          themeColors: {
+            accentPrimary: null,
+            accentSecondary: null,
+            accentWarning: null,
+            surfaceBase: null,
+            surfaceElevated: null,
+            surfaceCard: null,
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -458,6 +492,9 @@ export const App = () => {
           onAddPattern={handleAddPattern}
           onRemovePattern={handleRemovePattern}
           onThemeChange={handleThemeChange}
+          onAnimationIntensityChange={handleAnimationIntensityChange}
+          onThemeColorChange={handleThemeColorChange}
+          onResetThemeSettings={handleResetThemeSettings}
           onClearData={handleClearData}
           onExportData={handleExportData}
           onImportData={handleImportData}

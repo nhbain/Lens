@@ -3,13 +3,16 @@
  * Main container for all settings sections.
  */
 
+import { useState } from 'react'
 import { WatchedDirectoriesSection } from './WatchedDirectoriesSection'
 import { FilePatternSection } from './FilePatternSection'
 import { DataManagementSection } from './DataManagementSection'
-import { Button, Select, type SelectOption } from '@/lib/common-components'
+import { ResetThemeModal } from './ResetThemeModal'
+import { Button, Select, ColorPicker, type SelectOption } from '@/lib/common-components'
 import type { SettingsProps } from './types'
 import type { WatchedDirectory } from '@/lib/watcher/types'
-import type { AppSettings, StorageStats, ThemeOption } from '@/lib/settings/types'
+import type { AppSettings, StorageStats, ThemeOption, AnimationIntensity, ThemeColors } from '@/lib/settings/types'
+import { DEFAULT_THEME_COLORS } from '@/lib/settings/types'
 import './Settings.css'
 
 /**
@@ -40,6 +43,12 @@ export interface SettingsViewProps extends SettingsProps {
   onRemovePattern: (pattern: string) => Promise<void>
   /** Change theme */
   onThemeChange: (theme: ThemeOption) => Promise<void>
+  /** Change animation intensity */
+  onAnimationIntensityChange: (intensity: AnimationIntensity) => Promise<void>
+  /** Change a theme color */
+  onThemeColorChange: (colorKey: keyof ThemeColors, value: string | null) => Promise<void>
+  /** Reset theme settings to defaults, returns true on success */
+  onResetThemeSettings: () => Promise<boolean>
   /** Clear all data */
   onClearData: () => Promise<void>
   /** Export data */
@@ -66,18 +75,33 @@ export const Settings = ({
   onAddPattern,
   onRemovePattern,
   onThemeChange,
+  onAnimationIntensityChange,
+  onThemeColorChange,
+  onResetThemeSettings,
   onClearData,
   onExportData,
   onImportData,
 }: SettingsViewProps) => {
+  const [showResetModal, setShowResetModal] = useState(false)
+
   const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onThemeChange(e.target.value as ThemeOption)
+  }
+
+  const handleAnimationIntensityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onAnimationIntensityChange(e.target.value as AnimationIntensity)
   }
 
   const themeOptions: SelectOption[] = [
     { value: 'system', label: 'System' },
     { value: 'light', label: 'Light' },
     { value: 'dark', label: 'Dark' },
+  ]
+
+  const motionOptions: SelectOption[] = [
+    { value: 'full', label: 'Full' },
+    { value: 'reduced', label: 'Reduced' },
+    { value: 'off', label: 'Off' },
   ]
 
   return (
@@ -153,14 +177,96 @@ export const Settings = ({
           </div>
 
           <div className="settings-appearance">
-            <Select
-              label="Theme"
-              options={themeOptions}
-              value={settings?.theme ?? 'system'}
-              onChange={handleThemeChange}
-              disabled={isLoading}
-              className="settings-appearance__select"
-            />
+            <div className="settings-appearance__row">
+              <Select
+                label="Theme"
+                options={themeOptions}
+                value={settings?.theme ?? 'system'}
+                onChange={handleThemeChange}
+                disabled={isLoading}
+                className="settings-appearance__select"
+              />
+
+              <Select
+                label="Motion"
+                options={motionOptions}
+                value={settings?.animationIntensity ?? 'full'}
+                onChange={handleAnimationIntensityChange}
+                disabled={isLoading}
+                className="settings-appearance__select"
+              />
+            </div>
+
+            <div className="settings-appearance__colors">
+              <h3 className="settings-appearance__colors-title">Accent Colors</h3>
+              <div className="settings-appearance__colors-grid">
+                <ColorPicker
+                  label="Primary"
+                  value={settings?.themeColors?.accentPrimary ?? null}
+                  defaultColor={DEFAULT_THEME_COLORS.accentPrimary}
+                  onChange={(value) => onThemeColorChange('accentPrimary', value)}
+                  disabled={isLoading}
+                  size="small"
+                />
+                <ColorPicker
+                  label="Secondary"
+                  value={settings?.themeColors?.accentSecondary ?? null}
+                  defaultColor={DEFAULT_THEME_COLORS.accentSecondary}
+                  onChange={(value) => onThemeColorChange('accentSecondary', value)}
+                  disabled={isLoading}
+                  size="small"
+                />
+                <ColorPicker
+                  label="Warning"
+                  value={settings?.themeColors?.accentWarning ?? null}
+                  defaultColor={DEFAULT_THEME_COLORS.accentWarning}
+                  onChange={(value) => onThemeColorChange('accentWarning', value)}
+                  disabled={isLoading}
+                  size="small"
+                />
+              </div>
+            </div>
+
+            <div className="settings-appearance__colors">
+              <h3 className="settings-appearance__colors-title">Surface Colors</h3>
+              <div className="settings-appearance__colors-grid">
+                <ColorPicker
+                  label="Base"
+                  value={settings?.themeColors?.surfaceBase ?? null}
+                  defaultColor={DEFAULT_THEME_COLORS.surfaceBase}
+                  onChange={(value) => onThemeColorChange('surfaceBase', value)}
+                  disabled={isLoading}
+                  size="small"
+                />
+                <ColorPicker
+                  label="Elevated"
+                  value={settings?.themeColors?.surfaceElevated ?? null}
+                  defaultColor={DEFAULT_THEME_COLORS.surfaceElevated}
+                  onChange={(value) => onThemeColorChange('surfaceElevated', value)}
+                  disabled={isLoading}
+                  size="small"
+                />
+                <ColorPicker
+                  label="Card"
+                  value={settings?.themeColors?.surfaceCard ?? null}
+                  defaultColor={DEFAULT_THEME_COLORS.surfaceCard}
+                  onChange={(value) => onThemeColorChange('surfaceCard', value)}
+                  disabled={isLoading}
+                  size="small"
+                />
+              </div>
+            </div>
+
+            <div className="settings-appearance__reset">
+              <Button
+                variant="ghost-danger"
+                size="small"
+                onClick={() => setShowResetModal(true)}
+                disabled={isLoading}
+              >
+                Reset to Defaults
+              </Button>
+            </div>
           </div>
         </section>
 
@@ -179,6 +285,13 @@ export const Settings = ({
           </div>
         </section>
       </main>
+
+      {/* Reset Theme Confirmation Modal */}
+      <ResetThemeModal
+        isOpen={showResetModal}
+        onClose={() => setShowResetModal(false)}
+        onConfirm={onResetThemeSettings}
+      />
     </div>
   )
 }

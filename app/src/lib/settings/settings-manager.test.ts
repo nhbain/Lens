@@ -7,7 +7,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 // Mock the file system module
 vi.mock('../state/file-system', () => ({
   readStateFile: vi.fn(),
-  writeStateFileAtomic: vi.fn(),
+  writeStateFile: vi.fn(),
   backupStateFile: vi.fn(),
   restoreFromBackup: vi.fn(),
   stateFileExists: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock('../state/file-system', () => ({
 
 import {
   readStateFile,
-  writeStateFileAtomic,
+  writeStateFile,
   backupStateFile,
   restoreFromBackup,
   stateFileExists,
@@ -38,7 +38,7 @@ import {
 } from './types'
 
 const mockReadStateFile = vi.mocked(readStateFile)
-const mockWriteStateFileAtomic = vi.mocked(writeStateFileAtomic)
+const mockWriteStateFile = vi.mocked(writeStateFile)
 const mockBackupStateFile = vi.mocked(backupStateFile)
 const mockRestoreFromBackup = vi.mocked(restoreFromBackup)
 const mockStateFileExists = vi.mocked(stateFileExists)
@@ -67,6 +67,15 @@ describe('settings-manager', () => {
         version: CURRENT_SETTINGS_VERSION,
         filePatterns: ['*.md'],
         theme: 'dark',
+        animationIntensity: 'full',
+        themeColors: {
+          accentPrimary: null,
+          accentSecondary: null,
+          accentWarning: null,
+          surfaceBase: null,
+          surfaceElevated: null,
+          surfaceCard: null,
+        },
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-02T00:00:00.000Z',
       }
@@ -144,12 +153,12 @@ describe('settings-manager', () => {
     it('saves settings to file', async () => {
       const settings = createDefaultSettings()
       mockStateFileExists.mockResolvedValue(false)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       const result = await saveSettings(settings)
 
       expect(result.success).toBe(true)
-      expect(mockWriteStateFileAtomic).toHaveBeenCalledWith(
+      expect(mockWriteStateFile).toHaveBeenCalledWith(
         SETTINGS_FILENAME,
         expect.any(String)
       )
@@ -159,7 +168,7 @@ describe('settings-manager', () => {
       const settings = createDefaultSettings()
       mockStateFileExists.mockResolvedValue(true)
       mockBackupStateFile.mockResolvedValue(true)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       await saveSettings(settings)
 
@@ -170,13 +179,13 @@ describe('settings-manager', () => {
       const settings = createDefaultSettings()
       const originalUpdatedAt = settings.updatedAt
       mockStateFileExists.mockResolvedValue(false)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       // Small delay to ensure timestamp differs
       await new Promise((r) => setTimeout(r, 10))
       await saveSettings(settings)
 
-      const savedContent = mockWriteStateFileAtomic.mock.calls[0][1]
+      const savedContent = mockWriteStateFile.mock.calls[0][1]
       const savedSettings = JSON.parse(savedContent) as AppSettings
       expect(savedSettings.updatedAt).not.toBe(originalUpdatedAt)
     })
@@ -184,7 +193,7 @@ describe('settings-manager', () => {
     it('handles write errors', async () => {
       const settings = createDefaultSettings()
       mockStateFileExists.mockResolvedValue(false)
-      mockWriteStateFileAtomic.mockRejectedValue(new Error('Write failed'))
+      mockWriteStateFile.mockRejectedValue(new Error('Write failed'))
 
       const result = await saveSettings(settings)
 
@@ -197,7 +206,7 @@ describe('settings-manager', () => {
     it('creates backup before resetting', async () => {
       mockStateFileExists.mockResolvedValue(true)
       mockBackupStateFile.mockResolvedValue(true)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       await resetSettings()
 
@@ -206,7 +215,7 @@ describe('settings-manager', () => {
 
     it('returns default settings after reset', async () => {
       mockStateFileExists.mockResolvedValue(false)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       const result = await resetSettings()
 
@@ -224,12 +233,12 @@ describe('settings-manager', () => {
         .mockResolvedValueOnce(true) // saveSettings check
       mockReadStateFile.mockResolvedValue(JSON.stringify(existingSettings))
       mockBackupStateFile.mockResolvedValue(true)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       const result = await updateSetting('theme', 'dark')
 
       expect(result.success).toBe(true)
-      const savedContent = mockWriteStateFileAtomic.mock.calls[0][1]
+      const savedContent = mockWriteStateFile.mock.calls[0][1]
       const savedSettings = JSON.parse(savedContent) as AppSettings
       expect(savedSettings.theme).toBe('dark')
     })
@@ -241,12 +250,12 @@ describe('settings-manager', () => {
       mockStateFileExists.mockResolvedValue(true)
       mockReadStateFile.mockResolvedValue(JSON.stringify(existingSettings))
       mockBackupStateFile.mockResolvedValue(true)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       const result = await updateFilePatterns(['*.md', '*.txt'])
 
       expect(result.success).toBe(true)
-      const savedContent = mockWriteStateFileAtomic.mock.calls[0][1]
+      const savedContent = mockWriteStateFile.mock.calls[0][1]
       const savedSettings = JSON.parse(savedContent) as AppSettings
       expect(savedSettings.filePatterns).toEqual(['*.md', '*.txt'])
     })
@@ -258,12 +267,12 @@ describe('settings-manager', () => {
       mockStateFileExists.mockResolvedValue(true)
       mockReadStateFile.mockResolvedValue(JSON.stringify(existingSettings))
       mockBackupStateFile.mockResolvedValue(true)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       const result = await addFilePattern('*.txt')
 
       expect(result.success).toBe(true)
-      const savedContent = mockWriteStateFileAtomic.mock.calls[0][1]
+      const savedContent = mockWriteStateFile.mock.calls[0][1]
       const savedSettings = JSON.parse(savedContent) as AppSettings
       expect(savedSettings.filePatterns).toContain('*.txt')
     })
@@ -276,7 +285,7 @@ describe('settings-manager', () => {
       const result = await addFilePattern('*.md')
 
       expect(result.success).toBe(true)
-      expect(mockWriteStateFileAtomic).not.toHaveBeenCalled()
+      expect(mockWriteStateFile).not.toHaveBeenCalled()
     })
   })
 
@@ -286,12 +295,12 @@ describe('settings-manager', () => {
       mockStateFileExists.mockResolvedValue(true)
       mockReadStateFile.mockResolvedValue(JSON.stringify(existingSettings))
       mockBackupStateFile.mockResolvedValue(true)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       const result = await removeFilePattern('*.markdown')
 
       expect(result.success).toBe(true)
-      const savedContent = mockWriteStateFileAtomic.mock.calls[0][1]
+      const savedContent = mockWriteStateFile.mock.calls[0][1]
       const savedSettings = JSON.parse(savedContent) as AppSettings
       expect(savedSettings.filePatterns).not.toContain('*.markdown')
       expect(savedSettings.filePatterns).toContain('*.md')
@@ -304,12 +313,12 @@ describe('settings-manager', () => {
       mockStateFileExists.mockResolvedValue(true)
       mockReadStateFile.mockResolvedValue(JSON.stringify(existingSettings))
       mockBackupStateFile.mockResolvedValue(true)
-      mockWriteStateFileAtomic.mockResolvedValue(undefined)
+      mockWriteStateFile.mockResolvedValue(undefined)
 
       const result = await updateTheme('light')
 
       expect(result.success).toBe(true)
-      const savedContent = mockWriteStateFileAtomic.mock.calls[0][1]
+      const savedContent = mockWriteStateFile.mock.calls[0][1]
       const savedSettings = JSON.parse(savedContent) as AppSettings
       expect(savedSettings.theme).toBe('light')
     })
