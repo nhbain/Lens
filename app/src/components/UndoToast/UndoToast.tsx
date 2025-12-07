@@ -3,6 +3,7 @@
  * Shows a brief toast notification with an undo action.
  */
 
+import { Button } from '../../lib/common-components'
 import './UndoToast.css'
 
 export interface UndoToastProps {
@@ -31,22 +32,24 @@ export const UndoToast = ({
     <div className="undo-toast" role="alert" aria-live="polite">
       <span className="undo-toast-message">{message}</span>
       <div className="undo-toast-actions">
-        <button
-          type="button"
-          className="undo-toast-undo-button"
+        <Button
+          variant="primary"
+          size="small"
           onClick={onUndo}
           aria-label={`Undo, ${remainingSeconds} seconds remaining`}
+          className="undo-toast-undo-button"
         >
           Undo ({remainingSeconds}s)
-        </button>
-        <button
-          type="button"
-          className="undo-toast-dismiss-button"
+        </Button>
+        <Button
+          variant="ghost"
+          size="small"
           onClick={onDismiss}
           aria-label="Dismiss"
+          className="undo-toast-dismiss-button"
         >
           ×
-        </button>
+        </Button>
       </div>
     </div>
   )

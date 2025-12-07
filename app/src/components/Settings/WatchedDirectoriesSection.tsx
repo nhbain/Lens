@@ -3,6 +3,7 @@
  * Displays and manages watched directories for auto-discovery.
  */
 
+import { Button } from '../../lib/common-components'
 import type { WatchedDirectoriesSectionProps } from './types'
 
 /**
@@ -109,45 +110,46 @@ export const WatchedDirectoriesSection = ({
                   </span>
                 </div>
                 <div className="watched-directory__actions">
-                  <button
-                    type="button"
-                    className={`watched-directory__toggle ${directory.enabled ? 'watched-directory__toggle--enabled' : ''}`}
+                  <Button
+                    variant="ghost"
+                    size="small"
                     onClick={() =>
                       handleToggleClick(directory.path, directory.enabled)
                     }
                     disabled={isLoading}
-                    aria-pressed={directory.enabled}
                     aria-label={
                       directory.enabled
                         ? 'Disable watching'
                         : 'Enable watching'
                     }
+                    className={`watched-directory__toggle ${directory.enabled ? 'watched-directory__toggle--enabled' : ''}`}
                   >
                     {directory.enabled ? 'Enabled' : 'Disabled'}
-                  </button>
-                  <button
-                    type="button"
-                    className="watched-directory__remove"
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="small"
                     onClick={() => handleRemoveClick(directory.path)}
                     disabled={isLoading}
                     aria-label={`Remove ${truncatePath(directory.path, 20)}`}
+                    className="watched-directory__remove"
                   >
                     Remove
-                  </button>
+                  </Button>
                 </div>
               </li>
             ))}
           </ul>
         )}
 
-        <button
-          type="button"
-          className="settings-button settings-button--primary"
+        <Button
+          variant="outline"
           onClick={handleAddClick}
           disabled={isLoading}
+          isLoading={isLoading}
         >
-          {isLoading ? 'Adding...' : 'Add Directory'}
-        </button>
+          Add Directory
+        </Button>
       </div>
     </section>
   )

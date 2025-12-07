@@ -2,6 +2,7 @@
  * Component for displaying the list of tracked markdown files.
  */
 
+import { Button } from '../lib/common-components'
 import type { TrackedFile } from '../lib/files/types'
 
 export interface TrackedFilesListProps {
@@ -50,11 +51,11 @@ export const TrackedFilesList = ({
           key={file.path}
           className={`tracked-file-item ${selectedPath === file.path ? 'selected' : ''}`}
         >
-          <button
-            type="button"
+          <Button
+            variant="ghost"
             className="tracked-file-info"
             onClick={() => onSelect?.(file)}
-            aria-current={selectedPath === file.path ? 'true' : undefined}
+            aria-label={`Select ${file.fileName}`}
           >
             <span className="tracked-file-name">{file.fileName}</span>
             <span className="tracked-file-path" title={file.path}>
@@ -63,17 +64,17 @@ export const TrackedFilesList = ({
             <span className="tracked-file-items">
               {file.itemCount} {file.itemCount === 1 ? 'item' : 'items'}
             </span>
-          </button>
+          </Button>
           {onRemove && (
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="small"
               className="tracked-file-remove"
               onClick={() => onRemove(file.path)}
               aria-label={`Remove ${file.fileName}`}
-              title="Remove from tracking"
             >
               &times;
-            </button>
+            </Button>
           )}
         </li>
       ))}
@@ -98,14 +99,15 @@ export const Message = ({ type, message, onDismiss }: MessageProps) => {
     <div className={`message message-${type}`} role="alert">
       <span className="message-text">{message}</span>
       {onDismiss && (
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="small"
           className="message-dismiss"
           onClick={onDismiss}
           aria-label="Dismiss message"
         >
           &times;
-        </button>
+        </Button>
       )}
     </div>
   )

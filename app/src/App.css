@@ -288,10 +288,16 @@ code, pre, .mono {
    Container
    ========================================================================== */
 .container {
-  max-width: 800px;
+  max-width: min(90vw, 1200px);
   margin: 0 auto;
   padding: 2rem;
   animation: fadeInUp var(--transition-slow) var(--ease-out-expo);
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
 }
 
 /* ==========================================================================

@@ -6,6 +6,7 @@
 import { WatchedDirectoriesSection } from './WatchedDirectoriesSection'
 import { FilePatternSection } from './FilePatternSection'
 import { DataManagementSection } from './DataManagementSection'
+import { Button, Select, type SelectOption } from '@/lib/common-components'
 import type { SettingsProps } from './types'
 import type { WatchedDirectory } from '@/lib/watcher/types'
 import type { AppSettings, StorageStats, ThemeOption } from '@/lib/settings/types'
@@ -73,18 +74,25 @@ export const Settings = ({
     onThemeChange(e.target.value as ThemeOption)
   }
 
+  const themeOptions: SelectOption[] = [
+    { value: 'system', label: 'System' },
+    { value: 'light', label: 'Light' },
+    { value: 'dark', label: 'Dark' },
+  ]
+
   return (
     <div className="settings">
       <header className="settings__header">
         {onBack && (
-          <button
-            type="button"
-            className="settings__back-button"
+          <Button
+            variant="ghost"
+            size="small"
             onClick={onBack}
             aria-label="Go back"
+            className="settings__back-button"
           >
             <span aria-hidden="true">&larr;</span> Back
-          </button>
+          </Button>
         )}
         <h1 className="settings__title">Settings</h1>
       </header>
@@ -145,19 +153,14 @@ export const Settings = ({
           </div>
 
           <div className="settings-appearance">
-            <label className="settings-appearance__label">
-              <span>Theme</span>
-              <select
-                className="settings-appearance__select"
-                value={settings?.theme ?? 'system'}
-                onChange={handleThemeChange}
-                disabled={isLoading}
-              >
-                <option value="system">System</option>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
-            </label>
+            <Select
+              label="Theme"
+              options={themeOptions}
+              value={settings?.theme ?? 'system'}
+              onChange={handleThemeChange}
+              disabled={isLoading}
+              className="settings-appearance__select"
+            />
           </div>
         </section>
 

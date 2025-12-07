@@ -6,6 +6,7 @@
 import { FileCard } from './FileCard'
 import { SortControls } from './SortControls'
 import { ResumeSection } from './ResumeSection'
+import { Button } from '@/lib/common-components'
 import { useDashboard } from '@/hooks/useDashboard'
 import { useInProgressItems } from '@/hooks/useInProgressItems'
 import type { DashboardProps, DashboardFile, DashboardNavigationTarget } from './types'
@@ -21,13 +22,13 @@ const EmptyState = ({ onAddFile }: { onAddFile?: () => void }) => (
       Add a markdown file to start tracking your progress.
     </p>
     {onAddFile && (
-      <button
-        type="button"
-        className="dashboard__add-button dashboard__add-button--primary"
+      <Button
+        variant="primary"
         onClick={onAddFile}
+        className="dashboard__add-button dashboard__add-button--primary"
       >
         Add File
-      </button>
+      </Button>
     )}
   </div>
 )
@@ -123,14 +124,14 @@ export const Dashboard = ({
         <div className="dashboard__title-row">
           <h2 className="dashboard__title">Your Documents</h2>
           {onAddFile && (
-            <button
-              type="button"
-              className="dashboard__add-button"
+            <Button
+              variant="outline"
               onClick={onAddFile}
               aria-label="Add new file"
+              className="dashboard__add-button"
             >
               + Add File
-            </button>
+            </Button>
           )}
         </div>
         {totalFiles > 0 && (

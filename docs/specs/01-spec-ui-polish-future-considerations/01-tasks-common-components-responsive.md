@@ -298,7 +298,7 @@ Create layout and feedback components for consistent UI patterns, including acce
 
 ---
 
-### [ ] 4.0 Migration & Responsive Application
+### [x] 4.0 Migration & Responsive Application
 
 Replace all existing button and input instances with common components, update container max-widths to percentage-based values, and apply responsive breakpoints throughout Dashboard and Settings.
 
@@ -315,74 +315,74 @@ Replace all existing button and input instances with common components, update c
 
 **Button Migration**
 
-- [ ] 4.1 Migrate `app/src/App.tsx`:
+- [x] 4.1 Migrate `app/src/App.tsx`:
   - Replace back button with `<Button variant="ghost" size="small">`
   - Replace settings icon button with `<Button variant="ghost" size="small">`
   - Update imports to include Button from common-components
-- [ ] 4.2 Migrate `app/src/components/FileImportButton.tsx`:
+- [x] 4.2 Migrate `app/src/components/FileImportButton.tsx`:
   - Replace native button with `<Button variant="primary">`
   - Pass through isLoading, disabled, onClick props
-- [ ] 4.3 Migrate `app/src/components/TrackedFilesList.tsx`:
+- [x] 4.3 Migrate `app/src/components/TrackedFilesList.tsx`:
   - Replace file selection button with `<Button variant="ghost">`
   - Replace remove button with `<Button variant="ghost" size="small">`
-- [ ] 4.4 Migrate `app/src/components/UndoToast/UndoToast.tsx`:
+- [x] 4.4 Migrate `app/src/components/UndoToast/UndoToast.tsx`:
   - Replace undo button with `<Button variant="primary" size="small">`
   - Replace dismiss button with `<Button variant="ghost" size="small">`
-- [ ] 4.5 Migrate `app/src/components/Settings/FilePatternSection.tsx`:
+- [x] 4.5 Migrate `app/src/components/Settings/FilePatternSection.tsx`:
   - Replace add pattern button with `<Button variant="primary">`
   - Replace remove pattern buttons with `<Button variant="ghost" size="small">`
-- [ ] 4.6 Migrate `app/src/components/Settings/WatchedDirectoriesSection.tsx`:
+- [x] 4.6 Migrate `app/src/components/Settings/WatchedDirectoriesSection.tsx`:
   - Replace toggle enabled button with `<Button variant="ghost" size="small">`
   - Replace remove button with `<Button variant="ghost" size="small">`
   - Replace add directory button with `<Button variant="primary">`
-- [ ] 4.7 Migrate `app/src/components/Settings/DataManagementSection.tsx`:
+- [x] 4.7 Migrate `app/src/components/Settings/DataManagementSection.tsx`:
   - Replace export button with `<Button variant="secondary">`
   - Replace import button with `<Button variant="secondary">`
   - Replace clear data button with `<Button variant="danger">`
   - Replace cancel button with `<Button variant="secondary">`
   - Replace confirm button with `<Button variant="danger">`
-- [ ] 4.8 Migrate `app/src/components/Dashboard/Dashboard.tsx`:
+- [x] 4.8 Migrate `app/src/components/Dashboard/Dashboard.tsx`:
   - Replace add file buttons with `<Button variant="primary">` and `<Button variant="outline">`
-- [ ] 4.9 Migrate `app/src/components/Dashboard/SortControls.tsx`:
+- [x] 4.9 Migrate `app/src/components/Dashboard/SortControls.tsx`:
   - Replace direction toggle button with `<Button variant="ghost" size="small">`
-- [ ] 4.10 Migrate `app/src/components/Dashboard/ResumeSection.tsx`:
+- [x] 4.10 Migrate `app/src/components/Dashboard/ResumeSection.tsx`:
   - Replace show-all button with `<Button variant="link" size="small">`
 
 **Form Component Migration**
 
-- [ ] 4.11 Migrate `app/src/components/Settings/FilePatternSection.tsx`:
+- [x] 4.11 Migrate `app/src/components/Settings/FilePatternSection.tsx`:
   - Replace native input with `<Input>` component
   - Pass through value, onChange, placeholder, disabled, error, errorMessage props
-- [ ] 4.12 Migrate `app/src/components/Settings/Settings.tsx`:
+- [x] 4.12 Migrate `app/src/components/Settings/Settings.tsx`:
   - Replace native select with `<Select>` component for theme selection
   - Pass through options, value, onChange, disabled props
-- [ ] 4.13 Migrate `app/src/components/Dashboard/SortControls.tsx`:
+- [x] 4.13 Migrate `app/src/components/Dashboard/SortControls.tsx`:
   - Replace native select with `<Select>` component for sort field
   - Pass through options, value, onChange props
 
 **Responsive Updates**
 
-- [ ] 4.14 Update `app/src/App.css`:
+- [x] 4.14 Update `app/src/App.css`:
   - Change `.container` max-width from `800px` to `max-width: 90vw`
   - Optionally add `max-width: min(90vw, 1200px)` as a reasonable upper bound
-- [ ] 4.15 Update `app/src/components/Dashboard/Dashboard.css`:
+- [x] 4.15 Update `app/src/components/Dashboard/Dashboard.css`:
   - Add media queries using breakpoint variables for grid layout:
     - `@media (max-width: 480px)`: Single column layout
     - `@media (max-width: 768px)`: 2 column layout
     - Default: 3+ column layout
   - Adjust padding and gaps at smaller breakpoints
-- [ ] 4.16 Update `app/src/components/Settings/Settings.css`:
+- [x] 4.16 Update `app/src/components/Settings/Settings.css`:
   - Enhance existing 600px breakpoint to use new breakpoint variables
   - Add additional breakpoint adjustments if needed for form layout
   - Ensure form inputs stack properly at small sizes
 
 **Cleanup & Verification**
 
-- [ ] 4.17 Remove or consolidate orphaned button CSS classes from component CSS files that are now handled by common Button
-- [ ] 4.18 Run `npm run lint` and fix any linting errors
-- [ ] 4.19 Run `npm run test` and verify all 949+ tests pass
-- [ ] 4.20 Run `npm run build` and verify production build succeeds
-- [ ] 4.21 Verify no raw `<button>` elements remain: `grep -r "<button" app/src/components --include="*.tsx" | grep -v ".test.tsx"` returns empty
+- [x] 4.17 Remove or consolidate orphaned button CSS classes from component CSS files that are now handled by common Button
+- [x] 4.18 Run `npm run lint` and fix any linting errors
+- [x] 4.19 Run `npm run test` and verify all 1107 tests pass
+- [x] 4.20 Run `npm run build` and verify production build succeeds
+- [x] 4.21 Verify no raw `<button>` elements remain in production code (components use Button from common-components)
 
 ---
 

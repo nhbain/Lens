@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { Button } from '../../lib/common-components'
 import type { DataManagementSectionProps } from './types'
 
 /**
@@ -106,14 +107,13 @@ export const DataManagementSection = ({
             <p className="data-management__action-description">
               Save all tracking data to a JSON file for backup
             </p>
-            <button
-              type="button"
-              className="settings-button"
+            <Button
+              variant="secondary"
               onClick={handleExportClick}
               disabled={isLoading}
             >
               Export Data
-            </button>
+            </Button>
           </div>
 
           <div className="data-management__action">
@@ -121,14 +121,13 @@ export const DataManagementSection = ({
             <p className="data-management__action-description">
               Restore tracking data from a previous export
             </p>
-            <button
-              type="button"
-              className="settings-button"
+            <Button
+              variant="secondary"
               onClick={handleImportClick}
               disabled={isLoading}
             >
               Import Data
-            </button>
+            </Button>
           </div>
 
           <div className="data-management__action data-management__action--danger">
@@ -136,14 +135,13 @@ export const DataManagementSection = ({
             <p className="data-management__action-description">
               Remove all tracking data. This cannot be undone.
             </p>
-            <button
-              type="button"
-              className="settings-button settings-button--danger"
+            <Button
+              variant="danger"
               onClick={handleClearClick}
               disabled={isLoading || showClearConfirm}
             >
               Clear All Data
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -163,22 +161,21 @@ export const DataManagementSection = ({
               all progress tracking and cannot be undone.
             </p>
             <div className="data-management__confirm-actions">
-              <button
-                type="button"
-                className="settings-button"
+              <Button
+                variant="secondary"
                 onClick={handleClearCancel}
                 disabled={isLoading}
               >
                 Cancel
-              </button>
-              <button
-                type="button"
-                className="settings-button settings-button--danger"
+              </Button>
+              <Button
+                variant="danger"
                 onClick={handleClearConfirm}
                 disabled={isLoading}
+                isLoading={isLoading}
               >
-                {isLoading ? 'Clearing...' : 'Yes, Clear All'}
-              </button>
+                Yes, Clear All
+              </Button>
             </div>
           </div>
         )}

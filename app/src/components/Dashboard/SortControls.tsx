@@ -3,6 +3,7 @@
  * Provides UI controls for sorting the dashboard file list.
  */
 
+import { Button, Select, type SelectOption } from '@/lib/common-components'
 import type { SortControlsProps, SortOption, SortDirection } from './types'
 
 /**
@@ -32,9 +33,14 @@ const DIRECTION_ICONS: Record<SortDirection, string> = {
 }
 
 /**
- * All available sort options.
+ * All available sort options as SelectOption array.
  */
-const SORT_OPTIONS: SortOption[] = ['name', 'progress', 'date', 'items']
+const SORT_OPTIONS: SelectOption[] = [
+  { value: 'name', label: SORT_OPTION_LABELS['name'] },
+  { value: 'progress', label: SORT_OPTION_LABELS['progress'] },
+  { value: 'date', label: SORT_OPTION_LABELS['date'] },
+  { value: 'items', label: SORT_OPTION_LABELS['items'] },
+]
 
 /**
  * Renders sort controls with a dropdown for sort field and toggle for direction.
@@ -61,31 +67,23 @@ export const SortControls = ({
 
   return (
     <div className="sort-controls" role="group" aria-label="Sort options">
-      <label htmlFor="sort-select" className="sort-controls__label">
-        Sort by:
-      </label>
-      <select
-        id="sort-select"
-        className="sort-controls__select"
+      <Select
+        label="Sort by:"
+        options={SORT_OPTIONS}
         value={sortConfig.option}
         onChange={handleOptionChange}
-        aria-label="Sort by field"
-      >
-        {SORT_OPTIONS.map((option) => (
-          <option key={option} value={option}>
-            {SORT_OPTION_LABELS[option]}
-          </option>
-        ))}
-      </select>
-      <button
-        type="button"
-        className="sort-controls__direction"
+        size="small"
+        className="sort-controls__select"
+      />
+      <Button
+        variant="ghost"
+        size="small"
         onClick={handleDirectionToggle}
         aria-label={`Sort direction: ${DIRECTION_LABELS[sortConfig.direction]}. Click to toggle.`}
-        title={`Sort ${DIRECTION_LABELS[sortConfig.direction]}`}
+        className="sort-controls__direction"
       >
         {DIRECTION_ICONS[sortConfig.direction]}
-      </button>
+      </Button>
     </div>
   )
 }

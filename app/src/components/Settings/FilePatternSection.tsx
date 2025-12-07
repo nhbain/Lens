@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { Button, Input } from '../../lib/common-components'
 import type { FilePatternSectionProps } from './types'
 
 /**
@@ -121,15 +122,16 @@ export const FilePatternSection = ({
             {patterns.map((pattern) => (
               <li key={pattern} className="file-pattern">
                 <code className="file-pattern__value">{pattern}</code>
-                <button
-                  type="button"
-                  className="file-pattern__remove"
+                <Button
+                  variant="ghost"
+                  size="small"
                   onClick={() => handleRemoveClick(pattern)}
                   disabled={isLoading}
                   aria-label={`Remove pattern ${pattern}`}
+                  className="file-pattern__remove"
                 >
                   Remove
-                </button>
+                </Button>
               </li>
             ))}
           </ul>
@@ -137,32 +139,26 @@ export const FilePatternSection = ({
 
         <div className="file-patterns__add">
           <div className="file-patterns__input-group">
-            <input
+            <Input
               type="text"
-              className={`file-patterns__input ${validationError ? 'file-patterns__input--error' : ''}`}
               value={newPattern}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder="e.g., *.md"
               disabled={isLoading}
               aria-label="New file pattern"
-              aria-invalid={validationError !== null}
-              aria-describedby={validationError ? 'pattern-error' : undefined}
+              error={validationError !== null}
+              errorMessage={validationError ?? undefined}
+              className="file-patterns__input"
             />
-            <button
-              type="button"
-              className="settings-button settings-button--primary"
+            <Button
+              variant="outline"
               onClick={handleAddClick}
               disabled={isLoading || !newPattern.trim()}
             >
               Add
-            </button>
+            </Button>
           </div>
-          {validationError && (
-            <p id="pattern-error" className="file-patterns__error" role="alert">
-              {validationError}
-            </p>
-          )}
         </div>
 
         <div className="file-patterns__examples">

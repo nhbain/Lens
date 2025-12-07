@@ -138,9 +138,11 @@ describe('SortControls', () => {
       expect(screen.getByRole('group', { name: 'Sort options' })).toBeInTheDocument()
     })
 
-    it('select has aria-label', () => {
+    it('select is labeled by label text', () => {
       render(<SortControls sortConfig={defaultConfig} onSortChange={vi.fn()} />)
-      expect(screen.getByRole('combobox')).toHaveAttribute('aria-label', 'Sort by field')
+      // The Select component uses a label element instead of aria-label
+      expect(screen.getByRole('combobox')).toBeInTheDocument()
+      expect(screen.getByText('Sort by:')).toBeInTheDocument()
     })
 
     it('direction button has descriptive aria-label for ascending', () => {
@@ -159,17 +161,19 @@ describe('SortControls', () => {
       )
     })
 
-    it('direction button has title tooltip', () => {
+    it('direction button has aria-label', () => {
       render(<SortControls sortConfig={{ option: 'name', direction: 'asc' }} onSortChange={vi.fn()} />)
-      expect(screen.getByRole('button')).toHaveAttribute('title', 'Sort Ascending')
+      // Button uses aria-label instead of title for accessibility
+      expect(screen.getByRole('button')).toHaveAttribute('aria-label')
     })
 
-    it('label is associated with select', () => {
+    it('label is associated with select via for/id', () => {
       render(<SortControls sortConfig={defaultConfig} onSortChange={vi.fn()} />)
       const label = screen.getByText('Sort by:')
       const select = screen.getByRole('combobox')
-      expect(label).toHaveAttribute('for', 'sort-select')
-      expect(select).toHaveAttribute('id', 'sort-select')
+      // Select component generates dynamic id, label's for should match select's id
+      const selectId = select.getAttribute('id')
+      expect(label).toHaveAttribute('for', selectId)
     })
   })
 })

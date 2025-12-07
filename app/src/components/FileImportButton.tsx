@@ -2,6 +2,7 @@
  * Button component for importing markdown files.
  */
 
+import { Button } from '../lib/common-components'
 import type { AddFileResult } from '../lib/files/types'
 
 export interface FileImportButtonProps {
@@ -38,14 +39,14 @@ export const FileImportButton = ({
   }
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="primary"
       onClick={handleClick}
-      disabled={disabled || isLoading}
+      disabled={disabled}
+      isLoading={isLoading}
       className="file-import-button"
-      aria-busy={isLoading}
     >
-      {isLoading ? 'Loading...' : buttonText}
-    </button>
+      {buttonText}
+    </Button>
   )
 }

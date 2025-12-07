@@ -65,18 +65,21 @@
    ========================================================================== */
 
 .button--primary {
-  background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
   color: var(--color-black);
   box-shadow: var(--shadow-card);
 }
 
 .button--primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover), var(--glow-accent);
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  box-shadow: var(--glow-accent-intense), var(--shadow-elevated);
 }
 
 .button--primary:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
   background: var(--color-accent-hover);
 }
 
@@ -85,7 +88,7 @@
    ========================================================================== */
 
 .button--secondary {
-  background: var(--color-surface-3);
+  background: var(--color-surface-2);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-card);
@@ -93,14 +96,14 @@
 
 .button--secondary:hover:not(:disabled) {
   transform: translateY(-2px);
-  background: var(--color-surface-2);
-  border-color: var(--color-border-subtle);
-  box-shadow: var(--shadow-card-hover);
+  background: var(--color-surface-3);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-card-hover), var(--glow-accent);
 }
 
 .button--secondary:active:not(:disabled) {
-  transform: translateY(0);
-  background: var(--color-surface-1);
+  transform: translateY(0) scale(0.98);
+  background: var(--color-surface-2);
 }
 
 /* ==========================================================================
@@ -108,18 +111,21 @@
    ========================================================================== */
 
 .button--danger {
-  background: linear-gradient(180deg, var(--color-error) 0%, #DC2626 100%);
-  color: var(--color-text-primary);
+  background: var(--color-error);
+  border: 1px solid var(--color-error);
+  color: #ffffff;
   box-shadow: var(--shadow-card);
 }
 
 .button--danger:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover), 0 0 25px rgba(239, 68, 68, 0.3);
+  background: #DC2626;
+  border-color: #DC2626;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), var(--shadow-elevated);
 }
 
 .button--danger:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
   background: #DC2626;
 }
 

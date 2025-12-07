@@ -4,6 +4,7 @@
  */
 
 import { InProgressItem } from './InProgressItem'
+import { Button } from '@/lib/common-components'
 import type { InProgressItemSummary } from '@/lib/navigation/types'
 import './ResumeSection.css'
 
@@ -66,14 +67,15 @@ export const ResumeSection = ({
           Continue Where You Left Off
         </h3>
         {hasMore && onShowAll && (
-          <button
-            type="button"
-            className="resume-section__show-all"
+          <Button
+            variant="link"
+            size="small"
             onClick={onShowAll}
             aria-label={`Show all ${totalCount} in-progress items`}
+            className="resume-section__show-all"
           >
             Show all ({totalCount})
-          </button>
+          </Button>
         )}
       </header>
 

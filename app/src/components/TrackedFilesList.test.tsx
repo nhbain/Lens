@@ -149,13 +149,13 @@ describe('TrackedFilesList', () => {
       expect(selectedItem).toHaveClass('selected')
     })
 
-    it('marks selected file button as current', () => {
+    it('marks selected file with selected class', () => {
       render(
         <TrackedFilesList files={mockFiles} selectedPath="/path/file1.md" />
       )
 
-      const fileButton = screen.getByText('file1.md').closest('button')
-      expect(fileButton).toHaveAttribute('aria-current', 'true')
+      const fileItem = screen.getByText('file1.md').closest('.tracked-file-item')
+      expect(fileItem).toHaveClass('selected')
     })
   })
 })

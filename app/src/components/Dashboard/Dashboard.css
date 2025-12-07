@@ -108,7 +108,7 @@
 }
 
 /* ==========================================================================
-   File Grid - Staggered Entrance
+   File Grid - Staggered Entrance with Responsive Breakpoints
    ========================================================================== */
 .dashboard__grid {
   display: grid;
@@ -116,15 +116,54 @@
   gap: 1rem;
 }
 
-@media (min-width: 640px) {
+/* Small screens: 480px+ - Single column with larger gap */
+@media (min-width: 480px) {
   .dashboard__grid {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
   }
 }
 
+/* Medium screens: 768px+ - 2 columns */
+@media (min-width: 768px) {
+  .dashboard__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Large screens: 1024px+ - 3 columns */
 @media (min-width: 1024px) {
   .dashboard__grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Extra large screens: 1280px+ - 4 columns */
+@media (min-width: 1280px) {
+  .dashboard__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Small screens responsive adjustments */
+@media (max-width: 480px) {
+  .dashboard {
+    padding: 1rem;
+  }
+
+  .dashboard__title {
+    font-size: 1.25rem;
+  }
+
+  .dashboard__title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .dashboard__add-button {
+    width: 100%;
+    text-align: center;
   }
 }
 
