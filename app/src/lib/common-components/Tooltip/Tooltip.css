@@ -1,0 +1,113 @@
+/**
+ * Tooltip component styles following Dark OLED Luxury theme.
+ * Supports 4 positions with fade animation.
+ */
+
+/* ==========================================================================
+   Trigger Container
+   ========================================================================== */
+
+.tooltip__trigger {
+  display: inline-block;
+}
+
+/* ==========================================================================
+   Tooltip
+   ========================================================================== */
+
+.tooltip {
+  position: absolute;
+  z-index: 9999;
+  padding: 8px 12px;
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg), var(--glow-accent);
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast) var(--ease-out-expo);
+}
+
+.tooltip--visible {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Position Variants
+   ========================================================================== */
+
+.tooltip--top {
+  transform: translateX(-50%) translateY(-100%);
+}
+
+.tooltip--bottom {
+  transform: translateX(-50%);
+}
+
+.tooltip--left {
+  transform: translateX(-100%) translateY(-50%);
+}
+
+.tooltip--right {
+  transform: translateY(-50%);
+}
+
+/* ==========================================================================
+   Arrow
+   ========================================================================== */
+
+.tooltip__arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border);
+  transform: rotate(45deg);
+}
+
+.tooltip--top .tooltip__arrow {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  border-top: none;
+  border-left: none;
+}
+
+.tooltip--bottom .tooltip__arrow {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  border-bottom: none;
+  border-right: none;
+}
+
+.tooltip--left .tooltip__arrow {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  border-left: none;
+  border-bottom: none;
+}
+
+.tooltip--right .tooltip__arrow {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  border-right: none;
+  border-top: none;
+}
+
+/* ==========================================================================
+   Reduced Motion Support
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    transition: none;
+  }
+}

@@ -1,0 +1,67 @@
+/**
+ * Badge component styles following Dark OLED Luxury theme.
+ * Supports 5 variants and 2 sizes.
+ */
+
+/* ==========================================================================
+   Base Badge
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  border-radius: 9999px;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   Size Variants
+   ========================================================================== */
+
+.badge--size-small {
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.badge--size-medium {
+  padding: 4px 12px;
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   Color Variants
+   ========================================================================== */
+
+.badge--default {
+  background: var(--color-surface-3);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.badge--success {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--color-secondary);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.badge--warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.badge--error {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--color-error);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.badge--info {
+  background: rgba(0, 240, 244, 0.2);
+  color: var(--color-accent);
+  border: 1px solid rgba(0, 240, 244, 0.4);
+}

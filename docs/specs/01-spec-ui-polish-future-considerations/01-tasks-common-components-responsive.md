@@ -202,7 +202,7 @@ Create styled form controls that match the Dark OLED Luxury theme, supporting al
 
 ---
 
-### [ ] 3.0 Display Components (Card, Badge, Tooltip, Modal)
+### [x] 3.0 Display Components (Card, Badge, Tooltip, Modal)
 
 Create layout and feedback components for consistent UI patterns, including accessible Modal with focus trap and keyboard handling.
 
@@ -220,63 +220,63 @@ Create layout and feedback components for consistent UI patterns, including acce
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Create directory structure `app/src/lib/common-components/Card/`
-- [ ] 3.2 Create `Card.tsx` with TypeScript interface:
+- [x] 3.1 Create directory structure `app/src/lib/common-components/Card/`
+- [x] 3.2 Create `Card.tsx` with TypeScript interface:
   - Props: `children`, `header`, `footer`, `className`, `hoverable` (boolean for hover effects)
   - Render optional header section
   - Render children as body content
   - Render optional footer section
-- [ ] 3.3 Create `Card.css` with styles:
+- [x] 3.3 Create `Card.css` with styles:
   - Surface-3 background with gradient
   - Shadow system matching FileCard
   - Hover elevation effect (lift + enhanced shadow) when hoverable
   - Optional header/footer with border separators
   - `prefers-reduced-motion` support
-- [ ] 3.4 Create `Card.test.tsx` with unit tests:
+- [x] 3.4 Create `Card.test.tsx` with unit tests:
   - Renders children content
   - Renders header when provided
   - Renders footer when provided
   - Applies hover styles when hoverable is true
-- [ ] 3.5 Create directory structure `app/src/lib/common-components/Badge/`
-- [ ] 3.6 Create `Badge.tsx` with TypeScript interface:
+- [x] 3.5 Create directory structure `app/src/lib/common-components/Badge/`
+- [x] 3.6 Create `Badge.tsx` with TypeScript interface:
   - Props: `variant` (default | success | warning | error | info), `size` (small | medium), `children`, `className`
   - Default variant: `default`, default size: `medium`
-- [ ] 3.7 Create `Badge.css` with styles:
+- [x] 3.7 Create `Badge.css` with styles:
   - Inline-block display with pill shape (border-radius)
   - Variant colors: default (surface-3), success (emerald), warning (yellow), error (red), info (cyan)
   - Two sizes with appropriate padding/font-size
   - Subtle text-shadow for depth
-- [ ] 3.8 Create `Badge.test.tsx` with unit tests:
+- [x] 3.8 Create `Badge.test.tsx` with unit tests:
   - Renders children content
   - Renders each variant correctly (5 variants)
   - Renders each size correctly (2 sizes)
-- [ ] 3.9 Create directory structure `app/src/lib/common-components/Tooltip/`
-- [ ] 3.10 Create `Tooltip.tsx` with TypeScript interface:
+- [x] 3.9 Create directory structure `app/src/lib/common-components/Tooltip/`
+- [x] 3.10 Create `Tooltip.tsx` with TypeScript interface:
   - Props: `content` (tooltip text), `position` (top | bottom | left | right), `children` (trigger element), `delay` (ms before showing)
   - Manage hover state to show/hide tooltip
   - Position tooltip relative to trigger element
   - Use portal rendering to avoid overflow issues
-- [ ] 3.11 Create `Tooltip.css` with styles:
+- [x] 3.11 Create `Tooltip.css` with styles:
   - Surface-3 background with subtle border
   - Subtle glow effect
   - Fade-in animation on show
   - Arrow pointer toward trigger
   - Position variants (top, bottom, left, right)
   - `prefers-reduced-motion` support
-- [ ] 3.12 Create `Tooltip.test.tsx` with unit tests:
+- [x] 3.12 Create `Tooltip.test.tsx` with unit tests:
   - Renders trigger element
   - Shows tooltip on hover
   - Hides tooltip on mouse leave
   - Renders in correct position
-- [ ] 3.13 Create directory structure `app/src/lib/common-components/Modal/`
-- [ ] 3.14 Create `Modal.tsx` with TypeScript interface:
+- [x] 3.13 Create directory structure `app/src/lib/common-components/Modal/`
+- [x] 3.14 Create `Modal.tsx` with TypeScript interface:
   - Props: `isOpen`, `onClose`, `title`, `children`, `footer`, `size` (small | medium | large), `closeOnBackdropClick`, `closeOnEscape`
   - Use React portal to render at document root
   - Implement focus trap (trap Tab key within modal)
   - Handle Escape key to close when `closeOnEscape` is true
   - Handle backdrop click to close when `closeOnBackdropClick` is true
   - Add `aria-modal="true"`, `role="dialog"`, `aria-labelledby` attributes
-- [ ] 3.15 Create `Modal.css` with styles:
+- [x] 3.15 Create `Modal.css` with styles:
   - Fixed overlay covering viewport
   - Backdrop with blur effect and semi-transparent black
   - Centered content container with surface-3 background
@@ -285,7 +285,7 @@ Create layout and feedback components for consistent UI patterns, including acce
   - Optional footer section
   - Entrance animation (scale + fade)
   - `prefers-reduced-motion` support
-- [ ] 3.16 Create `Modal.test.tsx` with unit tests:
+- [x] 3.16 Create `Modal.test.tsx` with unit tests:
   - Does not render when isOpen is false
   - Renders when isOpen is true
   - Renders title and content
@@ -293,8 +293,8 @@ Create layout and feedback components for consistent UI patterns, including acce
   - Calls onClose when backdrop is clicked (if closeOnBackdropClick)
   - Has correct ARIA attributes
   - Traps focus within modal
-- [ ] 3.17 Update `app/src/lib/common-components/index.ts` to export Card, Badge, Tooltip, Modal
-- [ ] 3.18 Verify all display component tests pass with `npm run test -- app/src/lib/common-components`
+- [x] 3.17 Update `app/src/lib/common-components/index.ts` to export Card, Badge, Tooltip, Modal
+- [x] 3.18 Verify all display component tests pass with `npm run test -- app/src/lib/common-components`
 
 ---
 
