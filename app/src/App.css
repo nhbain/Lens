@@ -3,29 +3,47 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  /* OLED Black Foundations */
+  /* ==========================================================================
+     OLED Black Foundations
+     ========================================================================== */
   --color-black: #000000;
   --color-surface-1: #0a0a0a;
   --color-surface-2: #111111;
   --color-surface-3: #1a1a1a;
 
-  /* Cyan Accent */
+  /* ==========================================================================
+     Primary Accent - Cyan
+     ========================================================================== */
   --color-accent: #00F0F4;
   --color-accent-hover: #00D4D8;
   --color-accent-muted: #0A3A3B;
   --color-accent-glow: rgba(0, 240, 244, 0.15);
   --color-accent-ring: rgba(0, 240, 244, 0.25);
 
-  /* Text Hierarchy */
+  /* ==========================================================================
+     Secondary Accent - Emerald (for success/complete states)
+     ========================================================================== */
+  --color-accent-secondary: #10B981;
+  --color-accent-secondary-hover: #059669;
+  --color-accent-secondary-muted: #064E3B;
+  --color-accent-secondary-glow: rgba(16, 185, 129, 0.2);
+
+  /* ==========================================================================
+     Text Hierarchy
+     ========================================================================== */
   --color-text-primary: #FAFAFA;
   --color-text-secondary: #A1A1AA;
   --color-text-muted: #52525B;
 
-  /* Borders */
+  /* ==========================================================================
+     Borders
+     ========================================================================== */
   --color-border: #27272A;
   --color-border-subtle: #1F1F23;
 
-  /* Status Colors */
+  /* ==========================================================================
+     Status Colors
+     ========================================================================== */
   --color-success: #22C55E;
   --color-success-muted: #0A2E1A;
   --color-warning: #EAB308;
@@ -34,7 +52,42 @@
   --color-error-muted: #2E0A0A;
   --color-in-progress: #00F0F4;
 
-  /* Typography */
+  /* ==========================================================================
+     Enhanced Glow System
+     ========================================================================== */
+  --glow-accent: 0 0 30px rgba(0, 240, 244, 0.3);
+  --glow-accent-intense: 0 0 40px rgba(0, 240, 244, 0.5), 0 0 80px rgba(0, 240, 244, 0.2);
+  --glow-accent-breathing: 0 0 20px rgba(0, 240, 244, 0.2), 0 0 40px rgba(0, 240, 244, 0.1);
+  --glow-emerald: 0 0 25px rgba(16, 185, 129, 0.3);
+  --glow-emerald-intense: 0 0 35px rgba(16, 185, 129, 0.5), 0 0 60px rgba(16, 185, 129, 0.15);
+
+  /* ==========================================================================
+     Depth Shadows
+     ========================================================================== */
+  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.4);
+
+  /* ==========================================================================
+     Animation Timing
+     ========================================================================== */
+  --transition-fast: 150ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ==========================================================================
+     Responsive Breakpoints
+     ========================================================================== */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* ==========================================================================
+     Typography
+     ========================================================================== */
   font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
   line-height: 1.5;
@@ -52,30 +105,212 @@
   -webkit-text-size-adjust: 100%;
 }
 
-/* Monospace font utility */
+/* ==========================================================================
+   Global Keyframe Animations
+   ========================================================================== */
+
+/* Cinematic entrances */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Breathing glow effect */
+@keyframes glowBreathing {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 240, 244, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 240, 244, 0.4), 0 0 60px rgba(0, 240, 244, 0.1);
+  }
+}
+
+/* Emerald breathing glow */
+@keyframes glowBreathingEmerald {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.4), 0 0 60px rgba(16, 185, 129, 0.1);
+  }
+}
+
+/* Progress bar shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Staggered grid entrance */
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Accent bar slide in */
+@keyframes slideInFromLeft {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* Border glow pulse */
+@keyframes borderGlow {
+  0%, 100% {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 15px rgba(0, 240, 244, 0.2);
+  }
+  50% {
+    border-color: var(--color-accent-hover);
+    box-shadow: 0 0 30px rgba(0, 240, 244, 0.4);
+  }
+}
+
+/* Breathing dashed border */
+@keyframes dashBreathing {
+  0%, 100% {
+    border-color: var(--color-border);
+    box-shadow: none;
+  }
+  50% {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 20px rgba(0, 240, 244, 0.1);
+  }
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion Support
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Custom Scrollbar - Premium Styling
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-3);
+  border-radius: 4px;
+  transition: background-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+  box-shadow: 0 0 10px var(--color-accent-glow);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-surface-1);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-3) var(--color-surface-1);
+}
+
+/* ==========================================================================
+   Grain Texture Overlay
+   ========================================================================== */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ==========================================================================
+   Monospace Font Utility
+   ========================================================================== */
 code, pre, .mono {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+/* ==========================================================================
+   Container
+   ========================================================================== */
 .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  animation: fadeInUp var(--transition-slow) var(--ease-out-expo);
 }
 
-/* Header */
+/* ==========================================================================
+   Header
+   ========================================================================== */
 .app-header {
   position: relative;
   text-align: center;
   margin-bottom: 2rem;
+  animation: fadeInUp var(--transition-slow) var(--ease-out-expo);
 }
 
 .app-header h1 {
   margin: 0 0 0.5rem 0;
   font-size: 2rem;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   color: var(--color-text-primary);
+  text-shadow: 0 2px 20px rgba(0, 240, 244, 0.1);
 }
 
 .app-header p {
@@ -83,7 +318,9 @@ code, pre, .mono {
   color: var(--color-text-secondary);
 }
 
-/* Back button */
+/* ==========================================================================
+   Back Button - Premium Styling
+   ========================================================================== */
 .back-button {
   position: absolute;
   left: 2rem;
@@ -96,21 +333,35 @@ code, pre, .mono {
   border: 1px solid var(--color-accent);
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+  transition:
+    background-color var(--transition-normal) var(--ease-out-expo),
+    color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
 }
 
 .back-button:hover {
   background: var(--color-accent);
   color: var(--color-black);
-  box-shadow: 0 0 20px var(--color-accent-glow);
+  transform: translateY(-1px);
+  box-shadow: var(--glow-accent), var(--shadow-elevated);
+}
+
+.back-button:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .back-button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
-/* Settings icon button */
+/* ==========================================================================
+   Settings Icon Button
+   ========================================================================== */
 .settings-icon-button {
   position: absolute;
   right: 0;
@@ -121,7 +372,11 @@ code, pre, .mono {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: color 0.15s, background-color 0.15s;
+  transition:
+    color var(--transition-normal),
+    background-color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,32 +384,51 @@ code, pre, .mono {
 
 .settings-icon-button:hover {
   color: var(--color-accent);
-  background: var(--color-accent-glow);
+  background: rgba(0, 240, 244, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--color-accent-glow);
+}
+
+.settings-icon-button:active {
+  transform: scale(0.95);
 }
 
 .settings-icon-button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
-/* Document section */
+/* ==========================================================================
+   Document Section
+   ========================================================================== */
 .app-document {
   margin-top: 1rem;
+  animation: fadeInUp var(--transition-slow) var(--ease-out-expo) 100ms backwards;
 }
 
-/* Actions */
+/* ==========================================================================
+   Actions
+   ========================================================================== */
 .app-actions {
   margin-bottom: 2rem;
   text-align: center;
 }
 
-/* Files section */
+/* ==========================================================================
+   Files Section
+   ========================================================================== */
 .app-files h2 {
   font-size: 1.25rem;
   margin-bottom: 1rem;
+  letter-spacing: -0.02em;
 }
 
-/* File import button */
+/* ==========================================================================
+   File Import Button - Premium Styling
+   ========================================================================== */
 .file-import-button {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
@@ -164,17 +438,28 @@ code, pre, .mono {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.15s, box-shadow 0.15s;
+  transition:
+    background-color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
 }
 
 .file-import-button:hover:not(:disabled) {
   background-color: var(--color-accent-hover);
-  box-shadow: 0 0 20px var(--color-accent-glow);
+  transform: translateY(-2px);
+  box-shadow: var(--glow-accent-intense), var(--shadow-elevated);
+}
+
+.file-import-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
 }
 
 .file-import-button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
 .file-import-button:disabled {
@@ -182,7 +467,9 @@ code, pre, .mono {
   cursor: not-allowed;
 }
 
-/* Tracked files list */
+/* ==========================================================================
+   Tracked Files List
+   ========================================================================== */
 .tracked-files-list {
   list-style: none;
   padding: 0;
@@ -196,19 +483,31 @@ code, pre, .mono {
   border: 1px solid var(--color-border);
   border-radius: 6px;
   margin-bottom: 0.5rem;
-  background: var(--color-surface-2);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
+  box-shadow: var(--shadow-card);
+  transition:
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
+  animation: staggerFadeIn var(--transition-slow) var(--ease-out-expo) backwards;
 }
 
+.tracked-file-item:nth-child(1) { animation-delay: 0ms; }
+.tracked-file-item:nth-child(2) { animation-delay: 50ms; }
+.tracked-file-item:nth-child(3) { animation-delay: 100ms; }
+.tracked-file-item:nth-child(4) { animation-delay: 150ms; }
+.tracked-file-item:nth-child(5) { animation-delay: 200ms; }
+
 .tracked-file-item:hover {
-  border-color: var(--color-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover), var(--glow-accent);
 }
 
 .tracked-file-item.selected {
   border-color: var(--color-accent);
   background: var(--color-accent-muted);
-  box-shadow: 0 0 0 1px var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent), var(--glow-accent);
 }
 
 .tracked-file-info {
@@ -253,19 +552,32 @@ code, pre, .mono {
   align-items: center;
   justify-content: center;
   margin-left: 0.5rem;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal),
+    transform var(--transition-fast);
 }
 
 .tracked-file-remove:hover {
   background: var(--color-error-muted);
   color: var(--color-error);
+  transform: scale(1.1);
 }
 
-/* Empty state */
+.tracked-file-remove:active {
+  transform: scale(0.95);
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
 .tracked-files-empty {
   text-align: center;
   padding: 2rem;
   color: var(--color-text-secondary);
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+  animation: dashBreathing 4s ease-in-out infinite;
 }
 
 .tracked-files-hint {
@@ -273,31 +585,36 @@ code, pre, .mono {
   color: var(--color-text-muted);
 }
 
-/* Message */
+/* ==========================================================================
+   Message - Premium Styling
+   ========================================================================== */
 .message {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
   border-radius: 6px;
   margin-bottom: 1rem;
+  animation: scaleIn var(--transition-normal) var(--ease-spring);
+  box-shadow: var(--shadow-card);
 }
 
 .message-error {
-  background: var(--color-error-muted);
+  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(46, 10, 10, 0.8) 100%);
   border: 1px solid rgba(239, 68, 68, 0.3);
   color: var(--color-error);
 }
 
 .message-info {
-  background: var(--color-accent-muted);
+  background: linear-gradient(180deg, var(--color-accent-muted) 0%, rgba(10, 58, 59, 0.8) 100%);
   border: 1px solid rgba(0, 240, 244, 0.3);
   color: var(--color-accent);
 }
 
 .message-success {
-  background: var(--color-success-muted);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: var(--color-success);
+  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, rgba(6, 78, 59, 0.8) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--color-accent-secondary);
+  box-shadow: var(--shadow-card), var(--glow-emerald);
 }
 
 .message-text {
@@ -313,11 +630,18 @@ code, pre, .mono {
   opacity: 0.5;
   padding: 0;
   margin-left: 0.5rem;
-  transition: opacity 0.15s;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
 }
 
 .message-dismiss:hover {
   opacity: 1;
+  transform: scale(1.1);
 }
 
-/* Dark theme is now the default - no media query needed */
+.message-dismiss:active {
+  transform: scale(0.9);
+}
+
+/* ==========================================================================
+   Dark OLED Luxury Theme - Default
+   ========================================================================== */

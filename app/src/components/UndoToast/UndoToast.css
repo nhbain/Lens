@@ -1,5 +1,6 @@
 /**
  * UndoToast component styles - Dark OLED Luxury Theme
+ * Premium toast notification with glow effects and smooth entrance.
  */
 
 .undo-toast {
@@ -12,28 +13,44 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 0.75rem 1rem;
-  background-color: var(--color-surface-2);
+  background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
   color: var(--color-text-primary);
   border: 1px solid var(--color-accent);
   border-radius: 0.5rem;
-  box-shadow: 0 0 20px var(--color-accent-glow), 0 10px 25px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    var(--glow-accent),
+    var(--shadow-elevated);
   z-index: 1000;
-  animation: slideUp 0.15s ease-out;
+  animation: toastSlideUp var(--transition-slow) var(--ease-spring);
 }
 
-@keyframes slideUp {
+@keyframes toastSlideUp {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(1rem);
+    transform: translateX(-50%) translateY(2rem) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%) translateY(0) scale(1);
   }
+}
+
+/* Breathing glow effect on the toast */
+.undo-toast::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 0.5rem;
+  background: transparent;
+  box-shadow: var(--glow-accent);
+  opacity: 0.5;
+  z-index: -1;
+  animation: glowBreathing 2s ease-in-out infinite;
 }
 
 .undo-toast-message {
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .undo-toast-actions {
@@ -47,21 +64,34 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-accent);
-  background: none;
+  background: transparent;
   border: 1px solid var(--color-accent);
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color var(--transition-normal) var(--ease-out-expo),
+    color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
 }
 
 .undo-toast-undo-button:hover {
   background-color: var(--color-accent);
   color: var(--color-black);
+  transform: translateY(-1px);
+  box-shadow: var(--glow-accent);
+}
+
+.undo-toast-undo-button:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .undo-toast-undo-button:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
 .undo-toast-dismiss-button {
@@ -76,16 +106,28 @@
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: color 0.15s;
+  transition:
+    color var(--transition-normal),
+    background-color var(--transition-normal),
+    transform var(--transition-fast);
 }
 
 .undo-toast-dismiss-button:hover {
   color: var(--color-text-primary);
+  background-color: var(--color-surface-3);
+  transform: scale(1.1);
+}
+
+.undo-toast-dismiss-button:active {
+  transform: scale(0.95);
 }
 
 .undo-toast-dismiss-button:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
 /* Dark theme is now the default - no media query needed */

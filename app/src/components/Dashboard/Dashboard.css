@@ -1,18 +1,25 @@
 /**
  * Dashboard styles - Dark OLED Luxury Theme
  * Includes styles for Dashboard, FileCard, ProgressBar, and SortControls.
+ * Maximum intensity animations with staggered entrances and breathing glows.
  */
 
-/* Dashboard container */
+/* ==========================================================================
+   Dashboard Container
+   ========================================================================== */
 .dashboard {
   padding: 1.5rem;
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
+  animation: fadeInUp var(--transition-slow) var(--ease-out-expo);
 }
 
-/* Dashboard header */
+/* ==========================================================================
+   Dashboard Header
+   ========================================================================== */
 .dashboard__header {
   margin-bottom: 1.5rem;
+  animation: fadeInUp var(--transition-slow) var(--ease-out-expo) 50ms backwards;
 }
 
 .dashboard__title-row {
@@ -27,8 +34,9 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   color: var(--color-text-primary);
+  text-shadow: 0 2px 20px rgba(0, 240, 244, 0.1);
 }
 
 .dashboard__summary {
@@ -42,7 +50,9 @@
   font-weight: 500;
 }
 
-/* Add file button */
+/* ==========================================================================
+   Add File Button - Premium Styling
+   ========================================================================== */
 .dashboard__add-button {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
@@ -52,18 +62,30 @@
   border: 1px solid var(--color-accent);
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+  transition:
+    background-color var(--transition-normal) var(--ease-out-expo),
+    color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
 }
 
 .dashboard__add-button:hover {
   background: var(--color-accent);
   color: var(--color-black);
-  box-shadow: 0 0 20px var(--color-accent-glow);
+  transform: translateY(-1px);
+  box-shadow: var(--glow-accent), var(--shadow-elevated);
+}
+
+.dashboard__add-button:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .dashboard__add-button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
 .dashboard__add-button--primary {
@@ -73,15 +95,21 @@
 
 .dashboard__add-button--primary:hover {
   background: var(--color-accent-hover);
-  box-shadow: 0 0 20px var(--color-accent-glow);
+  transform: translateY(-2px);
+  box-shadow: var(--glow-accent-intense), var(--shadow-elevated);
 }
 
-/* Controls section */
+/* ==========================================================================
+   Controls Section
+   ========================================================================== */
 .dashboard__controls {
   margin-bottom: 1rem;
+  animation: fadeInUp var(--transition-slow) var(--ease-out-expo) 100ms backwards;
 }
 
-/* File grid */
+/* ==========================================================================
+   File Grid - Staggered Entrance
+   ========================================================================== */
 .dashboard__grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -100,13 +128,18 @@
   }
 }
 
-/* Empty state */
+/* ==========================================================================
+   Empty State - Breathing Border Animation
+   ========================================================================== */
 .dashboard__empty {
   text-align: center;
   padding: 3rem 1rem;
-  background: var(--color-surface-1);
+  background: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-black) 100%);
   border-radius: 8px;
   border: 1px dashed var(--color-border);
+  animation:
+    fadeInUp var(--transition-slow) var(--ease-out-expo),
+    dashBreathing 4s ease-in-out infinite;
 }
 
 .dashboard__empty-message {
@@ -121,19 +154,26 @@
   color: var(--color-text-secondary);
 }
 
-/* Loading state */
+/* ==========================================================================
+   Loading State
+   ========================================================================== */
 .dashboard__loading {
   text-align: center;
   padding: 3rem 1rem;
   color: var(--color-text-secondary);
+  animation: fadeInUp var(--transition-slow) var(--ease-out-expo);
 }
 
-/* Error state */
+/* ==========================================================================
+   Error State
+   ========================================================================== */
 .dashboard__error {
   padding: 1rem;
-  background: var(--color-error-muted);
+  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(46, 10, 10, 0.8) 100%);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 6px;
+  animation: scaleIn var(--transition-normal) var(--ease-spring);
+  box-shadow: var(--shadow-card);
 }
 
 .dashboard__error-message {
@@ -141,42 +181,73 @@
   color: var(--color-error);
 }
 
-/* ==============================
-   FileCard Component
-   ============================== */
-
+/* ==========================================================================
+   FileCard Component - Premium Card with Staggered Entrance
+   ========================================================================== */
 .file-card {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  background: var(--color-surface-2);
+  background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
   border: 1px solid var(--color-border-subtle);
   border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  box-shadow: var(--shadow-card);
+  transition:
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
+  animation: staggerFadeIn var(--transition-slow) var(--ease-out-expo) backwards;
 }
+
+/* Staggered animation delays for grid items */
+.file-card:nth-child(1) { animation-delay: 0ms; }
+.file-card:nth-child(2) { animation-delay: 50ms; }
+.file-card:nth-child(3) { animation-delay: 100ms; }
+.file-card:nth-child(4) { animation-delay: 150ms; }
+.file-card:nth-child(5) { animation-delay: 200ms; }
+.file-card:nth-child(6) { animation-delay: 250ms; }
+.file-card:nth-child(7) { animation-delay: 300ms; }
+.file-card:nth-child(8) { animation-delay: 350ms; }
+.file-card:nth-child(9) { animation-delay: 400ms; }
+.file-card:nth-child(10) { animation-delay: 450ms; }
+.file-card:nth-child(11) { animation-delay: 500ms; }
+.file-card:nth-child(12) { animation-delay: 550ms; }
 
 .file-card:hover {
   border-color: var(--color-accent);
-  box-shadow: 0 0 20px var(--color-accent-glow), 0 4px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+  box-shadow:
+    var(--shadow-card-hover),
+    var(--glow-accent);
+  animation: glowBreathing 2s ease-in-out infinite;
 }
 
 .file-card:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
+}
+
+.file-card:active {
+  transform: translateY(-2px) scale(0.99);
 }
 
 .file-card--selected {
   border-color: var(--color-accent);
-  background: var(--color-accent-muted);
-  box-shadow: 0 0 0 1px var(--color-accent);
+  background: linear-gradient(180deg, var(--color-accent-muted) 0%, rgba(10, 58, 59, 0.5) 100%);
+  box-shadow: 0 0 0 1px var(--color-accent), var(--glow-accent);
 }
 
 .file-card--in-progress {
   border-left: 3px solid var(--color-in-progress);
 }
 
-/* FileCard header */
+/* ==========================================================================
+   FileCard Header
+   ========================================================================== */
 .file-card__header {
   display: flex;
   align-items: flex-start;
@@ -193,7 +264,9 @@
   word-break: break-word;
 }
 
-/* In-progress badge */
+/* ==========================================================================
+   In-Progress Badge - Premium Pill
+   ========================================================================== */
 .file-card__badge {
   flex-shrink: 0;
   padding: 0.125rem 0.5rem;
@@ -205,12 +278,15 @@
 }
 
 .file-card__badge--in-progress {
-  background: var(--color-accent-muted);
+  background: linear-gradient(180deg, var(--color-accent-muted) 0%, rgba(10, 58, 59, 0.8) 100%);
   color: var(--color-accent);
   border: 1px solid rgba(0, 240, 244, 0.3);
+  box-shadow: 0 0 10px var(--color-accent-glow);
 }
 
-/* FileCard path */
+/* ==========================================================================
+   FileCard Path
+   ========================================================================== */
 .file-card__path {
   margin: 0 0 0.75rem 0;
   font-size: 0.75rem;
@@ -219,7 +295,9 @@
   word-break: break-all;
 }
 
-/* FileCard progress */
+/* ==========================================================================
+   FileCard Progress
+   ========================================================================== */
 .file-card__progress {
   margin-bottom: 0.75rem;
 }
@@ -231,7 +309,9 @@
   color: var(--color-text-secondary);
 }
 
-/* FileCard footer */
+/* ==========================================================================
+   FileCard Footer
+   ========================================================================== */
 .file-card__footer {
   display: flex;
   justify-content: space-between;
@@ -246,10 +326,9 @@
   /* Individual meta items */
 }
 
-/* ==============================
-   ProgressBar Component
-   ============================== */
-
+/* ==========================================================================
+   ProgressBar Component - Premium with Shimmer
+   ========================================================================== */
 .progress-bar {
   display: flex;
   align-items: center;
@@ -262,12 +341,29 @@
   background: var(--color-surface-3);
   border-radius: 4px;
   overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .progress-bar__fill {
   height: 100%;
   border-radius: 4px;
-  transition: width 0.3s ease-out;
+  transition: width 0.5s var(--ease-out-expo);
+  position: relative;
+}
+
+/* Shimmer overlay for fills */
+.progress-bar__fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
 }
 
 /* Size variants */
@@ -293,17 +389,23 @@
 }
 
 .progress-bar__fill--high {
-  background: linear-gradient(90deg, var(--color-success) 0%, #4ADE80 100%);
+  background: linear-gradient(90deg, var(--color-accent-secondary) 0%, #34D399 100%);
 }
 
 .progress-bar__fill--complete {
-  background: linear-gradient(90deg, var(--color-success) 0%, #4ADE80 100%);
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+  background: linear-gradient(90deg, var(--color-accent-secondary) 0%, #34D399 100%);
+  box-shadow: var(--glow-emerald);
+  animation: glowBreathingEmerald 2s ease-in-out infinite;
+}
+
+/* Remove shimmer on complete - replace with breathing glow */
+.progress-bar__fill--complete::after {
+  display: none;
 }
 
 /* Animation */
 .progress-bar--animated .progress-bar__fill {
-  transition: width 0.5s ease-out;
+  transition: width 0.5s var(--ease-out-expo);
 }
 
 /* Label */
@@ -316,10 +418,9 @@
   text-align: right;
 }
 
-/* ==============================
-   SortControls Component
-   ============================== */
-
+/* ==========================================================================
+   SortControls Component - Premium Styling
+   ========================================================================== */
 .sort-controls {
   display: flex;
   align-items: center;
@@ -335,17 +436,26 @@
   padding: 0.375rem 0.75rem;
   font-size: 0.875rem;
   color: var(--color-text-primary);
-  background: var(--color-surface-2);
+  background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
   border: 1px solid var(--color-border);
   border-radius: 6px;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition:
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+.sort-controls__select:hover {
+  border-color: var(--color-accent);
 }
 
 .sort-controls__select:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
 .sort-controls__direction {
@@ -356,22 +466,37 @@
   height: 32px;
   font-size: 1rem;
   color: var(--color-text-secondary);
-  background: var(--color-surface-2);
+  background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
   border: 1px solid var(--color-border);
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  transition:
+    background-color var(--transition-normal),
+    border-color var(--transition-normal),
+    color var(--transition-normal),
+    transform var(--transition-fast);
 }
 
 .sort-controls__direction:hover {
   background: var(--color-surface-3);
-  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: scale(1.05);
+}
+
+.sort-controls__direction:active {
+  transform: scale(0.95);
 }
 
 .sort-controls__direction:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
-/* Dark theme is now the default - no media query needed */
+/* ==========================================================================
+   Dark OLED Luxury Theme - Default
+   ========================================================================== */

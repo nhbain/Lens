@@ -1,6 +1,7 @@
 /**
  * InProgressItem component styles - Dark OLED Luxury Theme
  * Compact display for resume section items.
+ * Premium card with hover lift and animated accent bar.
  */
 
 .in-progress-item {
@@ -9,26 +10,47 @@
   gap: 0.25rem;
   padding: 0.625rem 0.75rem;
   border-radius: 6px;
-  background-color: var(--color-surface-2);
+  background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
   border: 1px solid var(--color-border-subtle);
   cursor: pointer;
   position: relative;
-  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-card);
+  transition:
+    background-color var(--transition-normal) var(--ease-out-expo),
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
+  animation: staggerFadeIn var(--transition-slow) var(--ease-out-expo) backwards;
 }
 
+/* Staggered animation delays for list items */
+.in-progress-item:nth-child(1) { animation-delay: 0ms; }
+.in-progress-item:nth-child(2) { animation-delay: 40ms; }
+.in-progress-item:nth-child(3) { animation-delay: 80ms; }
+.in-progress-item:nth-child(4) { animation-delay: 120ms; }
+.in-progress-item:nth-child(5) { animation-delay: 160ms; }
+
 .in-progress-item:hover {
-  background-color: var(--color-surface-3);
+  background: linear-gradient(180deg, var(--color-surface-3) 0%, var(--color-surface-2) 100%);
   border-color: var(--color-accent);
-  box-shadow: 0 0 15px var(--color-accent-glow);
+  transform: translateY(-4px);
+  box-shadow:
+    var(--shadow-card-hover),
+    var(--glow-accent);
+  animation: glowBreathing 2s ease-in-out infinite;
 }
 
 .in-progress-item:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-accent-ring);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
 }
 
 .in-progress-item:active {
   background-color: var(--color-accent-muted);
+  transform: translateY(-2px) scale(0.99);
 }
 
 .in-progress-item__content {
@@ -39,7 +61,7 @@
 
 .in-progress-item__type {
   flex-shrink: 0;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.875rem;
   color: var(--color-text-muted);
   width: 1rem;
@@ -80,23 +102,29 @@
   flex-shrink: 0;
 }
 
-/* Status indicator - cyan accent bar on hover */
+/* Status indicator - cyan accent bar with slide-in animation */
 .in-progress-item::before {
   content: '';
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scaleY(0);
+  transform-origin: center;
   width: 3px;
   height: 60%;
-  background-color: var(--color-in-progress);
+  background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-in-progress) 100%);
   border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 10px var(--color-accent-glow);
+  transition:
+    transform var(--transition-normal) var(--ease-spring),
+    opacity var(--transition-normal);
   opacity: 0;
-  transition: opacity 0.15s;
 }
 
 .in-progress-item:hover::before {
+  transform: translateY(-50%) scaleY(1);
   opacity: 1;
+  animation: borderGlow 2s ease-in-out infinite;
 }
 
 /* Dark theme is now the default - no media query needed */
