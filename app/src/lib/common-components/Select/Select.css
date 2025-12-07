@@ -1,0 +1,150 @@
+/**
+ * Select component styles following Dark OLED Luxury theme.
+ * Supports 3 sizes with focus and disabled states.
+ */
+
+/* ==========================================================================
+   Container
+   ========================================================================== */
+
+.select-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.select-container--full-width {
+  width: 100%;
+}
+
+/* ==========================================================================
+   Label
+   ========================================================================== */
+
+.select__label {
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  user-select: none;
+}
+
+/* ==========================================================================
+   Wrapper (for positioning arrow)
+   ========================================================================== */
+
+.select__wrapper {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+}
+
+/* ==========================================================================
+   Select Base Styles
+   ========================================================================== */
+
+.select {
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: all var(--transition-normal) var(--ease-out-expo);
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 36px; /* Space for arrow */
+}
+
+.select:hover:not(:disabled):not(:focus) {
+  border-color: var(--color-border-subtle);
+  background: var(--color-surface-3);
+}
+
+.select:focus {
+  border-color: var(--color-accent);
+  box-shadow:
+    0 0 0 2px var(--color-black),
+    0 0 0 4px var(--color-accent),
+    var(--glow-accent);
+}
+
+.select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-surface-1);
+}
+
+/* Option styling */
+.select option {
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  padding: 8px;
+}
+
+.select option:hover,
+.select option:checked {
+  background: var(--color-accent-muted);
+}
+
+/* ==========================================================================
+   Arrow Icon
+   ========================================================================== */
+
+.select__arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.select:focus + .select__arrow {
+  color: var(--color-accent);
+}
+
+.select:disabled + .select__arrow {
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   Size Variants
+   ========================================================================== */
+
+.select--size-small {
+  padding: 6px 10px;
+  padding-right: 32px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+.select--size-medium {
+  padding: 10px 14px;
+  padding-right: 36px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.select--size-large {
+  padding: 14px 18px;
+  padding-right: 40px;
+  font-size: 16px;
+  border-radius: 10px;
+}
+
+/* ==========================================================================
+   Reduced Motion Support
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .select,
+  .select__arrow {
+    transition: none;
+  }
+}

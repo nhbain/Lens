@@ -127,7 +127,7 @@ Establish the responsive CSS infrastructure with breakpoint variables and create
 
 ---
 
-### [ ] 2.0 Form Components (Input, Select, Checkbox)
+### [x] 2.0 Form Components (Input, Select, Checkbox)
 
 Create styled form controls that match the Dark OLED Luxury theme, supporting all input states (default, focused, disabled, error) and three sizes.
 
@@ -143,20 +143,20 @@ Create styled form controls that match the Dark OLED Luxury theme, supporting al
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Create directory structure `app/src/lib/common-components/Input/`
-- [ ] 2.2 Create `Input.tsx` with TypeScript interface:
+- [x] 2.1 Create directory structure `app/src/lib/common-components/Input/`
+- [x] 2.2 Create `Input.tsx` with TypeScript interface:
   - Props: `type` (text | search | number | password), `size` (small | medium | large), `label`, `placeholder`, `value`, `onChange`, `disabled`, `error`, `errorMessage`, `fullWidth`, `id`, `name`, `aria-label`, `aria-describedby`
   - Render optional label above input
   - Render optional error message below input
   - Connect label to input via `id`/`htmlFor`
-- [ ] 2.3 Create `Input.css` with styles:
+- [x] 2.3 Create `Input.css` with styles:
   - Surface-2 background, surface-3 border
   - Cyan border + glow ring on focus
   - Error state with red border and error color
   - Disabled state with reduced opacity
   - Three sizes matching Button sizes
   - `prefers-reduced-motion` support
-- [ ] 2.4 Create `Input.test.tsx` with unit tests:
+- [x] 2.4 Create `Input.test.tsx` with unit tests:
   - Renders with default props
   - Renders label when provided
   - Renders error message when error is true
@@ -164,41 +164,41 @@ Create styled form controls that match the Dark OLED Luxury theme, supporting al
   - Renders disabled state
   - Renders each size correctly
   - Has correct ARIA attributes for error state
-- [ ] 2.5 Create directory structure `app/src/lib/common-components/Select/`
-- [ ] 2.6 Create `Select.tsx` with TypeScript interface:
+- [x] 2.5 Create directory structure `app/src/lib/common-components/Select/`
+- [x] 2.6 Create `Select.tsx` with TypeScript interface:
   - Props: `options` (array of {value, label}), `size` (small | medium | large), `label`, `value`, `onChange`, `disabled`, `placeholder`, `fullWidth`, `id`, `name`
   - Render optional label above select
   - Render custom dropdown arrow icon
-- [ ] 2.7 Create `Select.css` with styles:
+- [x] 2.7 Create `Select.css` with styles:
   - Surface-2 background matching Input
   - Custom dropdown arrow with accent color
   - Cyan border on focus
   - Option styling with hover highlight
   - Three sizes matching Button/Input sizes
-- [ ] 2.8 Create `Select.test.tsx` with unit tests:
+- [x] 2.8 Create `Select.test.tsx` with unit tests:
   - Renders with options
   - Renders label when provided
   - Calls onChange when selection changes
   - Renders disabled state
   - Renders placeholder option when provided
-- [ ] 2.9 Create directory structure `app/src/lib/common-components/Checkbox/`
-- [ ] 2.10 Create `Checkbox.tsx` with TypeScript interface:
+- [x] 2.9 Create directory structure `app/src/lib/common-components/Checkbox/`
+- [x] 2.10 Create `Checkbox.tsx` with TypeScript interface:
   - Props: `label`, `checked`, `onChange`, `disabled`, `size` (small | medium), `id`, `name`
   - Render checkbox with label inline
   - Custom styled checkbox replacing native appearance
-- [ ] 2.11 Create `Checkbox.css` with styles:
+- [x] 2.11 Create `Checkbox.css` with styles:
   - Custom checkbox appearance (hide native, use pseudo-elements)
   - Unchecked: surface-2 background with border
   - Checked: accent background with checkmark icon
   - Disabled state with reduced opacity
   - Focus ring on keyboard navigation
-- [ ] 2.12 Create `Checkbox.test.tsx` with unit tests:
+- [x] 2.12 Create `Checkbox.test.tsx` with unit tests:
   - Renders with label
   - Calls onChange when clicked
   - Renders checked state
   - Renders disabled state
-- [ ] 2.13 Update `app/src/lib/common-components/index.ts` to export Input, Select, Checkbox
-- [ ] 2.14 Verify all form component tests pass with `npm run test -- app/src/lib/common-components`
+- [x] 2.13 Update `app/src/lib/common-components/index.ts` to export Input, Select, Checkbox
+- [x] 2.14 Verify all form component tests pass with `npm run test -- app/src/lib/common-components`
 
 ---
 
