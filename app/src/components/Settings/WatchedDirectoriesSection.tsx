@@ -127,7 +127,7 @@ export const WatchedDirectoriesSection = ({
                     {directory.enabled ? 'Enabled' : 'Disabled'}
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant="ghost-danger"
                     size="small"
                     onClick={() => handleRemoveClick(directory.path)}
                     disabled={isLoading}

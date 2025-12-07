@@ -108,7 +108,7 @@ export const DataManagementSection = ({
               Save all tracking data to a JSON file for backup
             </p>
             <Button
-              variant="secondary"
+              variant="outline"
               onClick={handleExportClick}
               disabled={isLoading}
             >
@@ -122,7 +122,7 @@ export const DataManagementSection = ({
               Restore tracking data from a previous export
             </p>
             <Button
-              variant="secondary"
+              variant="outline"
               onClick={handleImportClick}
               disabled={isLoading}
             >
@@ -136,7 +136,7 @@ export const DataManagementSection = ({
               Remove all tracking data. This cannot be undone.
             </p>
             <Button
-              variant="danger"
+              variant="ghost-danger"
               onClick={handleClearClick}
               disabled={isLoading || showClearConfirm}
             >

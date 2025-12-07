@@ -5,7 +5,7 @@
 
 import './Button.css'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'outline' | 'link'
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'ghost-danger' | 'outline' | 'link'
 export type ButtonSize = 'small' | 'medium' | 'large'
 
 export interface ButtonProps {
