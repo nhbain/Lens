@@ -10,6 +10,7 @@ Lens is a Tauri v2 desktop app for tracking progress through markdown documents 
 - Spec 01: UI Polish & Common Components (Button, Input, Select, Card, Badge, Tooltip, Modal)
 - Spec 02: Theme Customization (ColorPicker, animation intensity, custom colors)
 - Spec 03: DocumentView Redesign (tree view, collapse/expand, section progress, filters, search)
+- Spec 04: Markdown Editor (WYSIWYG editing with Milkdown, auto-save, atomic file writes)
 
 ## Key Files to Read
 
@@ -22,6 +23,7 @@ Lens is a Tauri v2 desktop app for tracking progress through markdown documents 
 - `01-spec-ui-polish-future-considerations/` - Common components library
 - `02-spec-theme-customization/` - Theme colors & animation controls
 - `03-spec-documentview-redesign/` - Hierarchical tree view with filters
+- `04-spec-markdown-editor/` - WYSIWYG markdown editor with Milkdown
 
 ### Core Modules (in `app/src/lib/`)
 
@@ -56,6 +58,12 @@ Lens is a Tauri v2 desktop app for tracking progress through markdown documents 
 - `settings/settings-manager.ts` - Settings persistence and retrieval
 - `settings/index.ts` - Public API
 
+**Editor** - Markdown editor utilities
+- `editor/types.ts` - Editor interfaces (WriteResult, MarkdownSlice)
+- `editor/markdown-slice.ts` - Content extraction for editing
+- `editor/source-file-operations.ts` - Atomic file writes with backup
+- `editor/index.ts` - Public API
+
 **Common Components** - Reusable UI components
 - `common-components/Button/` - 6 variants (primary, secondary, danger, ghost, ghost-danger, outline, link)
 - `common-components/Input/`, `Select/`, `Checkbox/` - Form components
@@ -81,6 +89,10 @@ Lens is a Tauri v2 desktop app for tracking progress through markdown documents 
 - `DocumentView/FilterButtons.tsx` - Quick filter toggles
 - `DocumentView/TrackableItemRow.tsx` - Individual item row with collapse
 
+**EditorModal** - WYSIWYG markdown editor (Spec 04)
+- `EditorModal/EditorModal.tsx` - Modal container with Milkdown integration
+- `EditorModal/EditorToolbar.tsx` - Formatting toolbar (bold, italic, headings, lists)
+
 **Settings** - Application settings UI
 - `Settings/Settings.tsx` - Settings container
 - `Settings/WatchedDirectoriesSection.tsx` - Directory watching config
@@ -94,6 +106,7 @@ Lens is a Tauri v2 desktop app for tracking progress through markdown documents 
 - `useCollapseState.ts` - Tree collapse/expand state persistence
 - `useTreeKeyboardNavigation.ts` - Keyboard navigation (arrows, Home/End, Ctrl+F)
 - `useThemeApplication.ts` - Apply theme to CSS variables
+- `useMarkdownEditor.ts` - Editor state, auto-save, content management
 - `useDashboard.ts` - Dashboard data loading
 - `useSettings.ts` - Application settings management
 
@@ -105,7 +118,7 @@ Lens is a Tauri v2 desktop app for tracking progress through markdown documents 
 ```bash
 cd app
 npm install
-npm run test          # 1329 tests
+npm run test          # 1479 tests
 npm run lint          # ESLint
 npm run tauri dev     # Run app
 ```
@@ -114,6 +127,7 @@ npm run tauri dev     # Run app
 
 - Tauri v2 + React 19 + TypeScript
 - remark/mdast for markdown parsing
+- Milkdown for WYSIWYG editing
 - Vitest + React Testing Library
 - react-colorful for color picker
 

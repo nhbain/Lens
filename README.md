@@ -69,9 +69,9 @@ Lens is a Tauri v2 desktop application with a React frontend. The app tracks pro
 │  │  │  ┌─────────┐  ┌──────────┐  ┌────────────┐      │  │  │
 │  │  │  │ watcher │  │ progress │  │ navigation │      │  │  │
 │  │  │  └─────────┘  └──────────┘  └────────────┘      │  │  │
-│  │  │  ┌──────────┐                                   │  │  │
-│  │  │  │ settings │                                   │  │  │
-│  │  │  └──────────┘                                   │  │  │
+│  │  │  ┌──────────┐  ┌────────┐                       │  │  │
+│  │  │  │ settings │  │ editor │                       │  │  │
+│  │  │  └──────────┘  └────────┘                       │  │  │
 │  │  └─────────────────────────────────────────────────┘  │  │
 │  └───────────────────────────────────────────────────────┘  │
 │                              │                              │
@@ -91,6 +91,7 @@ lens/
 │   │   ├── components/           # React components
 │   │   │   ├── Dashboard/        # Dashboard view components
 │   │   │   ├── DocumentView/     # Document viewer components
+│   │   │   ├── EditorModal/      # WYSIWYG markdown editor modal
 │   │   │   ├── Settings/         # Settings UI components
 │   │   │   ├── UndoToast/        # Undo notification component
 │   │   │   ├── FileImportButton.tsx
@@ -102,6 +103,7 @@ lens/
 │   │   │   ├── useCollapseState.ts       # Tree collapse/expand state
 │   │   │   ├── useTreeKeyboardNavigation.ts # Tree keyboard navigation
 │   │   │   ├── useThemeApplication.ts    # Apply theme to CSS variables
+│   │   │   ├── useMarkdownEditor.ts      # Editor state management
 │   │   │   ├── useFileImport.ts
 │   │   │   ├── useInProgressItems.ts
 │   │   │   ├── useItemStatus.ts
@@ -117,6 +119,7 @@ lens/
 │   │   │   ├── progress/         # Status tracking & parent calculation
 │   │   │   ├── navigation/       # Scroll position management
 │   │   │   ├── settings/         # Settings persistence
+│   │   │   ├── editor/           # Markdown editor utilities
 │   │   │   ├── common-components/ # Reusable UI components (Button, Input, Card, etc.)
 │   │   │   └── theme/            # Color utilities & theme derivation
 │   │   └── test/                 # Test utilities
@@ -133,7 +136,8 @@ lens/
 │   └── specs/                    # Feature specifications
 │       ├── 01-spec-ui-polish-future-considerations/
 │       ├── 02-spec-theme-customization/
-│       └── 03-spec-documentview-redesign/
+│       ├── 03-spec-documentview-redesign/
+│       └── 04-spec-markdown-editor/
 └── tasks/                        # Story & task tracking
     ├── story-list-feature-lens.md
     └── tasks-story-lens-*.md     # Individual story tasks
@@ -321,6 +325,30 @@ await saveSettings({ theme: 'dark', ...settings })
 - `saveSettings(settings)` - Save settings to disk
 - `getDefaultSettings()` - Get default settings object
 
+### `lib/editor` - Markdown Editor Utilities
+
+Provides utilities for WYSIWYG markdown editing with atomic file writes.
+
+```typescript
+import { extractMarkdownSlice, writeSourceFile } from './lib/editor'
+
+// Extract markdown content for a specific item
+const slice = extractMarkdownSlice(fullContent, item.position)
+
+// Write changes back to file (atomic with backup)
+const result = await writeSourceFile('/path/to/doc.md', newContent)
+if (result.success) {
+  console.log('Backup at:', result.backupPath)
+}
+```
+
+**Key exports:**
+- `extractMarkdownSlice(content, position)` - Extract markdown slice for editing
+- `writeSourceFile(path, content)` - Atomic write with backup
+- `writeSourceFileAtomic(path, content)` - Low-level atomic write
+- `createBackup(path)` - Create .bak backup file
+- `isMarkdownPath(path)` - Validate markdown file extension
+
 ### `lib/common-components` - Reusable UI Components
 
 A unified component library with consistent Dark OLED Luxury theme styling.
@@ -433,7 +461,7 @@ npm run test -- --coverage
 - Integration tests verify full workflows
 
 ```
-Current test count: 1329 tests across 50+ files
+Current test count: 1479 tests across 61 files
 ```
 
 ### Mocking Tauri APIs
@@ -472,6 +500,7 @@ vi.mock('@tauri-apps/plugin-fs', () => ({
 - [x] **SPEC-01** - UI Polish & Common Components (Button, Input, Select, Checkbox, Card, Badge, Tooltip, Modal)
 - [x] **SPEC-02** - Theme Customization (ColorPicker, animation intensity, custom colors)
 - [x] **SPEC-03** - DocumentView Redesign (tree view, collapse/expand, section progress, filters, search, keyboard navigation)
+- [x] **SPEC-04** - Markdown Editor (WYSIWYG editing with Milkdown, auto-save, atomic file writes)
 
 See `tasks/` for story breakdowns and `docs/specs/` for detailed specifications.
 
@@ -494,6 +523,7 @@ Key patterns:
 - **Framework:** [Tauri](https://tauri.app/) v2
 - **Frontend:** React 19 + TypeScript + Vite
 - **Markdown:** remark + mdast for parsing
+- **Editor:** [Milkdown](https://milkdown.dev/) WYSIWYG editor
 - **Testing:** Vitest + React Testing Library
 - **Linting:** ESLint 9 + Prettier
 
