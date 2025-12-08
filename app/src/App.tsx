@@ -479,7 +479,7 @@ export const App = () => {
         exportVersion: 1,
         exportedAt: new Date().toISOString(),
         settings: settings ?? {
-          version: 2,
+          version: 3,
           filePatterns: ['*.md', '*.markdown'],
           theme: 'system',
           animationIntensity: 'full',
@@ -490,6 +490,11 @@ export const App = () => {
             surfaceBase: null,
             surfaceElevated: null,
             surfaceCard: null,
+          },
+          editor: {
+            viewMode: 'overlay',
+            autoSave: true,
+            autoSaveDelay: 3000,
           },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),

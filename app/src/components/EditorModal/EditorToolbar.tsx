@@ -4,19 +4,19 @@
  */
 
 import { useCallback, useState } from 'react'
-import type { Editor } from '@milkdown/core'
-import { CmdKey } from '@milkdown/core'
+import type { Editor, CmdKey } from '@milkdown/core'
 import './EditorToolbar.css'
 
 // Define command keys for formatting operations
-const ToggleBoldCommand = 'ToggleStrong' as CmdKey
-const ToggleItalicCommand = 'ToggleEmphasis' as CmdKey
-const ToggleCodeCommand = 'ToggleInlineCode' as CmdKey
-const WrapInHeadingCommand = 'WrapInHeading' as CmdKey
-const WrapInBulletListCommand = 'WrapInBulletList' as CmdKey
-const WrapInOrderedListCommand = 'WrapInOrderedList' as CmdKey
-const ToggleStrikethroughCommand = 'ToggleStrikethrough' as CmdKey
-const TurnIntoTaskListCommand = 'TurnIntoTaskList' as CmdKey
+// Note: Using double cast through unknown since CmdKey is a branded symbol type
+const ToggleBoldCommand = 'ToggleStrong' as unknown as CmdKey
+const ToggleItalicCommand = 'ToggleEmphasis' as unknown as CmdKey
+const ToggleCodeCommand = 'ToggleInlineCode' as unknown as CmdKey
+const WrapInHeadingCommand = 'WrapInHeading' as unknown as CmdKey
+const WrapInBulletListCommand = 'WrapInBulletList' as unknown as CmdKey
+const WrapInOrderedListCommand = 'WrapInOrderedList' as unknown as CmdKey
+const ToggleStrikethroughCommand = 'ToggleStrikethrough' as unknown as CmdKey
+const TurnIntoTaskListCommand = 'TurnIntoTaskList' as unknown as CmdKey
 
 export interface EditorToolbarProps {
   /** Milkdown editor instance */
@@ -39,7 +39,7 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
         editor.action((ctx) => {
           const commandRunner = ctx.get(commandKey)
           if (typeof commandRunner === 'function') {
-            commandRunner(payload)
+            ;(commandRunner as (arg?: unknown) => void)(payload)
           }
         })
       } catch (error) {

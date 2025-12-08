@@ -9,6 +9,8 @@ export type {
   ThemeOption,
   AnimationIntensity,
   ThemeColors,
+  EditorSettings,
+  EditorViewMode,
   SettingsOperationResult,
   LoadSettingsResult,
   StorageStats,
@@ -47,4 +49,5 @@ export {
   updateThemeColor,
   updateThemeColors,
   resetThemeSettings,
+  updateEditorSettings,
 } from './settings-manager'

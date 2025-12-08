@@ -14,7 +14,7 @@ import type { WatchedDirectory } from '@/lib/watcher/types'
 const createMockSettings = (
   overrides: Partial<AppSettings> = {}
 ): AppSettings => ({
-  version: 2,
+  version: 3,
   filePatterns: ['*.md', '*.markdown'],
   theme: 'system',
   animationIntensity: 'full',
@@ -25,6 +25,11 @@ const createMockSettings = (
     surfaceBase: null,
     surfaceElevated: null,
     surfaceCard: null,
+  },
+  editor: {
+    viewMode: 'overlay',
+    autoSave: true,
+    autoSaveDelay: 2000,
   },
   createdAt: '2025-01-01T00:00:00.000Z',
   updatedAt: '2025-01-01T00:00:00.000Z',
@@ -197,6 +202,9 @@ describe('Settings', () => {
     onAnimationIntensityChange: vi.fn(),
     onThemeColorChange: vi.fn(),
     onResetThemeSettings: vi.fn(),
+    onEditorViewModeChange: vi.fn(),
+    onEditorAutoSaveChange: vi.fn(),
+    onEditorAutoSaveDelayChange: vi.fn(),
     onClearData: vi.fn(),
     onExportData: vi.fn(),
     onImportData: vi.fn(),

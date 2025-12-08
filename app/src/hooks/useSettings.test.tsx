@@ -39,7 +39,7 @@ const mockUpdateTheme = vi.mocked(updateTheme)
 const createMockSettings = (
   overrides: Partial<AppSettings> = {}
 ): AppSettings => ({
-  version: 2,
+  version: 3,
   filePatterns: ['*.md', '*.markdown'],
   theme: 'system',
   animationIntensity: 'full',
@@ -50,6 +50,11 @@ const createMockSettings = (
     surfaceBase: null,
     surfaceElevated: null,
     surfaceCard: null,
+  },
+  editor: {
+    viewMode: 'overlay',
+    autoSave: true,
+    autoSaveDelay: 2000,
   },
   createdAt: '2025-01-01T00:00:00.000Z',
   updatedAt: '2025-01-01T00:00:00.000Z',

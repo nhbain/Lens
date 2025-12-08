@@ -78,6 +78,11 @@ describe('settings-manager', () => {
           surfaceElevated: null,
           surfaceCard: null,
         },
+        editor: {
+          viewMode: 'overlay',
+          autoSave: true,
+          autoSaveDelay: 2000,
+        },
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-02T00:00:00.000Z',
       }

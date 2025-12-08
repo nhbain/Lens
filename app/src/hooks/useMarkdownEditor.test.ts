@@ -246,7 +246,7 @@ describe('useMarkdownEditor helpers', () => {
   })
 
   describe('debounce logic', () => {
-    it('should delay execution', (done) => {
+    it('should delay execution', async () => {
       let called = false
       const delay = 100
 
@@ -271,13 +271,15 @@ describe('useMarkdownEditor helpers', () => {
       expect(called).toBe(false)
 
       // Should be called after delay
-      setTimeout(() => {
-        expect(called).toBe(true)
-        done()
-      }, delay + 50)
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          expect(called).toBe(true)
+          resolve()
+        }, delay + 50)
+      })
     })
 
-    it('should cancel previous timeout when called again', (done) => {
+    it('should cancel previous timeout when called again', async () => {
       let callCount = 0
       const delay = 100
 
@@ -301,10 +303,12 @@ describe('useMarkdownEditor helpers', () => {
       fn()
 
       // Should only be called once after all invocations
-      setTimeout(() => {
-        expect(callCount).toBe(1)
-        done()
-      }, delay + 50)
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          expect(callCount).toBe(1)
+          resolve()
+        }, delay + 50)
+      })
     })
   })
 
