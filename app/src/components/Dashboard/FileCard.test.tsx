@@ -57,14 +57,23 @@ describe('FileCard', () => {
       expect(screen.getByText('5 of 10 complete')).toBeInTheDocument()
     })
 
-    it('renders item count', () => {
+    it('renders remaining items count', () => {
+      // Mock has total: 10, complete: 5, so 5 remaining
       render(<FileCard file={createMockFile()} />)
-      expect(screen.getByText('10 items')).toBeInTheDocument()
+      expect(screen.getByText('5 remaining')).toBeInTheDocument()
     })
 
-    it('renders singular item text for 1 item', () => {
-      render(<FileCard file={createMockFile({ itemCount: 1 })} />)
-      expect(screen.getByText('1 item')).toBeInTheDocument()
+    it('renders zero remaining when all complete', () => {
+      render(<FileCard file={createMockFile({
+        progress: {
+          total: 10,
+          complete: 10,
+          inProgress: 0,
+          pending: 0,
+          percentage: 100,
+        },
+      })} />)
+      expect(screen.getByText('0 remaining')).toBeInTheDocument()
     })
 
     it('renders in-progress badge when file has in-progress items', () => {

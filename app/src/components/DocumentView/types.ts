@@ -34,6 +34,9 @@ export interface DocumentViewProps {
 
   /** Optional ID of an item to scroll to and highlight on mount */
   targetItemId?: string
+
+  /** Externally controlled focused item ID (for restoring focus after modal close) */
+  externalFocusedItemId?: string | null
 }
 
 /**

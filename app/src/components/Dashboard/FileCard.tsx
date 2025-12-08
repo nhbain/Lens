@@ -106,7 +106,7 @@ export const FileCard = ({
 
       <footer className="file-card__footer">
         <span className="file-card__meta">
-          {file.itemCount} item{file.itemCount === 1 ? '' : 's'}
+          {file.progress.total - file.progress.complete} remaining
         </span>
         <span className="file-card__meta">
           {formatRelativeTime(file.lastWorkedAt)}

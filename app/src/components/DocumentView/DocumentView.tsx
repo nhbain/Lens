@@ -64,6 +64,7 @@ export const DocumentView = ({
   onItemStatusChange,
   isLoading = false,
   targetItemId,
+  externalFocusedItemId,
 }: DocumentViewProps) => {
   const contentRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -123,6 +124,7 @@ export const DocumentView = ({
   // Keyboard navigation
   const {
     focusedItemId,
+    setFocusedItemId,
     handleKeyDown,
     containerRef: keyboardContainerRef,
   } = useTreeKeyboardNavigation({
@@ -137,6 +139,14 @@ export const DocumentView = ({
     searchInputRef,
     onClearSearch: clearSearch,
   })
+
+  // Sync with external focused item (e.g., restore focus after modal close)
+  // Always set when externalFocusedItemId has a value to ensure focus is restored
+  useEffect(() => {
+    if (externalFocusedItemId) {
+      setFocusedItemId(externalFocusedItemId)
+    }
+  }, [externalFocusedItemId, setFocusedItemId])
 
   // Scroll to target item and highlight it
   useEffect(() => {

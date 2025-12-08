@@ -15,9 +15,8 @@ import { useDocumentView } from './hooks/useDocumentView'
 import { useSettings } from './hooks/useSettings'
 import { useThemeApplication } from './hooks/useThemeApplication'
 import { useMarkdownEditor } from './hooks/useMarkdownEditor'
-import { getNextStatus } from './lib/progress'
 import type { TrackedFile, AddFileResult } from './lib/files'
-import type { TrackableItem } from './lib/parser/types'
+import type { TrackableItem, TrackingStatus } from './lib/parser/types'
 import type { ThemeOption, StorageStats, ExportData } from './lib/settings/types'
 import type { WatchedDirectory } from './lib/watcher/types'
 // Only import config management functions - not directory-watcher functions
@@ -49,6 +48,8 @@ export const App = () => {
   const [fileContent, setFileContent] = useState<string | null>(null)
   const [targetItemId, setTargetItemId] = useState<string | undefined>(undefined)
   const [dashboardRefreshTrigger, setDashboardRefreshTrigger] = useState(0)
+  const [focusedItemIdForRestore, setFocusedItemIdForRestore] = useState<string | null>(null)
+  const [focusedItemLineForRestore, setFocusedItemLineForRestore] = useState<number | null>(null)
 
   // Settings state
   const [watchedDirectories, setWatchedDirectories] = useState<WatchedDirectory[]>([])
@@ -177,6 +178,28 @@ export const App = () => {
     }
   }, [selectedFile])
 
+  // Update focused item ID when document refreshes (item IDs change when content is edited)
+  useEffect(() => {
+    if (!focusedItemLineForRestore || !parsedDocument) return
+
+    // Find item at the stored line number
+    const findItemAtLine = (items: TrackableItem[], line: number): TrackableItem | null => {
+      for (const item of items) {
+        if (item.position.line === line) return item
+        if (item.children.length > 0) {
+          const found = findItemAtLine(item.children, line)
+          if (found) return found
+        }
+      }
+      return null
+    }
+
+    const item = findItemAtLine(parsedDocument.tree, focusedItemLineForRestore)
+    if (item && item.id !== focusedItemIdForRestore) {
+      setFocusedItemIdForRestore(item.id)
+    }
+  }, [parsedDocument, focusedItemLineForRestore, focusedItemIdForRestore])
+
   // Use markdown editor hook for editing items
   const {
     editingItem,
@@ -285,6 +308,11 @@ export const App = () => {
     async (item: TrackableItem) => {
       if (!selectedFile) return
 
+      // Store the focused item ID and line number before opening editor (for restoring focus on close)
+      // Line number is needed because item IDs change when content is edited
+      setFocusedItemIdForRestore(item.id)
+      setFocusedItemLineForRestore(item.position.line)
+
       try {
         await openEditor(item, selectedFile.path)
       } catch (error) {
@@ -298,14 +326,12 @@ export const App = () => {
     [selectedFile, openEditor]
   )
 
-  // Handle item status change (Shift+click)
+  // Handle item status change (keyboard space or other triggers)
   const handleItemStatusChange = useCallback(
-    async (itemId: string) => {
-      const currentStatus = itemStatuses[itemId] ?? 'pending'
-      const nextStatus = getNextStatus(currentStatus)
-      await updateItemStatus(itemId, nextStatus)
+    async (itemId: string, newStatus: TrackingStatus) => {
+      await updateItemStatus(itemId, newStatus)
     },
-    [itemStatuses, updateItemStatus]
+    [updateItemStatus]
   )
 
   // Handle editor close
@@ -654,6 +680,7 @@ export const App = () => {
             onItemStatusChange={handleItemStatusChange}
             isLoading={isDocumentLoading}
             targetItemId={targetItemId}
+            externalFocusedItemId={!editingItem ? focusedItemIdForRestore : undefined}
           />
         </section>
 

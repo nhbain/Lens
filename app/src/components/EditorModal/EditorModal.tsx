@@ -93,8 +93,8 @@ export const EditorModal = ({
   isSaving = false,
 }: EditorModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null)
-  const previousActiveElement = useRef<Element | null>(null)
   const currentContentRef = useRef(initialContent)
+  const hasInitialFocusRef = useRef(false)
   const [isDirty, setIsDirty] = useState(false)
   const [editorInstance, setEditorInstance] = useState<Editor | null>(null)
 
@@ -158,36 +158,43 @@ export const EditorModal = ({
     onSave?.()
   }, [onSave])
 
-  // Setup and cleanup effects
+  // Focus the modal when it first opens
   useEffect(() => {
-    if (isOpen) {
-      // Store previously focused element
-      previousActiveElement.current = document.activeElement
-
-      // Add event listeners
-      document.addEventListener('keydown', handleKeyDown)
-
-      // Prevent body scroll in overlay mode
-      if (mode === 'overlay') {
-        document.body.style.overflow = 'hidden'
-      }
+    if (isOpen && !hasInitialFocusRef.current) {
+      hasInitialFocusRef.current = true
 
       // Focus the modal
       setTimeout(() => {
         modalRef.current?.focus()
       }, 0)
     }
+  }, [isOpen])
 
+  // Keyboard event listener effect (runs when handleKeyDown changes)
+  useEffect(() => {
+    if (!isOpen) return
+
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = ''
-
-      // Restore focus
-      if (previousActiveElement.current instanceof HTMLElement) {
-        previousActiveElement.current.focus()
-      }
     }
-  }, [isOpen, handleKeyDown, mode])
+  }, [isOpen, handleKeyDown])
+
+  // Body scroll and cleanup effect
+  useEffect(() => {
+    if (!isOpen) return
+
+    // Prevent body scroll in overlay mode
+    if (mode === 'overlay') {
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+      // Reset initial focus flag on unmount
+      hasInitialFocusRef.current = false
+    }
+  }, [isOpen, mode])
 
   if (!isOpen) return null
 

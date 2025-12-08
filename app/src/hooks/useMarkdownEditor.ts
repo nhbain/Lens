@@ -108,10 +108,24 @@ export const useMarkdownEditor = ({
   // Track if we've shown unsaved changes prompt
   const hasPromptedRef = useRef<boolean>(false)
 
+  // Refs for stable access in debounced function (avoids dependency on state)
+  const editingItemRef = useRef<TrackableItem | null>(null)
+  const isDirtyRef = useRef<boolean>(false)
+  const isSavingRef = useRef<boolean>(false)
+  const currentContentRef = useRef<string>('')
+  const sourcePathRef = useRef<string>('')
+
   // Compute dirty flag
   const isDirty = useMemo(() => {
     return currentContent !== originalContent
   }, [currentContent, originalContent])
+
+  // Sync refs with state (for stable access in debounced function)
+  useEffect(() => { editingItemRef.current = editingItem }, [editingItem])
+  useEffect(() => { isDirtyRef.current = isDirty }, [isDirty])
+  useEffect(() => { isSavingRef.current = isSaving }, [isSaving])
+  useEffect(() => { currentContentRef.current = currentContent }, [currentContent])
+  useEffect(() => { sourcePathRef.current = sourcePath }, [sourcePath])
 
   /**
    * Open the editor for a specific item.
@@ -171,6 +185,82 @@ export const useMarkdownEditor = ({
   const updateContent = useCallback((content: string) => {
     setCurrentContent(content)
   }, [])
+
+  /**
+   * Internal save implementation that reads from refs.
+   * This allows the function to be stable while still accessing current values.
+   * Used by auto-save to avoid dependency chain that causes focus loss.
+   */
+  const performSave = useCallback(async (): Promise<SaveResult> => {
+    const item = editingItemRef.current
+    const path = sourcePathRef.current
+    const content = currentContentRef.current
+
+    if (!item || !path) {
+      return {
+        success: false,
+        error: 'No item is currently being edited',
+      }
+    }
+
+    // Check dirty using current values from refs
+    if (!isDirtyRef.current) {
+      return {
+        success: true,
+      }
+    }
+
+    // Prevent concurrent saves
+    if (isSavingRef.current) {
+      return {
+        success: false,
+        error: 'Save already in progress',
+      }
+    }
+
+    setIsSaving(true)
+
+    try {
+      const fullContent = await readTextFile(path)
+      const lines = fullContent.split('\n')
+
+      if (
+        item.position.endLine === undefined ||
+        item.position.endColumn === undefined
+      ) {
+        throw new Error('Item does not have end position information')
+      }
+
+      const beforeLines = lines.slice(0, item.position.line - 1)
+      const afterLines = lines.slice(item.position.endLine)
+      const newContent = [...beforeLines, content, ...afterLines].join('\n')
+
+      const writeResult: WriteResult = await writeSourceFile(path, newContent, true)
+
+      if (!writeResult.success) {
+        throw new Error(writeResult.error ?? 'Failed to write file')
+      }
+
+      setOriginalContent(content)
+      onSaveSuccess?.()
+
+      return {
+        success: true,
+        backupPath: writeResult.backupPath,
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.error('Failed to save content:', error)
+      onSaveError?.(message)
+
+      return {
+        success: false,
+        error: message,
+      }
+    } finally {
+      setIsSaving(false)
+    }
+  }, [onSaveSuccess, onSaveError])
 
   /**
    * Save the current content back to the source file.
@@ -246,30 +336,34 @@ export const useMarkdownEditor = ({
     }
   }, [editingItem, sourcePath, currentContent, isDirty, onSaveSuccess, onSaveError])
 
-  // Auto-save with debounce
+  // Auto-save with debounce - reads from refs for stable reference
   const debouncedSave = useMemo(() => {
     if (!editorSettings?.autoSave) {
       return null
     }
 
     return debounce(() => {
-      // Only auto-save if we have an item and content is dirty
-      if (editingItem && isDirty && !isSaving) {
-        saveContent()
+      // Read from refs to avoid dependency on state (which causes recreating this function)
+      if (editingItemRef.current && isDirtyRef.current && !isSavingRef.current) {
+        performSave()
       }
     }, editorSettings.autoSaveDelay ?? 2000)
-  }, [editorSettings?.autoSave, editorSettings?.autoSaveDelay, editingItem, isDirty, isSaving, saveContent])
+  }, [editorSettings?.autoSave, editorSettings?.autoSaveDelay, performSave])
 
   // Trigger auto-save when content changes (if enabled)
+  // Only depends on currentContent to avoid re-running on isDirty/isSaving state changes
   useEffect(() => {
-    if (debouncedSave && isDirty && !isSaving) {
+    if (debouncedSave && isDirtyRef.current && !isSavingRef.current) {
       debouncedSave()
     }
+  }, [currentContent, debouncedSave])
 
+  // Cleanup debounced function on unmount or when debouncedSave changes
+  useEffect(() => {
     return () => {
       debouncedSave?.cancel()
     }
-  }, [debouncedSave, isDirty, isSaving])
+  }, [debouncedSave])
 
   // Keyboard shortcut: Cmd/Ctrl+S for manual save
   useEffect(() => {
