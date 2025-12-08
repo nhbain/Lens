@@ -536,3 +536,26 @@ npm run tauri build
 Built artifacts are located in:
 - **macOS:** `app/src-tauri/target/release/bundle/dmg/`
 - **Windows:** `app/src-tauri/target/release/bundle/msi/`
+
+## User Data Storage
+
+All user data is stored in Tauri's platform-specific app data directory under a `lens-state` subdirectory:
+
+| Platform | Path |
+|----------|------|
+| **macOS** | `~/Library/Application Support/{bundle-identifier}/lens-state/` |
+| **Windows** | `C:\Users\{username}\AppData\Roaming\{bundle-identifier}\lens-state\` |
+| **Linux** | `~/.local/share/{bundle-identifier}/lens-state/` |
+
+The `{bundle-identifier}` is defined in `app/src-tauri/tauri.conf.json` under the `identifier` field.
+
+### Files Stored
+
+| File | Purpose |
+|------|---------|
+| `settings.json` | Application preferences (theme, animation, editor settings) |
+| `state-{hash}.json` | Tracking state for each markdown file |
+| `watch-config.json` | Watched directories configuration |
+| `*.bak` | Backup files created before writes |
+
+> **Note:** Dev mode and production builds use the same storage location. The path is determined by Tauri's `appDataDir()` API based on the bundle identifier.
