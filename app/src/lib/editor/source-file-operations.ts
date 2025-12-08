@@ -3,7 +3,7 @@
  * Provides atomic write, backup, and validation capabilities.
  */
 
-import { writeTextFile, exists, copyFile, rename } from '@tauri-apps/plugin-fs'
+import { writeTextFile, exists, copyFile, rename, remove } from '@tauri-apps/plugin-fs'
 
 /**
  * Result type for write operations.
@@ -85,7 +85,6 @@ export async function writeSourceFileAtomic(path: string, content: string): Prom
     try {
       const tempExists = await exists(tempPath)
       if (tempExists) {
-        const { remove } = await import('@tauri-apps/plugin-fs')
         await remove(tempPath)
       }
     } catch {

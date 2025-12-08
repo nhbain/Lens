@@ -694,5 +694,17 @@ code, pre, .mono {
 }
 
 /* ==========================================================================
+   Lazy Loading Fallback
+   ========================================================================== */
+.loading-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+/* ==========================================================================
    Dark OLED Luxury Theme - Default
    ========================================================================== */

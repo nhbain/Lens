@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react'
 import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
 import { open, save } from '@tauri-apps/plugin-dialog'
 import './App.css'
@@ -6,8 +6,9 @@ import { Button } from './lib/common-components'
 import { Message } from './components/TrackedFilesList'
 import { DocumentView } from './components/DocumentView'
 import { Dashboard } from './components/Dashboard'
-import { Settings } from './components/Settings'
-import { EditorModal } from './components/EditorModal'
+// Lazy load heavy components for better initial bundle size
+const Settings = lazy(() => import('./components/Settings').then(m => ({ default: m.Settings })))
+const EditorModal = lazy(() => import('./components/EditorModal').then(m => ({ default: m.EditorModal })))
 import type { DashboardFile, DashboardNavigationTarget } from './components/Dashboard'
 import { useFileImport } from './hooks/useFileImport'
 import { useDocumentView } from './hooks/useDocumentView'
@@ -564,30 +565,32 @@ export const App = () => {
           />
         )}
 
-        <Settings
-          settings={settings}
-          watchedDirectories={watchedDirectories}
-          storageStats={storageStats}
-          isLoading={isSettingsLoading || settingsLoading}
-          error={settingsError}
-          successMessage={settingsSuccessMessage}
-          onBack={handleBackFromSettings}
-          onAddDirectory={handleAddDirectory}
-          onRemoveDirectory={handleRemoveDirectory}
-          onToggleDirectoryEnabled={handleToggleDirectoryEnabled}
-          onAddPattern={handleAddPattern}
-          onRemovePattern={handleRemovePattern}
-          onThemeChange={handleThemeChange}
-          onAnimationIntensityChange={handleAnimationIntensityChange}
-          onThemeColorChange={handleThemeColorChange}
-          onResetThemeSettings={handleResetThemeSettings}
-          onEditorViewModeChange={handleEditorViewModeChange}
-          onEditorAutoSaveChange={handleEditorAutoSaveChange}
-          onEditorAutoSaveDelayChange={handleEditorAutoSaveDelayChange}
-          onClearData={handleClearData}
-          onExportData={handleExportData}
-          onImportData={handleImportData}
-        />
+        <Suspense fallback={<div className="loading-fallback">Loading settings...</div>}>
+          <Settings
+            settings={settings}
+            watchedDirectories={watchedDirectories}
+            storageStats={storageStats}
+            isLoading={isSettingsLoading || settingsLoading}
+            error={settingsError}
+            successMessage={settingsSuccessMessage}
+            onBack={handleBackFromSettings}
+            onAddDirectory={handleAddDirectory}
+            onRemoveDirectory={handleRemoveDirectory}
+            onToggleDirectoryEnabled={handleToggleDirectoryEnabled}
+            onAddPattern={handleAddPattern}
+            onRemovePattern={handleRemovePattern}
+            onThemeChange={handleThemeChange}
+            onAnimationIntensityChange={handleAnimationIntensityChange}
+            onThemeColorChange={handleThemeColorChange}
+            onResetThemeSettings={handleResetThemeSettings}
+            onEditorViewModeChange={handleEditorViewModeChange}
+            onEditorAutoSaveChange={handleEditorAutoSaveChange}
+            onEditorAutoSaveDelayChange={handleEditorAutoSaveDelayChange}
+            onClearData={handleClearData}
+            onExportData={handleExportData}
+            onImportData={handleImportData}
+          />
+        </Suspense>
       </main>
     )
   }
@@ -637,18 +640,20 @@ export const App = () => {
           />
         </section>
 
-        {/* Editor Modal */}
+        {/* Editor Modal - Lazy loaded for better initial bundle size */}
         {editingItem && (
-          <EditorModal
-            isOpen={true}
-            onClose={handleEditorClose}
-            title={`Edit: ${editingItem.content}`}
-            mode={settings?.editor.viewMode ?? 'overlay'}
-            initialContent={editorContent}
-            onContentChange={updateEditorContent}
-            onSave={handleEditorSave}
-            isSaving={isEditorSaving}
-          />
+          <Suspense fallback={<div className="loading-fallback">Loading editor...</div>}>
+            <EditorModal
+              isOpen={true}
+              onClose={handleEditorClose}
+              title={`Edit: ${editingItem.content}`}
+              mode={settings?.editor.viewMode ?? 'overlay'}
+              initialContent={editorContent}
+              onContentChange={updateEditorContent}
+              onSave={handleEditorSave}
+              isSaving={isEditorSaving}
+            />
+          </Suspense>
         )}
       </main>
     )

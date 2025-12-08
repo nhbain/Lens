@@ -14,6 +14,46 @@ export default defineConfig(async () => ({
     },
   },
 
+  // Build optimization: Split vendor chunks for better caching
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React core - loaded on every page
+          "vendor-react": ["react", "react-dom"],
+
+          // Tauri plugins - loaded on every page for file operations
+          "vendor-tauri": [
+            "@tauri-apps/api",
+            "@tauri-apps/plugin-fs",
+            "@tauri-apps/plugin-dialog",
+            "@tauri-apps/plugin-opener",
+          ],
+
+          // Markdown parsing - used by parser and editor
+          "vendor-markdown": [
+            "unified",
+            "remark-parse",
+            "remark-gfm",
+            "unist-util-visit",
+          ],
+
+          // Milkdown editor - only needed for edit modal (lazy loaded)
+          "vendor-milkdown": [
+            "@milkdown/core",
+            "@milkdown/react",
+            "@milkdown/preset-commonmark",
+            "@milkdown/preset-gfm",
+            "@milkdown/plugin-listener",
+          ],
+
+          // Color picker - only needed in settings
+          "vendor-colorpicker": ["react-colorful"],
+        },
+      },
+    },
+  },
+
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent Vite from obscuring rust errors
