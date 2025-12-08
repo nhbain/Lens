@@ -292,3 +292,71 @@ export async function loadAllFileStates(): Promise<Map<string, FileTrackingState
 
   return stateMap
 }
+
+/**
+ * Updates the collapse state of a single item within a file's tracking state.
+ *
+ * @param sourcePath - Absolute path to the source markdown file
+ * @param itemId - ID of the item to update
+ * @param collapsed - Whether the item is collapsed
+ * @returns The updated file state, or null if file state doesn't exist
+ */
+export async function updateCollapseState(
+  sourcePath: string,
+  itemId: string,
+  collapsed: boolean
+): Promise<FileTrackingState | null> {
+  const fileState = await loadFileState(sourcePath)
+
+  if (!fileState) {
+    return null
+  }
+
+  // Ensure collapsedItems exists (for backward compatibility with existing state files)
+  const collapsedItems = fileState.collapsedItems ?? {}
+
+  const updatedState: FileTrackingState = {
+    ...fileState,
+    collapsedItems: {
+      ...collapsedItems,
+      [itemId]: collapsed,
+    },
+  }
+
+  await saveFileState(updatedState)
+  return updatedState
+}
+
+/**
+ * Sets the collapse state for multiple items at once (Expand All / Collapse All).
+ *
+ * @param sourcePath - Absolute path to the source markdown file
+ * @param collapsed - Whether all items should be collapsed
+ * @param itemIds - Array of item IDs to update
+ * @returns The updated file state, or null if file state doesn't exist
+ */
+export async function setAllCollapsed(
+  sourcePath: string,
+  collapsed: boolean,
+  itemIds: string[]
+): Promise<FileTrackingState | null> {
+  const fileState = await loadFileState(sourcePath)
+
+  if (!fileState) {
+    return null
+  }
+
+  // Create new collapsed state for all specified items
+  const newCollapsedItems: Record<string, boolean> = {}
+  for (const itemId of itemIds) {
+    newCollapsedItems[itemId] = collapsed
+  }
+
+  const updatedState: FileTrackingState = {
+    ...fileState,
+    collapsedItems: newCollapsedItems,
+  }
+
+  await saveFileState(updatedState)
+  return updatedState
+}

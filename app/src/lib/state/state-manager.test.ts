@@ -69,6 +69,7 @@ describe('saveFileState', () => {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -92,6 +93,7 @@ describe('saveFileState', () => {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -119,6 +121,7 @@ describe('saveFileState', () => {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -156,6 +159,7 @@ describe('loadFileState', () => {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -172,6 +176,7 @@ describe('loadFileState', () => {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -231,6 +236,7 @@ describe('listTrackedFiles', () => {
       sourcePath: '/path/to/file1.md',
       contentHash: 'hash1',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -238,6 +244,7 @@ describe('listTrackedFiles', () => {
       sourcePath: '/path/to/file2.md',
       contentHash: 'hash2',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -264,6 +271,7 @@ describe('listTrackedFiles', () => {
         sourcePath: '/path/to/file.md',
         contentHash: 'hash',
         items: {},
+        collapsedItems: {},
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
       })
@@ -285,6 +293,7 @@ describe('listTrackedFiles', () => {
           sourcePath: '/path/to/valid.md',
           contentHash: 'hash',
           items: {},
+          collapsedItems: {},
           createdAt: '2024-01-01T00:00:00.000Z',
           updatedAt: '2024-01-01T00:00:00.000Z',
         })
@@ -328,6 +337,7 @@ describe('getOrCreateFileState', () => {
       sourcePath: '/path/to/file.md',
       contentHash: 'existing-hash',
       items: { item1: { itemId: 'item1', status: 'complete', updatedAt: '2024-01-01T00:00:00.000Z' } },
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -375,6 +385,7 @@ describe('updateItemStatus', () => {
       items: {
         item1: { itemId: 'item1', status: 'pending', updatedAt: '2024-01-01T00:00:00.000Z' },
       },
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -395,6 +406,7 @@ describe('updateItemStatus', () => {
       sourcePath: '/path/to/file.md',
       contentHash: 'hash',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -430,6 +442,7 @@ describe('updateContentHash', () => {
       sourcePath: '/path/to/file.md',
       contentHash: 'old-hash',
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }

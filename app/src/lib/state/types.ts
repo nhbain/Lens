@@ -30,6 +30,8 @@ export interface FileTrackingState {
   contentHash: string
   /** Map of item IDs to their tracking states */
   items: Record<string, ItemTrackingState>
+  /** Map of header item IDs to their collapsed state (true = collapsed) */
+  collapsedItems: Record<string, boolean>
   /** ISO timestamp when tracking was first created for this file */
   createdAt: string
   /** ISO timestamp when this file's state was last modified */
@@ -94,6 +96,18 @@ export function isFileTrackingState(value: unknown): value is FileTrackingState 
       return false
     }
   }
+  // Validate collapsedItems if present (optional for backward compatibility)
+  if (obj.collapsedItems !== undefined) {
+    if (typeof obj.collapsedItems !== 'object' || obj.collapsedItems === null) {
+      return false
+    }
+    const collapsedItems = obj.collapsedItems as Record<string, unknown>
+    for (const key in collapsedItems) {
+      if (typeof collapsedItems[key] !== 'boolean') {
+        return false
+      }
+    }
+  }
   return true
 }
 
@@ -144,6 +158,7 @@ export function createFileTrackingState(
     sourcePath,
     contentHash,
     items: {},
+    collapsedItems: {},
     createdAt: now,
     updatedAt: now,
   }

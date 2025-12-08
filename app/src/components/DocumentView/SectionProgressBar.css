@@ -1,0 +1,121 @@
+/**
+ * SectionProgressBar component styles.
+ * Thin inline progress bar with completion text and theme-aware styling.
+ */
+
+/* ==========================================================================
+   Container
+   ========================================================================== */
+.section-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: 0.75rem;
+}
+
+/* ==========================================================================
+   Progress Bar Track
+   ========================================================================== */
+.section-progress-bar {
+  width: 4rem;
+  height: 4px;
+  background-color: var(--color-surface-3);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ==========================================================================
+   Progress Bar Fill
+   ========================================================================== */
+.section-progress-fill {
+  height: 100%;
+  background-color: var(--color-accent);
+  border-radius: 2px;
+  transition: width var(--transition-normal) var(--ease-out-expo);
+  position: relative;
+}
+
+/* Complete state - emerald green */
+.section-progress--complete .section-progress-fill {
+  background-color: var(--color-accent-secondary);
+}
+
+/* ==========================================================================
+   Shimmer Animation (full animation mode)
+   ========================================================================== */
+[data-animation="full"] .section-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Complete glow effect (full animation mode) */
+[data-animation="full"] .section-progress--complete .section-progress-fill {
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.3);
+}
+
+[data-animation="full"] .section-progress--complete .section-progress-fill::after {
+  animation: none;
+}
+
+/* ==========================================================================
+   Completion Text
+   ========================================================================== */
+.section-progress-text {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.section-progress--complete .section-progress-text {
+  color: var(--color-accent-secondary);
+}
+
+/* ==========================================================================
+   Animation Mode Overrides
+   ========================================================================== */
+
+/* Animation OFF - No transitions */
+[data-animation="off"] .section-progress-fill {
+  transition: none;
+}
+
+[data-animation="off"] .section-progress-fill::after {
+  display: none;
+}
+
+/* Animation REDUCED - Faster transitions, no shimmer */
+[data-animation="reduced"] .section-progress-fill {
+  transition: width var(--transition-fast);
+}
+
+[data-animation="reduced"] .section-progress-fill::after {
+  display: none;
+}
+
+[data-animation="reduced"] .section-progress--complete .section-progress-fill {
+  box-shadow: none;
+}

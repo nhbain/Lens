@@ -67,6 +67,8 @@ export {
   updateItemStatus,
   updateContentHash,
   loadAllFileStates,
+  updateCollapseState,
+  setAllCollapsed,
 } from './state-manager'
 
 // File system utilities (for advanced use cases)

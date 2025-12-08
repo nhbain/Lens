@@ -1,0 +1,76 @@
+/**
+ * FilterButtons component styles.
+ * Status filter button group with theme-aware styling.
+ */
+
+/* ==========================================================================
+   Container
+   ========================================================================== */
+.filter-buttons {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Filter Button
+   ========================================================================== */
+.filter-button {
+  position: relative;
+}
+
+/* Active state styling */
+.filter-button--active {
+  background-color: var(--color-accent-muted);
+  color: var(--color-accent);
+  border-color: var(--color-accent-ring);
+}
+
+/* ==========================================================================
+   Count Badge
+   ========================================================================== */
+.filter-button-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.125rem;
+  padding: 0 0.375rem;
+  margin-left: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  background-color: var(--color-surface-3);
+  color: var(--color-text-muted);
+}
+
+.filter-button--active .filter-button-count {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+/* ==========================================================================
+   Hover Glow Effect (full animation mode)
+   ========================================================================== */
+[data-animation="full"] .filter-button:hover:not(.filter-button--active) {
+  box-shadow: 0 0 8px rgba(0, 240, 244, 0.1);
+}
+
+/* ==========================================================================
+   Animation Mode Overrides
+   ========================================================================== */
+
+/* Animation OFF */
+[data-animation="off"] .filter-button {
+  transition: none;
+}
+
+/* Animation REDUCED */
+[data-animation="reduced"] .filter-button {
+  transition: background-color var(--transition-fast),
+              color var(--transition-fast);
+}
+
+[data-animation="reduced"] .filter-button:hover {
+  box-shadow: none;
+}

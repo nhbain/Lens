@@ -537,7 +537,7 @@ export const App = () => {
 
         <section className="app-document">
           <DocumentView
-            items={parsedDocument?.items ?? []}
+            items={parsedDocument?.tree ?? []}
             filePath={selectedFile.path}
             title={selectedFile.fileName}
             itemStatuses={itemStatuses}

@@ -242,6 +242,53 @@ describe('deriveDeepParentStatus', () => {
 
     expect(deriveDeepParentStatus(item, statuses)).toBe('in_progress')
   })
+
+  it('stays in_progress when some children complete and others pending (was in_progress)', () => {
+    const item = createItem('parent', [
+      createItem('child-1'),
+      createItem('child-2'),
+      createItem('child-3'),
+    ])
+
+    const statuses: Record<string, TrackingStatus> = {
+      'child-1': 'complete',
+      'child-2': 'pending',
+      'child-3': 'pending',
+    }
+
+    // Parent was in_progress, should stay in_progress since work has been done
+    expect(deriveDeepParentStatus(item, statuses, 'in_progress')).toBe('in_progress')
+  })
+
+  it('returns to pending when all children reset to pending (was in_progress)', () => {
+    const item = createItem('parent', [
+      createItem('child-1'),
+      createItem('child-2'),
+    ])
+
+    const statuses: Record<string, TrackingStatus> = {
+      'child-1': 'pending',
+      'child-2': 'pending',
+    }
+
+    // Parent was in_progress, but all children reset to pending
+    expect(deriveDeepParentStatus(item, statuses, 'in_progress')).toBe('pending')
+  })
+
+  it('stays pending when some children complete but was never in_progress', () => {
+    const item = createItem('parent', [
+      createItem('child-1'),
+      createItem('child-2'),
+    ])
+
+    const statuses: Record<string, TrackingStatus> = {
+      'child-1': 'complete',
+      'child-2': 'pending',
+    }
+
+    // Parent was pending, with no in_progress children, stays pending
+    expect(deriveDeepParentStatus(item, statuses, 'pending')).toBe('pending')
+  })
 })
 
 describe('findAncestors', () => {
@@ -397,6 +444,112 @@ describe('propagateStatusChange', () => {
 
     const updates = propagateStatusChange('child-1', items, statuses)
 
+    expect(updates.get('parent')).toBe('pending')
+  })
+
+  it('does not mark grandparent complete when sibling branch has incomplete nested children', () => {
+    // grandparent
+    //   ├─ parent (children all complete)
+    //   │    ├─ child-1 (complete)
+    //   │    └─ child-2 (complete)
+    //   └─ aunt (has incomplete nested children)
+    //        └─ cousin (pending)
+    const items = [
+      createItem('grandparent', [
+        createItem('parent', [
+          createItem('child-1'),
+          createItem('child-2'),
+        ]),
+        createItem('aunt', [
+          createItem('cousin'),
+        ]),
+      ]),
+    ]
+
+    const statuses: Record<string, TrackingStatus> = {
+      'child-1': 'complete',
+      'child-2': 'complete',
+      'parent': 'pending',
+      'cousin': 'pending', // Still pending
+      'aunt': 'pending',
+      'grandparent': 'pending',
+    }
+
+    const updates = propagateStatusChange('child-2', items, statuses)
+
+    // parent should become complete (all its children are complete)
+    expect(updates.get('parent')).toBe('complete')
+    // grandparent should NOT become complete (cousin is still pending)
+    expect(updates.has('grandparent')).toBe(false)
+  })
+
+  it('marks grandparent complete only when all nested descendants are complete', () => {
+    const items = [
+      createItem('grandparent', [
+        createItem('parent', [
+          createItem('child-1'),
+          createItem('child-2'),
+        ]),
+        createItem('aunt', [
+          createItem('cousin'),
+        ]),
+      ]),
+    ]
+
+    const statuses: Record<string, TrackingStatus> = {
+      'child-1': 'complete',
+      'child-2': 'complete',
+      'parent': 'complete',
+      'cousin': 'complete', // Now complete too
+      'aunt': 'complete',
+      'grandparent': 'pending',
+    }
+
+    const updates = propagateStatusChange('cousin', items, statuses)
+
+    // grandparent should now become complete (all descendants are complete)
+    expect(updates.get('grandparent')).toBe('complete')
+  })
+
+  it('keeps parent in_progress when child completes but siblings are pending', () => {
+    const items = [
+      createItem('parent', [
+        createItem('child-1'),
+        createItem('child-2'),
+        createItem('child-3'),
+      ]),
+    ]
+
+    const statuses: Record<string, TrackingStatus> = {
+      'child-1': 'complete', // Just completed
+      'child-2': 'pending',
+      'child-3': 'pending',
+      'parent': 'in_progress', // Was already in_progress
+    }
+
+    const updates = propagateStatusChange('child-1', items, statuses)
+
+    // Parent should NOT be updated (stays in_progress)
+    expect(updates.has('parent')).toBe(false)
+  })
+
+  it('resets parent to pending when all children reset to pending', () => {
+    const items = [
+      createItem('parent', [
+        createItem('child-1'),
+        createItem('child-2'),
+      ]),
+    ]
+
+    const statuses: Record<string, TrackingStatus> = {
+      'child-1': 'pending', // Reset to pending
+      'child-2': 'pending', // Reset to pending
+      'parent': 'in_progress', // Was in_progress
+    }
+
+    const updates = propagateStatusChange('child-1', items, statuses)
+
+    // Parent should go back to pending
     expect(updates.get('parent')).toBe('pending')
   })
 })

@@ -139,6 +139,7 @@ export const useDocumentView = ({
             sourcePath: filePath,
             contentHash: '',
             items: allUpdates,
+            collapsedItems: {},
             createdAt: now,
             updatedAt: now,
           }
@@ -160,6 +161,7 @@ export const useDocumentView = ({
           sourcePath: filePath,
           contentHash: '',
           items: {},
+          collapsedItems: {},
           createdAt: now,
           updatedAt: now,
         }

@@ -1,37 +1,41 @@
 /**
  * DocumentView component.
  * Renders a parsed markdown document with trackable items for progress tracking.
+ * Supports collapsible tree view for hierarchical navigation.
  */
 
-import { useRef, useEffect, useState, useMemo } from 'react'
+import { useRef, useEffect, useState, useMemo, useCallback } from 'react'
 import type { TrackableItem, TrackingStatus } from '@/lib/parser/types'
 import type { DocumentViewProps } from './types'
 import { TrackableItemRow } from './TrackableItemRow'
+import { DocumentHeader } from './DocumentHeader'
+import { useCollapseState } from '@/hooks/useCollapseState'
+import { useDocumentFilters } from '@/hooks/useDocumentFilters'
+import { useTreeKeyboardNavigation } from '@/hooks/useTreeKeyboardNavigation'
+import { calculateSectionProgress, calculateDocumentProgress, type SectionProgress } from '@/lib/progress'
 import './DocumentView.css'
 
 /**
- * Flatten a tree of trackable items into a single list while preserving order.
- * Each item in the tree is followed by its children recursively.
+ * Count total items in a tree (for empty check).
  */
-const flattenItems = (items: TrackableItem[]): TrackableItem[] => {
-  const result: TrackableItem[] = []
-
+const countItems = (items: TrackableItem[]): number => {
+  let count = 0
   const traverse = (itemList: TrackableItem[]) => {
     for (const item of itemList) {
-      result.push(item)
+      count++
       if (item.children.length > 0) {
         traverse(item.children)
       }
     }
   }
-
   traverse(items)
-  return result
+  return count
 }
 
 /**
  * Renders a parsed markdown document with interactive trackable items.
  * Supports displaying headers, list items, and checkboxes with status tracking.
+ * Features collapsible tree structure for headers with children.
  */
 export const DocumentView = ({
   items,
@@ -44,11 +48,68 @@ export const DocumentView = ({
   targetItemId,
 }: DocumentViewProps) => {
   const contentRef = useRef<HTMLDivElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null)
   const hasScrolledRef = useRef(false)
 
-  // Flatten items to ensure all nested items are rendered
-  const flatItems = useMemo(() => flattenItems(items), [items])
+  // Collapse state management
+  const {
+    isCollapsed,
+    toggleCollapse,
+    collapseAll,
+    expandAll,
+    collapsedItems,
+  } = useCollapseState({
+    filePath: filePath ?? '',
+    tree: items,
+  })
+
+  // Filter and search state
+  const {
+    activeFilter,
+    searchQuery,
+    setFilter,
+    setSearchQuery,
+    clearSearch,
+    filterItems,
+    countByStatus,
+    isFiltered,
+  } = useDocumentFilters()
+
+  // Count total items for empty check
+  const totalItems = useMemo(() => countItems(items), [items])
+
+  // Filter items based on current filter and search
+  const filteredItems = useMemo(() => {
+    return filterItems(items, itemStatuses)
+  }, [filterItems, items, itemStatuses])
+
+  // Calculate status counts (from original items, not filtered)
+  const statusCounts = useMemo(() => {
+    return countByStatus(items, itemStatuses)
+  }, [countByStatus, items, itemStatuses])
+
+  // Calculate overall document progress
+  const documentProgress = useMemo(() => {
+    return calculateDocumentProgress(items, itemStatuses)
+  }, [items, itemStatuses])
+
+  // Keyboard navigation
+  const {
+    focusedItemId,
+    handleKeyDown,
+    containerRef: keyboardContainerRef,
+  } = useTreeKeyboardNavigation({
+    items: filteredItems,
+    collapsedItems,
+    itemStatuses,
+    onToggleCollapse: toggleCollapse,
+    onExpandAll: expandAll,
+    onCollapseAll: collapseAll,
+    onStatusChange: onItemStatusChange,
+    searchInputRef,
+    onClearSearch: clearSearch,
+  })
 
   // Scroll to target item and highlight it
   useEffect(() => {
@@ -75,24 +136,31 @@ export const DocumentView = ({
     }, 100)
 
     return () => clearTimeout(timer)
-  }, [targetItemId, flatItems])
+  }, [targetItemId, items])
 
   // Reset scroll flag when targetItemId changes
   useEffect(() => {
     hasScrolledRef.current = false
   }, [targetItemId])
 
-  const getItemStatus = (itemId: string): TrackingStatus => {
+  const getItemStatus = useCallback((itemId: string): TrackingStatus => {
     return itemStatuses[itemId] ?? 'pending'
-  }
+  }, [itemStatuses])
 
-  const handleItemClick = (item: TrackableItem) => {
+  // Calculate progress for headers with children
+  const getItemProgress = useCallback((item: TrackableItem): SectionProgress | undefined => {
+    if (item.type !== 'header' || item.children.length === 0) {
+      return undefined
+    }
+    return calculateSectionProgress(item, itemStatuses)
+  }, [itemStatuses])
+
+  const handleItemClick = useCallback((item: TrackableItem) => {
     onItemClick?.(item)
-  }
+  }, [onItemClick])
 
-  const handleItemActivate = (item: TrackableItem) => {
-    // For now, activation cycles through statuses
-    // This will be properly implemented in Story 7
+  const handleItemActivate = useCallback((item: TrackableItem) => {
+    // Activation cycles through statuses
     const currentStatus = getItemStatus(item.id)
     const nextStatus: TrackingStatus =
       currentStatus === 'pending'
@@ -101,6 +169,50 @@ export const DocumentView = ({
           ? 'complete'
           : 'pending'
     onItemStatusChange?.(item.id, nextStatus)
+  }, [getItemStatus, onItemStatusChange])
+
+  const handleToggleCollapse = useCallback((item: TrackableItem) => {
+    toggleCollapse(item.id)
+  }, [toggleCollapse])
+
+  // Combine focused item from keyboard navigation and highlighted from scroll-to-target
+  const activeFocusId = focusedItemId ?? highlightedItemId
+
+  /**
+   * Recursively render tree items with collapse/expand support.
+   * Note: Not wrapped in useCallback because recursive functions can't reference themselves in the deps array.
+   */
+  function renderTreeItems(treeItems: TrackableItem[], depth: number = 0): React.ReactNode {
+    return treeItems.map((item) => {
+      const hasChildren = item.children.length > 0
+      const collapsed = isCollapsed(item.id)
+      const showChildren = hasChildren && !collapsed
+
+      return (
+        <div key={item.id} className="tree-node" style={{ '--tree-depth': depth } as React.CSSProperties}>
+          <TrackableItemRow
+            item={item}
+            status={getItemStatus(item.id)}
+            isFocused={item.id === activeFocusId}
+            hasChildren={hasChildren}
+            isCollapsed={collapsed}
+            onToggleCollapse={handleToggleCollapse}
+            onClick={handleItemClick}
+            onActivate={handleItemActivate}
+            progress={getItemProgress(item)}
+            searchQuery={searchQuery}
+          />
+          {hasChildren && (
+            <div
+              className={`tree-children ${collapsed ? 'tree-children--collapsed' : 'tree-children--expanded'}`}
+              aria-hidden={collapsed}
+            >
+              {showChildren && renderTreeItems(item.children, depth + 1)}
+            </div>
+          )}
+        </div>
+      )
+    })
   }
 
   if (isLoading) {
@@ -114,7 +226,7 @@ export const DocumentView = ({
     )
   }
 
-  if (flatItems.length === 0) {
+  if (totalItems === 0) {
     return (
       <div className="document-view document-view--empty">
         <div className="document-view-empty-state">
@@ -128,30 +240,60 @@ export const DocumentView = ({
     )
   }
 
+  // Show empty state for filtered results
+  const filteredCount = countItems(filteredItems)
+  const showNoResults = isFiltered && filteredCount === 0
+
   return (
     <div className="document-view">
-      {(title ?? filePath) && (
-        <header className="document-view-header">
-          {title && <h1 className="document-view-title">{title}</h1>}
-          {filePath && (
-            <p className="document-view-filepath" title={filePath}>
-              {filePath}
-            </p>
-          )}
-        </header>
+      <DocumentHeader
+        title={title}
+        filePath={filePath}
+        progress={documentProgress}
+        activeFilter={activeFilter}
+        onFilterChange={setFilter}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSearchClear={clearSearch}
+        statusCounts={statusCounts}
+        onExpandAll={expandAll}
+        onCollapseAll={collapseAll}
+        searchInputRef={searchInputRef}
+      />
+      {showNoResults ? (
+        <div className="document-view-no-results">
+          <p className="document-view-no-results-text">
+            No items match your filter
+          </p>
+          <button
+            type="button"
+            className="document-view-clear-filter"
+            onClick={() => {
+              setFilter('all')
+              clearSearch()
+            }}
+          >
+            Clear filters
+          </button>
+        </div>
+      ) : (
+        <div
+          ref={(el) => {
+            // Combine refs
+            contentRef.current = el
+            if (keyboardContainerRef) {
+              keyboardContainerRef.current = el
+            }
+          }}
+          className="document-view-content"
+          role="tree"
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
+          aria-activedescendant={activeFocusId ?? undefined}
+        >
+          {renderTreeItems(filteredItems)}
+        </div>
       )}
-      <div ref={contentRef} className="document-view-content" role="list">
-        {flatItems.map((item) => (
-          <TrackableItemRow
-            key={item.id}
-            item={item}
-            status={getItemStatus(item.id)}
-            isFocused={item.id === highlightedItemId}
-            onClick={handleItemClick}
-            onActivate={handleItemActivate}
-          />
-        ))}
-      </div>
     </div>
   )
 }

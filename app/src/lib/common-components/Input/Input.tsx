@@ -3,7 +3,7 @@
  * Follows Dark OLED Luxury theme from ui-update.md.
  */
 
-import { useId } from 'react'
+import { useId, forwardRef } from 'react'
 import './Input.css'
 
 export type InputType = 'text' | 'search' | 'number' | 'password'
@@ -48,7 +48,7 @@ export interface InputProps {
  * Reusable input component with consistent styling across the app.
  * Supports label, error state, and multiple sizes.
  */
-export const Input = ({
+export const Input = forwardRef<HTMLInputElement, InputProps>(({
   type = 'text',
   size = 'medium',
   label,
@@ -65,7 +65,7 @@ export const Input = ({
   'aria-describedby': ariaDescribedBy,
   className = '',
   onKeyDown,
-}: InputProps) => {
+}, ref) => {
   const generatedId = useId()
   const inputId = providedId || generatedId
   const errorId = `${inputId}-error`
@@ -94,6 +94,7 @@ export const Input = ({
         </label>
       )}
       <input
+        ref={ref}
         type={type}
         id={inputId}
         name={name}
@@ -114,4 +115,6 @@ export const Input = ({
       )}
     </div>
   )
-}
+})
+
+Input.displayName = 'Input'

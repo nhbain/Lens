@@ -162,13 +162,21 @@ export const deriveParentStatus = (
 /**
  * Derives parent status recursively, considering all nested descendants.
  *
+ * Transition rules:
+ * - All descendants complete → parent complete
+ * - Any descendant in_progress → parent in_progress
+ * - Parent was in_progress AND any progress made (complete > 0) → parent stays in_progress
+ * - All descendants pending → parent pending
+ *
  * @param item - Parent item with children
  * @param statuses - Map of item IDs to their tracking status
+ * @param currentParentStatus - The current status of the parent (for transition rules)
  * @returns Recommended status for the parent based on all descendants
  */
 export const deriveDeepParentStatus = (
   item: TrackableItem,
-  statuses: Record<string, TrackingStatus>
+  statuses: Record<string, TrackingStatus>,
+  currentParentStatus: TrackingStatus = 'pending'
 ): TrackingStatus => {
   const progress = calculateDeepProgress(item, statuses)
 
@@ -176,14 +184,23 @@ export const deriveDeepParentStatus = (
     return 'pending'
   }
 
+  // All descendants complete → parent complete
   if (progress.complete === progress.total) {
     return 'complete'
   }
 
+  // Any descendant in_progress → parent in_progress
   if (progress.inProgress > 0) {
     return 'in_progress'
   }
 
+  // If parent was in_progress and some work has been done (not all pending),
+  // keep it in_progress until all complete or all reset to pending
+  if (currentParentStatus === 'in_progress' && progress.complete > 0) {
+    return 'in_progress'
+  }
+
+  // All descendants pending → parent pending
   return 'pending'
 }
 
@@ -265,12 +282,13 @@ export const propagateStatusChange = (
   buildMap(items)
 
   // Check each ancestor for status changes
+  // Use deriveDeepParentStatus to check ALL descendants, not just direct children
   for (const ancestorId of ancestors) {
     const ancestor = itemMap.get(ancestorId)
     if (!ancestor) continue
 
     const currentStatus = statuses[ancestorId] ?? 'pending'
-    const derivedStatus = deriveParentStatus(ancestor.children, statuses)
+    const derivedStatus = deriveDeepParentStatus(ancestor, statuses, currentStatus)
 
     if (derivedStatus !== currentStatus) {
       updates.set(ancestorId, derivedStatus)

@@ -54,15 +54,16 @@ const calculateProgress = (
     }
   }
 
-  // Use actual tracked items count for percentage calculation
-  const total = items.length > 0 ? items.length : itemCount
-  const percentage = total > 0 ? Math.round((complete / total) * 100) : 0
+  // Use document's total item count (not just tracked items)
+  // pending = total items minus those explicitly tracked as complete or in_progress
+  const actualPending = itemCount - complete - inProgress
+  const percentage = itemCount > 0 ? Math.round((complete / itemCount) * 100) : 0
 
   return {
-    total,
+    total: itemCount,
     complete,
     inProgress,
-    pending,
+    pending: actualPending,
     percentage,
   }
 }

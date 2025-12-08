@@ -132,6 +132,7 @@ export const useItemStatus = ({
             items: {
               [itemId]: newItemState,
             },
+            collapsedItems: {},
             createdAt: timestamp,
             updatedAt: timestamp,
           }

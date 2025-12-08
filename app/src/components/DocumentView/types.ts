@@ -4,6 +4,7 @@
  */
 
 import type { TrackableItem, TrackingStatus } from '@/lib/parser/types'
+import type { SectionProgress } from '@/lib/progress'
 
 /**
  * Props for the DocumentView component.
@@ -52,9 +53,24 @@ export interface TrackableItemRowProps {
   /** Whether this item is disabled (e.g., during save operation) */
   disabled?: boolean
 
+  /** Whether this item has children and can be collapsed */
+  hasChildren?: boolean
+
+  /** Whether this item is currently collapsed (children hidden) */
+  isCollapsed?: boolean
+
+  /** Callback when the collapse/expand chevron is clicked */
+  onToggleCollapse?: (item: TrackableItem) => void
+
   /** Callback when the item is clicked */
   onClick?: (item: TrackableItem) => void
 
   /** Callback when the item should be activated (Enter/Space key) */
   onActivate?: (item: TrackableItem) => void
+
+  /** Progress for this section (only shown for headers with children) */
+  progress?: SectionProgress
+
+  /** Search query for text highlighting (optional) */
+  searchQuery?: string
 }

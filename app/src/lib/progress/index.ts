@@ -25,3 +25,14 @@ export {
   findAncestors,
   propagateStatusChange,
 } from './calculator'
+
+// Section progress
+export type { SectionProgress } from './section-progress'
+export {
+  countDescendants,
+  countCompletedDescendants,
+  calculateSectionProgress,
+  calculateSectionProgressMemoized,
+  calculateDocumentProgress,
+  clearProgressCache,
+} from './section-progress'

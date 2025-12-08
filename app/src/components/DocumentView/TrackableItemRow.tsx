@@ -5,6 +5,8 @@
 
 import type { TrackableItem, TrackingStatus } from '@/lib/parser/types'
 import type { TrackableItemRowProps } from './types'
+import { SectionProgressBar } from './SectionProgressBar'
+import { highlightSearchText } from '@/hooks/useDocumentFilters'
 
 /**
  * Get the display label for an item type badge.
@@ -29,7 +31,9 @@ const getRowClassNames = (
   item: TrackableItem,
   status: TrackingStatus,
   isFocused: boolean,
-  disabled: boolean
+  disabled: boolean,
+  hasChildren: boolean,
+  isCollapsed: boolean
 ): string => {
   const classes = ['trackable-item-row']
 
@@ -52,6 +56,16 @@ const getRowClassNames = (
   // Disabled class
   if (disabled) {
     classes.push('trackable-item-row--disabled')
+  }
+
+  // Collapsible class (has children)
+  if (hasChildren) {
+    classes.push('trackable-item-row--collapsible')
+  }
+
+  // Collapsed class
+  if (isCollapsed) {
+    classes.push('trackable-item-row--collapsed')
   }
 
   return classes.join(' ')
@@ -77,8 +91,13 @@ export const TrackableItemRow = ({
   status,
   isFocused,
   disabled = false,
+  hasChildren = false,
+  isCollapsed = false,
+  onToggleCollapse,
   onClick,
   onActivate,
+  progress,
+  searchQuery,
 }: TrackableItemRowProps) => {
   const handleClick = () => {
     if (disabled) return
@@ -93,11 +112,27 @@ export const TrackableItemRow = ({
     }
   }
 
+  const handleChevronClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    if (disabled) return
+    onToggleCollapse?.(item)
+  }
+
+  const handleDoubleClick = () => {
+    if (disabled) return
+    // Double-click on header with children toggles collapse
+    if (item.type === 'header' && hasChildren) {
+      onToggleCollapse?.(item)
+    }
+  }
+
   const indentLevel = getIndentLevel(item)
+  const showChevron = item.type === 'header' && hasChildren
+  const showProgress = item.type === 'header' && hasChildren && progress && progress.total > 0
 
   return (
     <div
-      className={getRowClassNames(item, status, isFocused, disabled)}
+      className={getRowClassNames(item, status, isFocused, disabled, hasChildren, isCollapsed)}
       style={{ '--indent-level': indentLevel } as React.CSSProperties}
       data-item-id={item.id}
       tabIndex={disabled ? -1 : 0}
@@ -105,16 +140,41 @@ export const TrackableItemRow = ({
       aria-label={`${item.type === 'header' ? `Heading level ${item.depth}` : item.type}: ${item.content}`}
       aria-pressed={status === 'complete'}
       aria-disabled={disabled}
+      aria-expanded={hasChildren ? !isCollapsed : undefined}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
       onKeyDown={handleKeyDown}
     >
+      {showChevron && (
+        <button
+          type="button"
+          className={`chevron-button ${isCollapsed ? 'chevron-button--collapsed' : 'chevron-button--expanded'}`}
+          onClick={handleChevronClick}
+          aria-label={isCollapsed ? 'Expand section' : 'Collapse section'}
+          tabIndex={-1}
+        >
+          <span className="chevron-icon" aria-hidden="true">
+            ▶
+          </span>
+        </button>
+      )}
       <span
         className={`item-type-badge item-type-badge--${item.type}${item.type === 'header' ? ` item-type-badge--h${item.depth}` : ''}`}
         aria-hidden="true"
       >
         {getTypeBadgeLabel(item)}
       </span>
-      <span className="trackable-item-content">{item.content}</span>
+      <span className="trackable-item-content">
+        {searchQuery ? highlightSearchText(item.content, searchQuery) : item.content}
+      </span>
+      {showProgress && (
+        <SectionProgressBar
+          completed={progress.completed}
+          total={progress.total}
+          percentage={progress.percentage}
+          isComplete={progress.percentage === 100}
+        />
+      )}
     </div>
   )
 }

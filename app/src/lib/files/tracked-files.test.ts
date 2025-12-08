@@ -13,6 +13,7 @@ vi.mock('../state', () => ({
     sourcePath: '',
     contentHash: '',
     items: {},
+    collapsedItems: {},
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })),
@@ -328,6 +329,7 @@ describe('Tracked Files Management', () => {
           sourcePath: '/path/file1.md',
           contentHash: 'hash1',
           items: { item1: { itemId: 'item1', status: 'pending', updatedAt: '' } },
+          collapsedItems: {},
           createdAt: '2024-01-01T00:00:00.000Z',
           updatedAt: '2024-01-02T00:00:00.000Z',
         })
@@ -335,6 +337,7 @@ describe('Tracked Files Management', () => {
           sourcePath: '/path/file2.md',
           contentHash: 'hash2',
           items: {},
+          collapsedItems: {},
           createdAt: '2024-01-03T00:00:00.000Z',
           updatedAt: '2024-01-04T00:00:00.000Z',
         })
@@ -357,6 +360,7 @@ describe('Tracked Files Management', () => {
           sourcePath: '/path/file1.md',
           contentHash: 'hash1',
           items: {},
+          collapsedItems: {},
           createdAt: '2024-01-01T00:00:00.000Z',
           updatedAt: '2024-01-02T00:00:00.000Z',
         })
