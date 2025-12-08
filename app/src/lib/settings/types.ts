@@ -7,7 +7,7 @@
  * Current version of the settings schema.
  * Increment when making breaking changes to enable migrations.
  */
-export const CURRENT_SETTINGS_VERSION = 2
+export const CURRENT_SETTINGS_VERSION = 3
 
 /**
  * Settings file name in the app data directory.
@@ -26,6 +26,13 @@ export type ThemeOption = 'system' | 'light' | 'dark'
  * - 'full': Enables all animations (default)
  */
 export type AnimationIntensity = 'off' | 'reduced' | 'full'
+
+/**
+ * Editor view mode options.
+ * - 'overlay': Editor displays as a centered modal overlay
+ * - 'split': Editor displays side-by-side with the document tree
+ */
+export type EditorViewMode = 'overlay' | 'split'
 
 /**
  * Theme color customization fields.
@@ -59,6 +66,18 @@ export const DEFAULT_THEME_COLORS: Required<Record<keyof ThemeColors, string>> =
 }
 
 /**
+ * Editor settings for markdown editing behavior.
+ */
+export interface EditorSettings {
+  /** View mode for the editor */
+  viewMode: EditorViewMode
+  /** Whether to enable auto-save */
+  autoSave: boolean
+  /** Auto-save delay in milliseconds (1000-10000) */
+  autoSaveDelay: number
+}
+
+/**
  * Application-wide settings.
  * Note: Watched directories are managed by the watcher module (WatchConfig).
  * This interface handles app-level preferences.
@@ -74,6 +93,8 @@ export interface AppSettings {
   animationIntensity: AnimationIntensity
   /** Custom theme colors (null values use defaults) */
   themeColors: ThemeColors
+  /** Editor settings */
+  editor: EditorSettings
   /** ISO timestamp when settings were first created */
   createdAt: string
   /** ISO timestamp when settings were last modified */
@@ -84,6 +105,17 @@ export interface AppSettings {
  * Default file patterns for matching markdown files.
  */
 export const DEFAULT_FILE_PATTERNS = ['*.md', '*.markdown'] as const
+
+/**
+ * Creates default editor settings.
+ *
+ * @returns Default EditorSettings object
+ */
+export const createDefaultEditorSettings = (): EditorSettings => ({
+  viewMode: 'overlay',
+  autoSave: true,
+  autoSaveDelay: 2000,
+})
 
 /**
  * Creates default settings.
@@ -105,6 +137,7 @@ export const createDefaultSettings = (): AppSettings => {
       surfaceElevated: null,
       surfaceCard: null,
     },
+    editor: createDefaultEditorSettings(),
     createdAt: now,
     updatedAt: now,
   }
@@ -128,6 +161,41 @@ export const isThemeOption = (value: unknown): value is ThemeOption => {
  */
 export const isAnimationIntensity = (value: unknown): value is AnimationIntensity => {
   return value === 'off' || value === 'reduced' || value === 'full'
+}
+
+/**
+ * Type guard for EditorViewMode.
+ *
+ * @param value - Value to check
+ * @returns True if value is a valid EditorViewMode
+ */
+export const isEditorViewMode = (value: unknown): value is EditorViewMode => {
+  return value === 'overlay' || value === 'split'
+}
+
+/**
+ * Type guard for EditorSettings.
+ *
+ * @param value - Value to check
+ * @returns True if value is a valid EditorSettings object
+ */
+export const isEditorSettings = (value: unknown): value is EditorSettings => {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  const obj = value as Record<string, unknown>
+
+  return (
+    'viewMode' in obj &&
+    isEditorViewMode(obj.viewMode) &&
+    'autoSave' in obj &&
+    typeof obj.autoSave === 'boolean' &&
+    'autoSaveDelay' in obj &&
+    typeof obj.autoSaveDelay === 'number' &&
+    obj.autoSaveDelay >= 1000 &&
+    obj.autoSaveDelay <= 10000
+  )
 }
 
 /**
@@ -219,6 +287,12 @@ export const isAppSettings = (value: unknown): value is AppSettings => {
   }
 
   if (obj.themeColors !== undefined && !isThemeColors(obj.themeColors)) {
+    return false
+  }
+
+  // Version 3+ fields - if present, they must be valid
+  // (migration will add them if missing from v2 settings)
+  if (obj.editor !== undefined && !isEditorSettings(obj.editor)) {
     return false
   }
 

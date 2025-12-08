@@ -37,7 +37,7 @@ const calculateProgress = (
   const items = Object.values(trackingState.items)
   let complete = 0
   let inProgress = 0
-  let pending = 0
+  let _pending = 0
 
   for (const item of items) {
     switch (item.status) {
@@ -49,7 +49,7 @@ const calculateProgress = (
         break
       case 'pending':
       default:
-        pending++
+        _pending++
         break
     }
   }

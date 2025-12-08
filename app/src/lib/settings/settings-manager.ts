@@ -15,6 +15,7 @@ import {
   SETTINGS_FILENAME,
   CURRENT_SETTINGS_VERSION,
   createDefaultSettings,
+  createDefaultEditorSettings,
   isAppSettings,
   type AppSettings,
   type LoadSettingsResult,
@@ -333,6 +334,18 @@ export const updateTheme = async (
 }
 
 /**
+ * Updates the editor settings.
+ *
+ * @param editor - New editor settings
+ * @returns Promise resolving to SettingsOperationResult
+ */
+export const updateEditorSettings = async (
+  editor: AppSettings['editor']
+): Promise<SettingsOperationResult> => {
+  return updateSetting('editor', editor)
+}
+
+/**
  * Migrates settings from an older version to the current version.
  * Add migration logic here when schema changes.
  *
@@ -354,6 +367,12 @@ const migrateSettings = (settings: AppSettings): AppSettings => {
       surfaceCard: null,
     }
     migrated.version = 2
+  }
+
+  // Migrate from v2 to v3: add editor settings
+  if (settings.version === 2) {
+    migrated.editor = createDefaultEditorSettings()
+    migrated.version = 3
   }
 
   // Ensure version is current

@@ -16,6 +16,11 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@milkdown/core": "^7.5.3",
+    "@milkdown/plugin-listener": "^7.5.3",
+    "@milkdown/preset-commonmark": "^7.5.3",
+    "@milkdown/preset-gfm": "^7.5.3",
+    "@milkdown/react": "^7.5.3",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.4.2",
     "@tauri-apps/plugin-fs": "^2.4.4",

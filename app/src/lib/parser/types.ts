@@ -24,6 +24,10 @@ export interface Position {
   line: number
   /** Column number (1-indexed) */
   column: number
+  /** End line number (1-indexed) - optional for editing support */
+  endLine?: number
+  /** End column number (1-indexed) - optional for editing support */
+  endColumn?: number
 }
 
 /**
@@ -50,6 +54,12 @@ export interface TrackableItem {
 
   /** Position of the item in the source document */
   position: Position
+
+  /**
+   * Raw markdown content for this item including children (optional for editing support).
+   * This is the exact markdown slice from the source document.
+   */
+  rawContent?: string
 
   /**
    * For checkboxes: whether the checkbox is checked in the source markdown.
@@ -112,7 +122,15 @@ export function isTrackingStatus(value: unknown): value is TrackingStatus {
 export function isPosition(value: unknown): value is Position {
   if (typeof value !== 'object' || value === null) return false
   const pos = value as Record<string, unknown>
-  return typeof pos.line === 'number' && typeof pos.column === 'number'
+
+  // Validate required fields
+  if (typeof pos.line !== 'number' || typeof pos.column !== 'number') return false
+
+  // Validate optional end fields if present
+  if (pos.endLine !== undefined && typeof pos.endLine !== 'number') return false
+  if (pos.endColumn !== undefined && typeof pos.endColumn !== 'number') return false
+
+  return true
 }
 
 /**

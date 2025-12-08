@@ -7,11 +7,12 @@ import { useState } from 'react'
 import { WatchedDirectoriesSection } from './WatchedDirectoriesSection'
 import { FilePatternSection } from './FilePatternSection'
 import { DataManagementSection } from './DataManagementSection'
+import { EditorSettingsSection } from './EditorSettingsSection'
 import { ResetThemeModal } from './ResetThemeModal'
 import { Button, Select, ColorPicker, type SelectOption } from '@/lib/common-components'
 import type { SettingsProps } from './types'
 import type { WatchedDirectory } from '@/lib/watcher/types'
-import type { AppSettings, StorageStats, ThemeOption, AnimationIntensity, ThemeColors } from '@/lib/settings/types'
+import type { AppSettings, StorageStats, ThemeOption, AnimationIntensity, ThemeColors, EditorSettings } from '@/lib/settings/types'
 import { DEFAULT_THEME_COLORS } from '@/lib/settings/types'
 import './Settings.css'
 
@@ -49,6 +50,12 @@ export interface SettingsViewProps extends SettingsProps {
   onThemeColorChange: (colorKey: keyof ThemeColors, value: string | null) => Promise<void>
   /** Reset theme settings to defaults, returns true on success */
   onResetThemeSettings: () => Promise<boolean>
+  /** Change editor view mode */
+  onEditorViewModeChange: (viewMode: EditorSettings['viewMode']) => Promise<void>
+  /** Change editor auto-save enabled */
+  onEditorAutoSaveChange: (enabled: boolean) => Promise<void>
+  /** Change editor auto-save delay */
+  onEditorAutoSaveDelayChange: (delay: number) => Promise<void>
   /** Clear all data */
   onClearData: () => Promise<void>
   /** Export data */
@@ -78,6 +85,9 @@ export const Settings = ({
   onAnimationIntensityChange,
   onThemeColorChange,
   onResetThemeSettings,
+  onEditorViewModeChange,
+  onEditorAutoSaveChange,
+  onEditorAutoSaveDelayChange,
   onClearData,
   onExportData,
   onImportData,
@@ -160,6 +170,17 @@ export const Settings = ({
           onRemovePattern={onRemovePattern}
           isLoading={isLoading}
         />
+
+        {/* Editor Settings Section */}
+        {settings?.editor && (
+          <EditorSettingsSection
+            settings={settings.editor}
+            disabled={isLoading}
+            onViewModeChange={onEditorViewModeChange}
+            onAutoSaveChange={onEditorAutoSaveChange}
+            onAutoSaveDelayChange={onEditorAutoSaveDelayChange}
+          />
+        )}
 
         {/* Data Management Section */}
         <DataManagementSection

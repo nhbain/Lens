@@ -28,7 +28,7 @@ import {
 describe('settings types', () => {
   describe('constants', () => {
     it('exports CURRENT_SETTINGS_VERSION', () => {
-      expect(CURRENT_SETTINGS_VERSION).toBe(2)
+      expect(CURRENT_SETTINGS_VERSION).toBe(3)
     })
 
     it('exports DEFAULT_THEME_COLORS', () => {

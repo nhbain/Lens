@@ -1,0 +1,31 @@
+/**
+ * Editor Settings Section Styles
+ * Matches the existing settings section styling
+ */
+
+.editor-settings-section__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.editor-settings-section__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.editor-settings-section__select {
+  max-width: 300px;
+}
+
+.editor-settings-section__input {
+  max-width: 200px;
+}
+
+.editor-settings-section__hint {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #888);
+  line-height: 1.4;
+}

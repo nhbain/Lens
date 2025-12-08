@@ -71,7 +71,6 @@ describe('types', () => {
     })
 
     it('returns false if path is missing', () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { path: _path, ...rest } = validDirectory
       expect(isWatchedDirectory(rest)).toBe(false)
     })

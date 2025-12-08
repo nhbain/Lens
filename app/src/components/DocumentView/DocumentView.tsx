@@ -160,7 +160,7 @@ export const DocumentView = ({
   }, [onItemClick])
 
   const handleItemActivate = useCallback((item: TrackableItem) => {
-    // Activation cycles through statuses
+    // Activation cycles through statuses (used for Shift+click and keyboard)
     const currentStatus = getItemStatus(item.id)
     const nextStatus: TrackingStatus =
       currentStatus === 'pending'

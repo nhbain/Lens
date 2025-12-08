@@ -12,6 +12,10 @@
       "identifier": "fs:allow-read-text-file",
       "allow": [{ "path": "**" }]
     },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [{ "path": "**/*.md" }, { "path": "**/*.markdown" }]
+    },
     "fs:allow-app-write-recursive",
     "fs:allow-app-meta-recursive",
     "fs:allow-mkdir",

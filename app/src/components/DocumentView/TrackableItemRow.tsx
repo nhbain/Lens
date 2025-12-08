@@ -99,9 +99,16 @@ export const TrackableItemRow = ({
   progress,
   searchQuery,
 }: TrackableItemRowProps) => {
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent) => {
     if (disabled) return
-    onClick?.(item)
+
+    // Shift+click cycles status (old behavior)
+    if (event.shiftKey) {
+      onActivate?.(item)
+    } else {
+      // Regular click opens editor (new behavior)
+      onClick?.(item)
+    }
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {

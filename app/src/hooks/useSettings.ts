@@ -13,9 +13,10 @@ import {
   updateTheme,
   updateAnimationIntensity,
   updateThemeColor,
+  updateEditorSettings,
   resetThemeSettings,
 } from '@/lib/settings'
-import type { AppSettings, ThemeOption, AnimationIntensity, ThemeColors } from '@/lib/settings/types'
+import type { AppSettings, ThemeOption, AnimationIntensity, ThemeColors, EditorSettings } from '@/lib/settings/types'
 
 /**
  * Default theme colors for fallback when themeColors is missing.
@@ -62,6 +63,12 @@ export interface UseSettingsResult {
   setAnimationIntensity: (intensity: AnimationIntensity) => Promise<void>
   /** Update a single theme color */
   setThemeColor: (colorKey: keyof ThemeColors, value: string | null) => Promise<void>
+  /** Update editor view mode */
+  setEditorViewMode: (viewMode: EditorSettings['viewMode']) => Promise<void>
+  /** Update editor auto-save enabled */
+  setEditorAutoSave: (enabled: boolean) => Promise<void>
+  /** Update editor auto-save delay */
+  setEditorAutoSaveDelay: (delay: number) => Promise<void>
   /** Reset settings to defaults */
   reset: () => Promise<void>
   /** Reset only theme settings to defaults, returns true on success */
@@ -360,6 +367,126 @@ export const useSettings = ({
     }
   }, [onError])
 
+  // Update editor view mode
+  const setEditorViewMode = useCallback(
+    async (viewMode: EditorSettings['viewMode']) => {
+      if (!settings?.editor) return
+
+      try {
+        const updatedEditor: EditorSettings = {
+          ...settings.editor,
+          viewMode,
+        }
+        const result = await updateEditorSettings(updatedEditor)
+
+        if (!result.success) {
+          const errorMsg = result.error ?? 'Failed to update editor view mode'
+          setError(errorMsg)
+          onError?.(errorMsg)
+          return
+        }
+
+        // Update local state
+        setSettings((prev) =>
+          prev
+            ? {
+                ...prev,
+                editor: updatedEditor,
+                updatedAt: new Date().toISOString(),
+              }
+            : prev
+        )
+        setError(null)
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Unknown error updating editor view mode'
+        setError(message)
+        onError?.(message)
+      }
+    },
+    [settings, onError]
+  )
+
+  // Update editor auto-save enabled
+  const setEditorAutoSave = useCallback(
+    async (enabled: boolean) => {
+      if (!settings?.editor) return
+
+      try {
+        const updatedEditor: EditorSettings = {
+          ...settings.editor,
+          autoSave: enabled,
+        }
+        const result = await updateEditorSettings(updatedEditor)
+
+        if (!result.success) {
+          const errorMsg = result.error ?? 'Failed to update editor auto-save'
+          setError(errorMsg)
+          onError?.(errorMsg)
+          return
+        }
+
+        // Update local state
+        setSettings((prev) =>
+          prev
+            ? {
+                ...prev,
+                editor: updatedEditor,
+                updatedAt: new Date().toISOString(),
+              }
+            : prev
+        )
+        setError(null)
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Unknown error updating editor auto-save'
+        setError(message)
+        onError?.(message)
+      }
+    },
+    [settings, onError]
+  )
+
+  // Update editor auto-save delay
+  const setEditorAutoSaveDelay = useCallback(
+    async (delay: number) => {
+      if (!settings?.editor) return
+
+      try {
+        const updatedEditor: EditorSettings = {
+          ...settings.editor,
+          autoSaveDelay: delay,
+        }
+        const result = await updateEditorSettings(updatedEditor)
+
+        if (!result.success) {
+          const errorMsg = result.error ?? 'Failed to update editor auto-save delay'
+          setError(errorMsg)
+          onError?.(errorMsg)
+          return
+        }
+
+        // Update local state
+        setSettings((prev) =>
+          prev
+            ? {
+                ...prev,
+                editor: updatedEditor,
+                updatedAt: new Date().toISOString(),
+              }
+            : prev
+        )
+        setError(null)
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Unknown error updating editor auto-save delay'
+        setError(message)
+        onError?.(message)
+      }
+    },
+    [settings, onError]
+  )
+
   // Save current settings (useful for batched changes)
   const save = useCallback(async () => {
     if (!settings) return
@@ -392,6 +519,9 @@ export const useSettings = ({
     setTheme,
     setAnimationIntensity,
     setThemeColor,
+    setEditorViewMode,
+    setEditorAutoSave,
+    setEditorAutoSaveDelay,
     reset,
     resetTheme,
     reload: load,

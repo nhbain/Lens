@@ -45,6 +45,16 @@ describe('extractItems', () => {
       expect(items[0].position.line).toBe(1)
       expect(items[1].position.line).toBe(3)
     })
+
+    it('includes end position info for headers', () => {
+      const ast = parseMarkdown('# Header\n\n## Another Header')
+      const items = extractItems(ast)
+
+      expect(items[0].position.endLine).toBe(1)
+      expect(items[0].position.endColumn).toBeDefined()
+      expect(items[1].position.endLine).toBe(3)
+      expect(items[1].position.endColumn).toBeDefined()
+    })
   })
 
   describe('list items', () => {
@@ -104,6 +114,33 @@ describe('extractItems', () => {
       expect(items[0].children[0].depth).toBe(1)
       expect(items[0].children[0].children[0].depth).toBe(2)
       expect(items[0].children[0].children[0].children[0].depth).toBe(3)
+    })
+
+    it('includes end position info for list items', () => {
+      const ast = parseMarkdown('- Item 1\n- Item 2\n- Item 3')
+      const items = extractItems(ast)
+
+      items.forEach((item) => {
+        expect(item.position.endLine).toBeDefined()
+        expect(item.position.endColumn).toBeDefined()
+        expect(item.position.endLine).toBeGreaterThanOrEqual(item.position.line)
+      })
+    })
+
+    it('calculates end position for nested list items correctly', () => {
+      const markdown = `- Parent
+  - Child 1
+  - Child 2`
+      const ast = parseMarkdown(markdown)
+      const items = extractItems(ast)
+
+      // Parent should have end position at the last child's end
+      expect(items[0].position.endLine).toBeGreaterThan(items[0].position.line)
+      expect(items[0].children).toHaveLength(2)
+
+      // Parent's end should be at or after the last child's end
+      const lastChild = items[0].children[1]
+      expect(items[0].position.endLine).toBeGreaterThanOrEqual(lastChild.position.line)
     })
   })
 
@@ -264,6 +301,34 @@ describe('buildTree', () => {
     expect(tree[0].depth).toBe(2)
     expect(tree[1].type).toBe('header')
     expect(tree[1].depth).toBe(1)
+  })
+
+  it('calculates end position for headers with children', () => {
+    const markdown = `# Header
+
+- Item 1
+- Item 2
+
+## Sub Header
+
+- Item 3`
+    const ast = parseMarkdown(markdown)
+    const items = extractItems(ast)
+    const tree = buildTree(items)
+
+    // Main header should have end position at the end of last child
+    expect(tree[0].type).toBe('header')
+    expect(tree[0].children.length).toBeGreaterThan(0)
+    expect(tree[0].position.endLine).toBeDefined()
+
+    // The header's end line should be at or after its start line
+    expect(tree[0].position.endLine).toBeGreaterThanOrEqual(tree[0].position.line)
+
+    // If it has children, end should be at or after the last child
+    if (tree[0].children.length > 0) {
+      const lastChild = tree[0].children[tree[0].children.length - 1]
+      expect(tree[0].position.endLine).toBeGreaterThanOrEqual(lastChild.position.line)
+    }
   })
 })
 

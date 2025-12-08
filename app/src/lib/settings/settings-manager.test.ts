@@ -34,6 +34,8 @@ import {
   SETTINGS_FILENAME,
   CURRENT_SETTINGS_VERSION,
   createDefaultSettings,
+  isEditorViewMode,
+  isEditorSettings,
   type AppSettings,
 } from './types'
 
@@ -321,6 +323,134 @@ describe('settings-manager', () => {
       const savedContent = mockWriteStateFile.mock.calls[0][1]
       const savedSettings = JSON.parse(savedContent) as AppSettings
       expect(savedSettings.theme).toBe('light')
+    })
+  })
+
+  describe('Type Guards', () => {
+    describe('isEditorViewMode', () => {
+      it('returns true for valid view modes', () => {
+        expect(isEditorViewMode('overlay')).toBe(true)
+        expect(isEditorViewMode('split')).toBe(true)
+      })
+
+      it('returns false for invalid values', () => {
+        expect(isEditorViewMode('invalid')).toBe(false)
+        expect(isEditorViewMode(null)).toBe(false)
+        expect(isEditorViewMode(undefined)).toBe(false)
+        expect(isEditorViewMode(123)).toBe(false)
+      })
+    })
+
+    describe('isEditorSettings', () => {
+      it('returns true for valid editor settings', () => {
+        const validSettings = {
+          viewMode: 'overlay',
+          autoSave: true,
+          autoSaveDelay: 2000,
+        }
+        expect(isEditorSettings(validSettings)).toBe(true)
+      })
+
+      it('returns false for invalid viewMode', () => {
+        const invalidSettings = {
+          viewMode: 'invalid',
+          autoSave: true,
+          autoSaveDelay: 2000,
+        }
+        expect(isEditorSettings(invalidSettings)).toBe(false)
+      })
+
+      it('returns false for invalid autoSave', () => {
+        const invalidSettings = {
+          viewMode: 'overlay',
+          autoSave: 'true',
+          autoSaveDelay: 2000,
+        }
+        expect(isEditorSettings(invalidSettings)).toBe(false)
+      })
+
+      it('returns false for out-of-range autoSaveDelay', () => {
+        const tooLow = {
+          viewMode: 'overlay',
+          autoSave: true,
+          autoSaveDelay: 500,
+        }
+        expect(isEditorSettings(tooLow)).toBe(false)
+
+        const tooHigh = {
+          viewMode: 'overlay',
+          autoSave: true,
+          autoSaveDelay: 15000,
+        }
+        expect(isEditorSettings(tooHigh)).toBe(false)
+      })
+
+      it('returns false for missing fields', () => {
+        const missingField = {
+          viewMode: 'overlay',
+          autoSave: true,
+        }
+        expect(isEditorSettings(missingField)).toBe(false)
+      })
+
+      it('returns false for null or non-object', () => {
+        expect(isEditorSettings(null)).toBe(false)
+        expect(isEditorSettings(undefined)).toBe(false)
+        expect(isEditorSettings('string')).toBe(false)
+        expect(isEditorSettings(123)).toBe(false)
+      })
+    })
+  })
+
+  describe('Migration from v2 to v3', () => {
+    it('migrates v2 settings to v3 with editor settings', async () => {
+      const v2Settings = {
+        version: 2,
+        filePatterns: ['*.md'],
+        theme: 'dark',
+        animationIntensity: 'full',
+        themeColors: {
+          accentPrimary: null,
+          accentSecondary: null,
+          accentWarning: null,
+          surfaceBase: null,
+          surfaceElevated: null,
+          surfaceCard: null,
+        },
+        createdAt: '2025-01-01T00:00:00.000Z',
+        updatedAt: '2025-01-02T00:00:00.000Z',
+      }
+
+      mockStateFileExists.mockResolvedValue(true)
+      mockReadStateFile.mockResolvedValue(JSON.stringify(v2Settings))
+      mockBackupStateFile.mockResolvedValue(true)
+      mockWriteStateFile.mockResolvedValue(undefined)
+
+      const result = await loadSettings()
+
+      expect(result.success).toBe(true)
+      expect(result.settings?.version).toBe(3)
+      expect(result.settings?.editor).toBeDefined()
+      expect(result.settings?.editor.viewMode).toBe('overlay')
+      expect(result.settings?.editor.autoSave).toBe(true)
+      expect(result.settings?.editor.autoSaveDelay).toBe(2000)
+
+      // Verify migration saved to disk
+      expect(mockWriteStateFile).toHaveBeenCalled()
+    })
+
+    it('creates default settings with editor for new installations', async () => {
+      mockStateFileExists.mockResolvedValue(false)
+
+      const result = await loadSettings()
+
+      expect(result.success).toBe(true)
+      expect(result.usedDefaults).toBe(true)
+      expect(result.settings?.version).toBe(3)
+      expect(result.settings?.editor).toBeDefined()
+      expect(result.settings?.editor.viewMode).toBe('overlay')
+      expect(result.settings?.editor.autoSave).toBe(true)
+      expect(result.settings?.editor.autoSaveDelay).toBe(2000)
     })
   })
 })

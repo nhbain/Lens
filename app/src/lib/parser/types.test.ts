@@ -46,6 +46,12 @@ describe('Type Guards', () => {
       expect(isPosition({ line: 100, column: 50 })).toBe(true)
     })
 
+    it('returns true for positions with optional end fields', () => {
+      expect(isPosition({ line: 1, column: 1, endLine: 5, endColumn: 10 })).toBe(true)
+      expect(isPosition({ line: 1, column: 1, endLine: 1 })).toBe(true)
+      expect(isPosition({ line: 1, column: 1, endColumn: 20 })).toBe(true)
+    })
+
     it('returns false for invalid positions', () => {
       expect(isPosition(null)).toBe(false)
       expect(isPosition(undefined)).toBe(false)
@@ -53,6 +59,12 @@ describe('Type Guards', () => {
       expect(isPosition({ line: 1 })).toBe(false)
       expect(isPosition({ column: 1 })).toBe(false)
       expect(isPosition({ line: '1', column: 1 })).toBe(false)
+    })
+
+    it('returns false for positions with invalid end field types', () => {
+      expect(isPosition({ line: 1, column: 1, endLine: '5' })).toBe(false)
+      expect(isPosition({ line: 1, column: 1, endColumn: '10' })).toBe(false)
+      expect(isPosition({ line: 1, column: 1, endLine: null })).toBe(false)
     })
   })
 

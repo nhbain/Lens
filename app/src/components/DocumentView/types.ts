@@ -23,10 +23,10 @@ export interface DocumentViewProps {
   /** Map of item IDs to their tracking status */
   itemStatuses?: Record<string, TrackingStatus>
 
-  /** Callback when an item is clicked */
+  /** Callback when an item is clicked (opens editor) */
   onItemClick?: (item: TrackableItem) => void
 
-  /** Callback when an item's status should change (for future use) */
+  /** Callback when an item's status should change */
   onItemStatusChange?: (itemId: string, status: TrackingStatus) => void
 
   /** Whether the document is currently loading */

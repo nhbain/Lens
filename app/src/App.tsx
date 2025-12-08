@@ -7,11 +7,13 @@ import { Message } from './components/TrackedFilesList'
 import { DocumentView } from './components/DocumentView'
 import { Dashboard } from './components/Dashboard'
 import { Settings } from './components/Settings'
+import { EditorModal } from './components/EditorModal'
 import type { DashboardFile, DashboardNavigationTarget } from './components/Dashboard'
 import { useFileImport } from './hooks/useFileImport'
 import { useDocumentView } from './hooks/useDocumentView'
 import { useSettings } from './hooks/useSettings'
 import { useThemeApplication } from './hooks/useThemeApplication'
+import { useMarkdownEditor } from './hooks/useMarkdownEditor'
 import { getNextStatus } from './lib/progress'
 import type { TrackedFile, AddFileResult } from './lib/files'
 import type { TrackableItem } from './lib/parser/types'
@@ -62,6 +64,9 @@ export const App = () => {
     setTheme,
     setAnimationIntensity,
     setThemeColor,
+    setEditorViewMode,
+    setEditorAutoSave,
+    setEditorAutoSaveDelay,
     reset: resetSettings,
     resetTheme: resetThemeSettings,
     reload: reloadSettings,
@@ -152,9 +157,38 @@ export const App = () => {
     isLoading: isDocumentLoading,
     error: documentError,
     updateItemStatus,
+    reload: reloadDocument,
   } = useDocumentView({
     filePath: selectedFile?.path ?? '',
     content: fileContent ?? undefined,
+  })
+
+  // Use markdown editor hook for editing items
+  const {
+    editingItem,
+    currentContent: editorContent,
+    isDirty: _isEditorDirty,
+    isSaving: isEditorSaving,
+    openEditor,
+    closeEditor,
+    updateContent: updateEditorContent,
+    saveContent: saveEditorContent,
+  } = useMarkdownEditor({
+    editorSettings: settings?.editor,
+    onSaveSuccess: () => {
+      setAppMessage({
+        type: 'success',
+        message: 'Changes saved successfully',
+      })
+      // Reload the document to reflect changes
+      reloadDocument()
+    },
+    onSaveError: (error) => {
+      setAppMessage({
+        type: 'error',
+        message: `Failed to save: ${error}`,
+      })
+    },
   })
 
   const handleFileAdded = useCallback((result: AddFileResult) => {
@@ -228,15 +262,47 @@ export const App = () => {
     await navigateToFile(target.file, target.targetItemId)
   }, [navigateToFile])
 
-  // Handle item click - cycle status
+  // Handle item click - open editor
   const handleItemClick = useCallback(
     async (item: TrackableItem) => {
-      const currentStatus = itemStatuses[item.id] ?? 'pending'
+      if (!selectedFile) return
+
+      try {
+        await openEditor(item, selectedFile.path)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        setAppMessage({
+          type: 'error',
+          message: `Failed to open editor: ${message}`,
+        })
+      }
+    },
+    [selectedFile, openEditor]
+  )
+
+  // Handle item status change (Shift+click)
+  const handleItemStatusChange = useCallback(
+    async (itemId: string) => {
+      const currentStatus = itemStatuses[itemId] ?? 'pending'
       const nextStatus = getNextStatus(currentStatus)
-      await updateItemStatus(item.id, nextStatus)
+      await updateItemStatus(itemId, nextStatus)
     },
     [itemStatuses, updateItemStatus]
   )
+
+  // Handle editor close
+  const handleEditorClose = useCallback(() => {
+    const closed = closeEditor()
+    if (!closed) {
+      // User cancelled the close (unsaved changes)
+      return
+    }
+  }, [closeEditor])
+
+  // Handle editor save
+  const handleEditorSave = useCallback(async () => {
+    await saveEditorContent()
+  }, [saveEditorContent])
 
   const { importFile } = useFileImport({
     onFileAdded: handleFileAdded,
@@ -368,6 +434,21 @@ export const App = () => {
     return success
   }, [resetThemeSettings])
 
+  const handleEditorViewModeChange = useCallback(async (viewMode: 'overlay' | 'split') => {
+    await setEditorViewMode(viewMode)
+    setSettingsSuccessMessage('Editor view mode updated')
+  }, [setEditorViewMode])
+
+  const handleEditorAutoSaveChange = useCallback(async (enabled: boolean) => {
+    await setEditorAutoSave(enabled)
+    setSettingsSuccessMessage('Auto-save setting updated')
+  }, [setEditorAutoSave])
+
+  const handleEditorAutoSaveDelayChange = useCallback(async (delay: number) => {
+    await setEditorAutoSaveDelay(delay)
+    setSettingsSuccessMessage('Auto-save delay updated')
+  }, [setEditorAutoSaveDelay])
+
   const handleClearData = useCallback(async () => {
     setSettingsLoading(true)
     try {
@@ -495,6 +576,9 @@ export const App = () => {
           onAnimationIntensityChange={handleAnimationIntensityChange}
           onThemeColorChange={handleThemeColorChange}
           onResetThemeSettings={handleResetThemeSettings}
+          onEditorViewModeChange={handleEditorViewModeChange}
+          onEditorAutoSaveChange={handleEditorAutoSaveChange}
+          onEditorAutoSaveDelayChange={handleEditorAutoSaveDelayChange}
           onClearData={handleClearData}
           onExportData={handleExportData}
           onImportData={handleImportData}
@@ -542,10 +626,25 @@ export const App = () => {
             title={selectedFile.fileName}
             itemStatuses={itemStatuses}
             onItemClick={handleItemClick}
+            onItemStatusChange={handleItemStatusChange}
             isLoading={isDocumentLoading}
             targetItemId={targetItemId}
           />
         </section>
+
+        {/* Editor Modal */}
+        {editingItem && (
+          <EditorModal
+            isOpen={true}
+            onClose={handleEditorClose}
+            title={`Edit: ${editingItem.content}`}
+            mode={settings?.editor.viewMode ?? 'overlay'}
+            initialContent={editorContent}
+            onContentChange={updateEditorContent}
+            onSave={handleEditorSave}
+            isSaving={isEditorSaving}
+          />
+        )}
       </main>
     )
   }

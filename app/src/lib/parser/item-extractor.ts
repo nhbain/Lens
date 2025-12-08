@@ -42,6 +42,33 @@ function extractText(nodes: PhrasingContent[]): string {
 }
 
 /**
+ * Calculates the end position for an item, considering its children.
+ * If the item has children, returns the end position of the last descendant.
+ * Otherwise, returns the item's own end position.
+ */
+function calculateEndPosition(
+  itemEndLine: number,
+  itemEndColumn: number,
+  children: TrackableItem[]
+): { endLine: number; endColumn: number } {
+  if (children.length === 0) {
+    return { endLine: itemEndLine, endColumn: itemEndColumn }
+  }
+
+  // Find the last child (considering nested children recursively)
+  const lastChild = children[children.length - 1]
+  if (lastChild.position.endLine !== undefined && lastChild.position.endColumn !== undefined) {
+    return {
+      endLine: lastChild.position.endLine,
+      endColumn: lastChild.position.endColumn,
+    }
+  }
+
+  // Fallback to item's own end position if children don't have end positions
+  return { endLine: itemEndLine, endColumn: itemEndColumn }
+}
+
+/**
  * Extracts trackable items from list items recursively.
  */
 function extractListItems(
@@ -54,6 +81,8 @@ function extractListItems(
     const position: Position = {
       line: listItem.position?.start.line ?? 0,
       column: listItem.position?.start.column ?? 0,
+      endLine: listItem.position?.end.line ?? 0,
+      endColumn: listItem.position?.end.column ?? 0,
     }
 
     // Extract text from paragraph children
@@ -92,6 +121,15 @@ function extractListItems(
       item.children.push(...extractListItems(nestedList, depth + 1))
     }
 
+    // Update end position to include children if present
+    const endPos = calculateEndPosition(
+      position.endLine ?? 0,
+      position.endColumn ?? 0,
+      item.children
+    )
+    item.position.endLine = endPos.endLine
+    item.position.endColumn = endPos.endColumn
+
     items.push(item)
   }
 
@@ -115,6 +153,8 @@ export function extractItems(ast: Root): TrackableItem[] {
       const position: Position = {
         line: heading.position?.start.line ?? 0,
         column: heading.position?.start.column ?? 0,
+        endLine: heading.position?.end.line ?? 0,
+        endColumn: heading.position?.end.column ?? 0,
       }
 
       items.push({
@@ -147,6 +187,7 @@ export function buildTree(items: TrackableItem[]): TrackableItem[] {
     // Deep clone to avoid mutating original
     const clonedItem: TrackableItem = {
       ...item,
+      position: { ...item.position },
       children: [...item.children],
     }
 
@@ -156,7 +197,15 @@ export function buildTree(items: TrackableItem[]): TrackableItem[] {
         headerStack.length > 0 &&
         headerStack[headerStack.length - 1].depth >= item.depth
       ) {
-        headerStack.pop()
+        // Update popped header's end position to include its children
+        const poppedHeader = headerStack.pop()!
+        if (poppedHeader.children.length > 0) {
+          const lastChild = poppedHeader.children[poppedHeader.children.length - 1]
+          if (lastChild.position.endLine !== undefined && lastChild.position.endColumn !== undefined) {
+            poppedHeader.position.endLine = lastChild.position.endLine
+            poppedHeader.position.endColumn = lastChild.position.endColumn
+          }
+        }
       }
 
       if (headerStack.length === 0) {
@@ -176,6 +225,17 @@ export function buildTree(items: TrackableItem[]): TrackableItem[] {
       } else {
         // No header context, add to root
         tree.push(clonedItem)
+      }
+    }
+  }
+
+  // Update end positions for any remaining headers in the stack
+  for (const header of headerStack) {
+    if (header.children.length > 0) {
+      const lastChild = header.children[header.children.length - 1]
+      if (lastChild.position.endLine !== undefined && lastChild.position.endColumn !== undefined) {
+        header.position.endLine = lastChild.position.endLine
+        header.position.endColumn = lastChild.position.endColumn
       }
     }
   }
