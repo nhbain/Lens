@@ -98,6 +98,10 @@ lens/
 │   │   ├── hooks/                # Custom React hooks
 │   │   │   ├── useDashboard.ts
 │   │   │   ├── useDocumentView.ts
+│   │   │   ├── useDocumentFilters.tsx    # Filter/search for document items
+│   │   │   ├── useCollapseState.ts       # Tree collapse/expand state
+│   │   │   ├── useTreeKeyboardNavigation.ts # Tree keyboard navigation
+│   │   │   ├── useThemeApplication.ts    # Apply theme to CSS variables
 │   │   │   ├── useFileImport.ts
 │   │   │   ├── useInProgressItems.ts
 │   │   │   ├── useItemStatus.ts
@@ -112,7 +116,9 @@ lens/
 │   │   │   ├── watcher/          # Directory watching
 │   │   │   ├── progress/         # Status tracking & parent calculation
 │   │   │   ├── navigation/       # Scroll position management
-│   │   │   └── settings/         # Settings persistence
+│   │   │   ├── settings/         # Settings persistence
+│   │   │   ├── common-components/ # Reusable UI components (Button, Input, Card, etc.)
+│   │   │   └── theme/            # Color utilities & theme derivation
 │   │   └── test/                 # Test utilities
 │   ├── src-tauri/                # Rust backend
 │   │   ├── src/lib.rs            # Tauri plugin registration
@@ -124,6 +130,10 @@ lens/
 │   ├── vite.config.ts
 │   └── vitest.config.ts
 ├── docs/                         # Documentation
+│   └── specs/                    # Feature specifications
+│       ├── 01-spec-ui-polish-future-considerations/
+│       ├── 02-spec-theme-customization/
+│       └── 03-spec-documentview-redesign/
 └── tasks/                        # Story & task tracking
     ├── story-list-feature-lens.md
     └── tasks-story-lens-*.md     # Individual story tasks
@@ -311,6 +321,59 @@ await saveSettings({ theme: 'dark', ...settings })
 - `saveSettings(settings)` - Save settings to disk
 - `getDefaultSettings()` - Get default settings object
 
+### `lib/common-components` - Reusable UI Components
+
+A unified component library with consistent Dark OLED Luxury theme styling.
+
+```typescript
+import { Button, Input, Select, Card, Badge, Modal } from './lib/common-components'
+
+// Button variants: primary, secondary, danger, ghost, ghost-danger, outline, link
+<Button variant="primary" size="medium" onClick={handleClick}>Save</Button>
+
+// Form components with theme integration
+<Input label="Name" placeholder="Enter name" error={errors.name} />
+<Select options={options} value={selected} onChange={setSelected} />
+
+// Display components
+<Card header="Title"><p>Content</p></Card>
+<Badge variant="success">Complete</Badge>
+```
+
+**Available components:**
+- `Button` - 6 variants, 3 sizes, loading state
+- `Input` - Text input with label, placeholder, error states
+- `Select` - Styled dropdown with custom arrow
+- `Checkbox` - Custom styled checkbox
+- `Card` - Container with optional header/body/footer
+- `Badge` - 5 variants (default, success, warning, error, info)
+- `Tooltip` - 4 positions with fade animation
+- `Modal` - Centered overlay with focus trap, keyboard handling
+- `ColorPicker` - HSL color picker with hex input
+
+### `lib/theme` - Color Utilities & Theme Derivation
+
+Color manipulation utilities for dynamic theme customization.
+
+```typescript
+import { hexToHsl, deriveFullAccentPalette } from './lib/theme'
+
+// Convert colors
+const hsl = hexToHsl('#00F0F4') // { h: 181, s: 100, l: 48 }
+
+// Derive complete palette from base color
+const palette = deriveFullAccentPalette('#00F0F4')
+// { base, hover, light, muted, glow, ring }
+```
+
+**Key exports:**
+- `hexToHsl(hex)` / `hslToHex(hsl)` - Color space conversion
+- `deriveHoverColor(hex)` - Darker variant for hover states
+- `deriveLightColor(hex)` - Lighter variant
+- `deriveMutedColor(hex)` - Desaturated variant
+- `deriveGlowColor(hex)` - Transparent glow variant
+- `deriveFullAccentPalette(hex)` - Complete palette generation
+
 ## Components
 
 ### `FileImportButton`
@@ -370,7 +433,7 @@ npm run test -- --coverage
 - Integration tests verify full workflows
 
 ```
-Current test count: 947 tests across 41 files
+Current test count: 1329 tests across 50+ files
 ```
 
 ### Mocking Tauri APIs
@@ -402,12 +465,15 @@ vi.mock('@tauri-apps/plugin-fs', () => ({
 - [x] **STORY-LENS-007** - Progress Tracking Interactions
 - [x] **STORY-LENS-008** - Dashboard View
 - [x] **STORY-LENS-009** - Resume & Quick Navigation
+- [x] **STORY-LENS-010** - Settings & Configuration UI
 
-### Remaining Stories
+### Completed Specs
 
-- [ ] **STORY-LENS-010** - Settings & Configuration UI
+- [x] **SPEC-01** - UI Polish & Common Components (Button, Input, Select, Checkbox, Card, Badge, Tooltip, Modal)
+- [x] **SPEC-02** - Theme Customization (ColorPicker, animation intensity, custom colors)
+- [x] **SPEC-03** - DocumentView Redesign (tree view, collapse/expand, section progress, filters, search, keyboard navigation)
 
-See `tasks/` directory for detailed task breakdowns.
+See `tasks/` for story breakdowns and `docs/specs/` for detailed specifications.
 
 ## Code Style
 
