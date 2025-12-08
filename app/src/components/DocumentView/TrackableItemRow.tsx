@@ -99,21 +99,19 @@ export const TrackableItemRow = ({
   progress,
   searchQuery,
 }: TrackableItemRowProps) => {
-  const handleClick = (event: React.MouseEvent) => {
-    if (disabled) return
-
-    // Shift+click cycles status (old behavior)
-    if (event.shiftKey) {
-      onActivate?.(item)
-    } else {
-      // Regular click opens editor (new behavior)
-      onClick?.(item)
-    }
+  const handleClick = () => {
+    // Single click just focuses the row (handled naturally by tabIndex)
+    // No status change or editor opening on single click
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (disabled) return
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === 'Enter') {
+      // Enter opens editor
+      event.preventDefault()
+      onClick?.(item)
+    } else if (event.key === ' ') {
+      // Space cycles status (for accessibility)
       event.preventDefault()
       onActivate?.(item)
     }
@@ -127,10 +125,8 @@ export const TrackableItemRow = ({
 
   const handleDoubleClick = () => {
     if (disabled) return
-    // Double-click on header with children toggles collapse
-    if (item.type === 'header' && hasChildren) {
-      onToggleCollapse?.(item)
-    }
+    // Double-click opens editor for any item
+    onClick?.(item)
   }
 
   const indentLevel = getIndentLevel(item)

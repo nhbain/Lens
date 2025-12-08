@@ -362,6 +362,7 @@ const migrateSettings = (settings: AppSettings): AppSettings => {
     migrated.themeColors = {
       accentPrimary: null,
       accentSecondary: null,
+      accentIntermediary: null,
       surfaceBase: null,
       surfaceElevated: null,
       surfaceCard: null,
@@ -400,7 +401,7 @@ export const updateAnimationIntensity = async (
 const DEFAULT_THEME_COLORS_FALLBACK: ThemeColors = {
   accentPrimary: null,
   accentSecondary: null,
-  accentWarning: null,
+  accentIntermediary: null,
   surfaceBase: null,
   surfaceElevated: null,
   surfaceCard: null,

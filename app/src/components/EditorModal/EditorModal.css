@@ -117,8 +117,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--color-warning);
-  box-shadow: 0 0 8px var(--color-warning);
+  background: var(--color-intermediary);
+  box-shadow: 0 0 8px var(--color-intermediary);
   animation: pulse 2s ease-in-out infinite;
 }
 

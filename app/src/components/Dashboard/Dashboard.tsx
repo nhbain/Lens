@@ -3,6 +3,7 @@
  * Main view showing all tracked files with progress information.
  */
 
+import { useEffect } from 'react'
 import { FileCard } from './FileCard'
 import { SortControls } from './SortControls'
 import { ResumeSection } from './ResumeSection'
@@ -59,6 +60,7 @@ export const Dashboard = ({
   onAddFile,
   onResumeItemClick,
   selectedPath,
+  refreshTrigger,
 }: DashboardProps) => {
   const {
     files,
@@ -66,7 +68,15 @@ export const Dashboard = ({
     error,
     sortConfig,
     setSortConfig,
+    refresh,
   } = useDashboard()
+
+  // Refresh data when refreshTrigger changes (e.g., after file import)
+  useEffect(() => {
+    if (refreshTrigger !== undefined && refreshTrigger > 0) {
+      refresh()
+    }
+  }, [refreshTrigger, refresh])
 
   const {
     items: inProgressItems,

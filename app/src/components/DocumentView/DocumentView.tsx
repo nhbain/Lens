@@ -33,6 +33,24 @@ const countItems = (items: TrackableItem[]): number => {
 }
 
 /**
+ * Find an item by ID in the tree.
+ */
+const findItemById = (items: TrackableItem[], id: string): TrackableItem | null => {
+  for (const item of items) {
+    if (item.id === id) {
+      return item
+    }
+    if (item.children.length > 0) {
+      const found = findItemById(item.children, id)
+      if (found) {
+        return found
+      }
+    }
+  }
+  return null
+}
+
+/**
  * Renders a parsed markdown document with interactive trackable items.
  * Supports displaying headers, list items, and checkboxes with status tracking.
  * Features collapsible tree structure for headers with children.
@@ -94,6 +112,14 @@ export const DocumentView = ({
     return calculateDocumentProgress(items, itemStatuses)
   }, [items, itemStatuses])
 
+  // Callback for keyboard navigation to open editor
+  const handleOpenEditor = useCallback((itemId: string) => {
+    const item = findItemById(items, itemId)
+    if (item) {
+      onItemClick?.(item)
+    }
+  }, [items, onItemClick])
+
   // Keyboard navigation
   const {
     focusedItemId,
@@ -107,6 +133,7 @@ export const DocumentView = ({
     onExpandAll: expandAll,
     onCollapseAll: collapseAll,
     onStatusChange: onItemStatusChange,
+    onOpenEditor: handleOpenEditor,
     searchInputRef,
     onClearSearch: clearSearch,
   })

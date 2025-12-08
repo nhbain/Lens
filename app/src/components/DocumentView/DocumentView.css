@@ -234,8 +234,8 @@
 
 /* Checkbox badges */
 .item-type-badge--checkbox {
-  background: linear-gradient(180deg, var(--color-warning-muted) 0%, rgba(46, 37, 8, 0.6) 100%);
-  color: var(--color-warning);
+  background: linear-gradient(180deg, var(--color-intermediary-muted) 0%, rgba(46, 8, 26, 0.6) 100%);
+  color: var(--color-intermediary);
   font-size: 1rem;
 }
 

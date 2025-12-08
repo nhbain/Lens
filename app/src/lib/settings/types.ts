@@ -41,10 +41,10 @@ export type EditorViewMode = 'overlay' | 'split'
 export interface ThemeColors {
   /** Primary accent color (default: #00F0F4 cyan) */
   accentPrimary: string | null
-  /** Secondary accent color (default: #10B981 emerald) */
+  /** Secondary accent color (default: #6B00E5 purple) */
   accentSecondary: string | null
-  /** Warning/tertiary accent color (default: #F59E0B amber) */
-  accentWarning: string | null
+  /** Intermediary/tertiary accent color (default: #D10467 pink) */
+  accentIntermediary: string | null
   /** Base surface color (default: #0a0a0a) */
   surfaceBase: string | null
   /** Elevated surface color (default: #111111) */
@@ -58,8 +58,8 @@ export interface ThemeColors {
  */
 export const DEFAULT_THEME_COLORS: Required<Record<keyof ThemeColors, string>> = {
   accentPrimary: '#00F0F4',
-  accentSecondary: '#10B981',
-  accentWarning: '#F59E0B',
+  accentSecondary: '#6B00E5',
+  accentIntermediary: '#D10467',
   surfaceBase: '#0a0a0a',
   surfaceElevated: '#111111',
   surfaceCard: '#1a1a1a',
@@ -132,7 +132,7 @@ export const createDefaultSettings = (): AppSettings => {
     themeColors: {
       accentPrimary: null,
       accentSecondary: null,
-      accentWarning: null,
+      accentIntermediary: null,
       surfaceBase: null,
       surfaceElevated: null,
       surfaceCard: null,
@@ -228,7 +228,7 @@ export const isThemeColors = (value: unknown): value is ThemeColors => {
   const colorFields: (keyof ThemeColors)[] = [
     'accentPrimary',
     'accentSecondary',
-    'accentWarning',
+    'accentIntermediary',
     'surfaceBase',
     'surfaceElevated',
     'surfaceCard',

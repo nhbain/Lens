@@ -33,7 +33,8 @@ describe('settings types', () => {
 
     it('exports DEFAULT_THEME_COLORS', () => {
       expect(DEFAULT_THEME_COLORS.accentPrimary).toBe('#00F0F4')
-      expect(DEFAULT_THEME_COLORS.accentSecondary).toBe('#10B981')
+      expect(DEFAULT_THEME_COLORS.accentSecondary).toBe('#6B00E5')
+      expect(DEFAULT_THEME_COLORS.accentIntermediary).toBe('#D10467')
       expect(DEFAULT_THEME_COLORS.surfaceBase).toBe('#0a0a0a')
       expect(DEFAULT_THEME_COLORS.surfaceElevated).toBe('#111111')
       expect(DEFAULT_THEME_COLORS.surfaceCard).toBe('#1a1a1a')
@@ -205,7 +206,7 @@ describe('settings types', () => {
       const colors: ThemeColors = {
         accentPrimary: null,
         accentSecondary: null,
-        accentWarning: null,
+        accentIntermediary: null,
         surfaceBase: null,
         surfaceElevated: null,
         surfaceCard: null,
@@ -217,7 +218,7 @@ describe('settings types', () => {
       const colors: ThemeColors = {
         accentPrimary: '#00F0F4',
         accentSecondary: '#10B981',
-        accentWarning: '#F59E0B',
+        accentIntermediary: '#F59E0B',
         surfaceBase: '#0a0a0a',
         surfaceElevated: '#111111',
         surfaceCard: '#1a1a1a',
@@ -229,7 +230,7 @@ describe('settings types', () => {
       const colors: ThemeColors = {
         accentPrimary: '#00F0F4',
         accentSecondary: null,
-        accentWarning: null,
+        accentIntermediary: null,
         surfaceBase: '#0a0a0a',
         surfaceElevated: null,
         surfaceCard: null,
@@ -241,7 +242,7 @@ describe('settings types', () => {
       const colors = {
         accentPrimary: 'not-a-color',
         accentSecondary: null,
-        accentWarning: null,
+        accentIntermediary: null,
         surfaceBase: null,
         surfaceElevated: null,
         surfaceCard: null,
@@ -260,7 +261,7 @@ describe('settings types', () => {
       const colors = {
         accentPrimary: 123,
         accentSecondary: null,
-        accentWarning: null,
+        accentIntermediary: null,
         surfaceBase: null,
         surfaceElevated: null,
         surfaceCard: null,

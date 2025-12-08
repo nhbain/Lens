@@ -48,10 +48,10 @@
   border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
-.badge--warning {
-  background: rgba(245, 158, 11, 0.2);
-  color: #F59E0B;
-  border: 1px solid rgba(245, 158, 11, 0.4);
+.badge--intermediary {
+  background: rgba(209, 4, 103, 0.2);
+  color: #D10467;
+  border: 1px solid rgba(209, 4, 103, 0.4);
 }
 
 .badge--error {

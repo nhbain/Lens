@@ -332,7 +332,27 @@ describe('useTreeKeyboardNavigation', () => {
   })
 
   describe('Enter/Space', () => {
-    it('cycles item status from pending to in_progress', () => {
+    it('calls onOpenEditor when Enter pressed', () => {
+      const onOpenEditor = vi.fn()
+      const { result } = renderHook(() =>
+        useTreeKeyboardNavigation({
+          ...defaultProps,
+          onOpenEditor,
+        })
+      )
+
+      act(() => {
+        result.current.setFocusedItemId('1')
+      })
+
+      act(() => {
+        result.current.handleKeyDown(createKeyboardEvent('Enter'))
+      })
+
+      expect(onOpenEditor).toHaveBeenCalledWith('1')
+    })
+
+    it('cycles item status from pending to in_progress with Space', () => {
       const onStatusChange = vi.fn()
       const { result } = renderHook(() =>
         useTreeKeyboardNavigation({
@@ -347,13 +367,13 @@ describe('useTreeKeyboardNavigation', () => {
       })
 
       act(() => {
-        result.current.handleKeyDown(createKeyboardEvent('Enter'))
+        result.current.handleKeyDown(createKeyboardEvent(' '))
       })
 
       expect(onStatusChange).toHaveBeenCalledWith('1', 'in_progress')
     })
 
-    it('cycles item status from in_progress to complete', () => {
+    it('cycles item status from in_progress to complete with Space', () => {
       const onStatusChange = vi.fn()
       const { result } = renderHook(() =>
         useTreeKeyboardNavigation({
@@ -374,7 +394,7 @@ describe('useTreeKeyboardNavigation', () => {
       expect(onStatusChange).toHaveBeenCalledWith('1', 'complete')
     })
 
-    it('cycles item status from complete to pending', () => {
+    it('cycles item status from complete to pending with Space', () => {
       const onStatusChange = vi.fn()
       const { result } = renderHook(() =>
         useTreeKeyboardNavigation({
@@ -389,7 +409,7 @@ describe('useTreeKeyboardNavigation', () => {
       })
 
       act(() => {
-        result.current.handleKeyDown(createKeyboardEvent('Enter'))
+        result.current.handleKeyDown(createKeyboardEvent(' '))
       })
 
       expect(onStatusChange).toHaveBeenCalledWith('1', 'pending')

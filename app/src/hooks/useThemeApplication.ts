@@ -68,15 +68,15 @@ const applySecondaryAccentColors = (color: string): void => {
 }
 
 /**
- * Applies warning/tertiary accent colors to CSS variables.
+ * Applies intermediary/tertiary accent colors to CSS variables.
  */
-const applyWarningColors = (color: string): void => {
+const applyIntermediaryColors = (color: string): void => {
   const root = document.documentElement
 
-  root.style.setProperty('--color-warning', color)
-  root.style.setProperty('--color-warning-hover', deriveLightColor(color))
-  root.style.setProperty('--color-warning-muted', deriveMutedColor(color))
-  root.style.setProperty('--color-warning-glow', deriveGlowColor(color, 0.2))
+  root.style.setProperty('--color-intermediary', color)
+  root.style.setProperty('--color-intermediary-hover', deriveLightColor(color))
+  root.style.setProperty('--color-intermediary-muted', deriveMutedColor(color))
+  root.style.setProperty('--color-intermediary-glow', deriveGlowColor(color, 0.2))
 }
 
 /**
@@ -137,7 +137,7 @@ export const useThemeApplication = (settings: AppSettings | null): void => {
     const themeColors: ThemeColors = settings.themeColors ?? {
       accentPrimary: null,
       accentSecondary: null,
-      accentWarning: null,
+      accentIntermediary: null,
       surfaceBase: null,
       surfaceElevated: null,
       surfaceCard: null,
@@ -151,9 +151,9 @@ export const useThemeApplication = (settings: AppSettings | null): void => {
       themeColors.accentSecondary,
       DEFAULT_THEME_COLORS.accentSecondary
     )
-    const accentWarning = getEffectiveColor(
-      themeColors.accentWarning,
-      DEFAULT_THEME_COLORS.accentWarning
+    const accentIntermediary = getEffectiveColor(
+      themeColors.accentIntermediary,
+      DEFAULT_THEME_COLORS.accentIntermediary
     )
     const surfaceBase = getEffectiveColor(
       themeColors.surfaceBase,
@@ -171,7 +171,7 @@ export const useThemeApplication = (settings: AppSettings | null): void => {
     // Apply colors to CSS variables
     applyAccentColors(accentPrimary)
     applySecondaryAccentColors(accentSecondary)
-    applyWarningColors(accentWarning)
+    applyIntermediaryColors(accentIntermediary)
     applySurfaceColors(surfaceBase, surfaceElevated, surfaceCard)
   }, [settings])
 }

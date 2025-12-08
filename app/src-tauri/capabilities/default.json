@@ -14,14 +14,27 @@
     },
     {
       "identifier": "fs:allow-write-text-file",
-      "allow": [{ "path": "**/*.md" }, { "path": "**/*.markdown" }]
+      "allow": [{ "path": "**/*.md" }, { "path": "**/*.markdown" }, { "path": "**/*.md.tmp" }, { "path": "**/*.markdown.tmp" }]
     },
     "fs:allow-app-write-recursive",
     "fs:allow-app-meta-recursive",
     "fs:allow-mkdir",
-    "fs:allow-remove",
-    "fs:allow-rename",
-    "fs:allow-exists",
+    {
+      "identifier": "fs:allow-remove",
+      "allow": [{ "path": "**/*.md.tmp" }, { "path": "**/*.markdown.tmp" }]
+    },
+    {
+      "identifier": "fs:allow-rename",
+      "allow": [{ "path": "**/*.md" }, { "path": "**/*.markdown" }, { "path": "**/*.md.tmp" }, { "path": "**/*.markdown.tmp" }]
+    },
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [{ "path": "**" }]
+    },
+    {
+      "identifier": "fs:allow-copy-file",
+      "allow": [{ "path": "**/*.md" }, { "path": "**/*.markdown" }, { "path": "**/*.md.bak" }, { "path": "**/*.markdown.bak" }]
+    },
     "dialog:default",
     "dialog:allow-open"
   ]

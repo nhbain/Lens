@@ -25,7 +25,7 @@ import type { AppSettings, ThemeOption, AnimationIntensity, ThemeColors, EditorS
 const DEFAULT_THEME_COLORS: ThemeColors = {
   accentPrimary: null,
   accentSecondary: null,
-  accentWarning: null,
+  accentIntermediary: null,
   surfaceBase: null,
   surfaceElevated: null,
   surfaceCard: null,

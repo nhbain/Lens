@@ -110,6 +110,8 @@ export interface DashboardProps {
   selectedPath?: string
   /** Callback when a resume item is clicked (includes targetItemId) */
   onResumeItemClick?: (target: DashboardNavigationTarget) => void
+  /** Trigger to refresh dashboard data (increment to refresh) */
+  refreshTrigger?: number
 }
 
 /**

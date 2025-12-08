@@ -45,9 +45,9 @@ describe('Badge', () => {
     expect(document.querySelector('.badge')).toHaveClass('badge--success')
   })
 
-  it('applies warning variant class', () => {
-    render(<Badge variant="warning">Pending</Badge>)
-    expect(document.querySelector('.badge')).toHaveClass('badge--warning')
+  it('applies intermediary variant class', () => {
+    render(<Badge variant="intermediary">Pending</Badge>)
+    expect(document.querySelector('.badge')).toHaveClass('badge--intermediary')
   })
 
   it('applies error variant class', () => {

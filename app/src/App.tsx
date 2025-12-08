@@ -48,6 +48,7 @@ export const App = () => {
   const [selectedFile, setSelectedFile] = useState<TrackedFile | null>(null)
   const [fileContent, setFileContent] = useState<string | null>(null)
   const [targetItemId, setTargetItemId] = useState<string | undefined>(undefined)
+  const [dashboardRefreshTrigger, setDashboardRefreshTrigger] = useState(0)
 
   // Settings state
   const [watchedDirectories, setWatchedDirectories] = useState<WatchedDirectory[]>([])
@@ -167,7 +168,8 @@ export const App = () => {
   // Use markdown editor hook for editing items
   const {
     editingItem,
-    currentContent: editorContent,
+    originalContent: editorOriginalContent,
+    currentContent: _editorContent,
     isDirty: _isEditorDirty,
     isSaving: isEditorSaving,
     openEditor,
@@ -197,6 +199,8 @@ export const App = () => {
       type: 'success',
       message: `Added "${result.file?.fileName}" to tracking`,
     })
+    // Trigger Dashboard refresh to show the new file
+    setDashboardRefreshTrigger((prev) => prev + 1)
   }, [])
 
   const handleError = useCallback((error: string) => {
@@ -487,7 +491,7 @@ export const App = () => {
           themeColors: {
             accentPrimary: null,
             accentSecondary: null,
-            accentWarning: null,
+            accentIntermediary: null,
             surfaceBase: null,
             surfaceElevated: null,
             surfaceCard: null,
@@ -648,7 +652,7 @@ export const App = () => {
               onClose={handleEditorClose}
               title={`Edit: ${editingItem.content}`}
               mode={settings?.editor.viewMode ?? 'overlay'}
-              initialContent={editorContent}
+              initialContent={editorOriginalContent}
               onContentChange={updateEditorContent}
               onSave={handleEditorSave}
               isSaving={isEditorSaving}
@@ -701,6 +705,7 @@ export const App = () => {
         onAddFile={importFile}
         selectedPath={selectedFile?.path}
         onResumeItemClick={handleResumeItemClick}
+        refreshTrigger={dashboardRefreshTrigger}
       />
     </main>
   )

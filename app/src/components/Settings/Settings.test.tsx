@@ -21,7 +21,7 @@ const createMockSettings = (
   themeColors: {
     accentPrimary: null,
     accentSecondary: null,
-    accentWarning: null,
+    accentIntermediary: null,
     surfaceBase: null,
     surfaceElevated: null,
     surfaceCard: null,

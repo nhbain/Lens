@@ -465,44 +465,18 @@
 
 .file-patterns__input-group {
   display: flex;
-  border: none;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 .file-patterns__input {
   flex: 1;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  font-size: 14px;
+  min-width: 0;
+}
+
+/* Override Input component's input element to use monospace font */
+.file-patterns__input .input {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
-  color: var(--color-text-primary);
-  transition:
-    border-color var(--transition-normal),
-    box-shadow var(--transition-normal);
-}
-
-.file-patterns__input::placeholder {
-  color: var(--color-text-muted);
-}
-
-.file-patterns__input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow:
-    0 0 0 2px var(--color-black),
-    0 0 0 4px var(--color-accent),
-    var(--glow-accent);
-}
-
-.file-patterns__input--error {
-  border-color: var(--color-error);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-}
-
-.file-patterns__error {
-  margin: 8px 0 0 0;
-  font-size: 13px;
-  color: var(--color-error);
 }
 
 .file-patterns__examples {

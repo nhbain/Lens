@@ -238,10 +238,10 @@ export const Settings = ({
                   size="small"
                 />
                 <ColorPicker
-                  label="Warning"
-                  value={settings?.themeColors?.accentWarning ?? null}
-                  defaultColor={DEFAULT_THEME_COLORS.accentWarning}
-                  onChange={(value) => onThemeColorChange('accentWarning', value)}
+                  label="Intermediary"
+                  value={settings?.themeColors?.accentIntermediary ?? null}
+                  defaultColor={DEFAULT_THEME_COLORS.accentIntermediary}
+                  onChange={(value) => onThemeColorChange('accentIntermediary', value)}
                   disabled={isLoading}
                   size="small"
                 />

@@ -21,6 +21,8 @@ export interface UseTreeKeyboardNavigationOptions {
   onCollapseAll: () => void
   /** Callback to change item status */
   onStatusChange?: (itemId: string, status: TrackingStatus) => void
+  /** Callback to open editor for an item */
+  onOpenEditor?: (itemId: string) => void
   /** Reference to the search input element */
   searchInputRef?: React.RefObject<HTMLInputElement | null>
   /** Callback when search should be cleared */
@@ -142,6 +144,7 @@ export function useTreeKeyboardNavigation({
   onExpandAll,
   onCollapseAll,
   onStatusChange,
+  onOpenEditor,
   searchInputRef,
   onClearSearch,
 }: UseTreeKeyboardNavigationOptions): UseTreeKeyboardNavigationResult {
@@ -283,8 +286,16 @@ export function useTreeKeyboardNavigation({
         break
       }
 
-      case 'Enter':
+      case 'Enter': {
+        // Enter opens editor
+        event.preventDefault()
+        if (!focusedItemId || !onOpenEditor) return
+        onOpenEditor(focusedItemId)
+        break
+      }
+
       case ' ': {
+        // Space cycles status (for accessibility)
         event.preventDefault()
         if (!focusedItemId || !onStatusChange) return
 
@@ -304,6 +315,7 @@ export function useTreeKeyboardNavigation({
     onExpandAll,
     onCollapseAll,
     onStatusChange,
+    onOpenEditor,
     searchInputRef,
     onClearSearch,
   ])

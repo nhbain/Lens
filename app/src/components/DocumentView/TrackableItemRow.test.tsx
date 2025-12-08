@@ -219,14 +219,24 @@ describe('TrackableItemRow', () => {
   })
 
   describe('interactions', () => {
-    it('calls onClick when clicked', () => {
+    it('calls onClick when double-clicked', () => {
+      const onClick = vi.fn()
+      const item = createMockItem()
+      render(<TrackableItemRow {...defaultProps} item={item} onClick={onClick} />)
+
+      fireEvent.doubleClick(screen.getByRole('button'))
+
+      expect(onClick).toHaveBeenCalledWith(item)
+    })
+
+    it('does not call onClick on single click (just focuses)', () => {
       const onClick = vi.fn()
       const item = createMockItem()
       render(<TrackableItemRow {...defaultProps} item={item} onClick={onClick} />)
 
       fireEvent.click(screen.getByRole('button'))
 
-      expect(onClick).toHaveBeenCalledWith(item)
+      expect(onClick).not.toHaveBeenCalled()
     })
 
     it('does not throw when clicked without onClick handler', () => {
@@ -237,16 +247,16 @@ describe('TrackableItemRow', () => {
       }).not.toThrow()
     })
 
-    it('calls onActivate when Enter key pressed', () => {
-      const onActivate = vi.fn()
+    it('calls onClick when Enter key pressed (opens editor)', () => {
+      const onClick = vi.fn()
       const item = createMockItem()
       render(
-        <TrackableItemRow {...defaultProps} item={item} onActivate={onActivate} />
+        <TrackableItemRow {...defaultProps} item={item} onClick={onClick} />
       )
 
       fireEvent.keyDown(screen.getByRole('button'), { key: 'Enter' })
 
-      expect(onActivate).toHaveBeenCalledWith(item)
+      expect(onClick).toHaveBeenCalledWith(item)
     })
 
     it('calls onActivate when Space key pressed', () => {

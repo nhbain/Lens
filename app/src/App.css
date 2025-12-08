@@ -47,9 +47,9 @@
      ========================================================================== */
   --color-success: #22C55E;
   --color-success-muted: #0A2E1A;
-  --color-warning: #EAB308;
-  --color-warning-hover: #FCD34D;
-  --color-warning-muted: #2E2508;
+  --color-intermediary: #D10467;
+  --color-intermediary-hover: #E8358A;
+  --color-intermediary-muted: #2E081A;
   --color-error: #EF4444;
   --color-error-muted: #2E0A0A;
   --color-in-progress: #00F0F4;
@@ -650,22 +650,22 @@ code, pre, .mono {
 }
 
 .message-error {
-  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(46, 10, 10, 0.8) 100%);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: var(--color-error);
+  background: linear-gradient(180deg, var(--color-error-muted) 0%, var(--color-surface-1) 100%);
+  border: 1px solid var(--color-error-muted);
+  color: var(--color-text-primary);
 }
 
 .message-info {
-  background: linear-gradient(180deg, var(--color-accent-muted) 0%, rgba(10, 58, 59, 0.8) 100%);
-  border: 1px solid rgba(0, 240, 244, 0.3);
-  color: var(--color-accent);
+  background: linear-gradient(180deg, var(--color-accent-muted) 0%, var(--color-surface-1) 100%);
+  border: 1px solid var(--color-accent-muted);
+  color: var(--color-text-primary);
 }
 
 .message-success {
-  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, rgba(6, 78, 59, 0.8) 100%);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--color-accent-secondary);
-  box-shadow: var(--shadow-card), var(--glow-emerald);
+  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, var(--color-surface-1) 100%);
+  border: 1px solid var(--color-accent-secondary-muted);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-card), var(--glow-accent-secondary);
 }
 
 .message-text {
