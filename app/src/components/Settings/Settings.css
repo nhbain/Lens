@@ -469,9 +469,14 @@
   align-items: flex-start;
 }
 
+.file-patterns__input-group > .button {
+  flex-shrink: 0;
+}
+
 .file-patterns__input {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 /* Override Input component's input element to use monospace font */

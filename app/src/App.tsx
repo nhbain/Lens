@@ -159,11 +159,23 @@ export const App = () => {
     isLoading: isDocumentLoading,
     error: documentError,
     updateItemStatus,
-    reload: reloadDocument,
+    reload: _reloadDocument,
   } = useDocumentView({
     filePath: selectedFile?.path ?? '',
     content: fileContent ?? undefined,
   })
+
+  // Function to refresh file content from disk after save
+  const refreshFileContent = useCallback(async () => {
+    if (!selectedFile) return
+    try {
+      const content = await readTextFile(selectedFile.path)
+      setFileContent(content)
+    } catch (err) {
+      console.error('Failed to refresh file content:', err)
+      // Don't show error message since save succeeded - just log it
+    }
+  }, [selectedFile])
 
   // Use markdown editor hook for editing items
   const {
@@ -183,8 +195,9 @@ export const App = () => {
         type: 'success',
         message: 'Changes saved successfully',
       })
-      // Reload the document to reflect changes
-      reloadDocument()
+      // Re-read the file from disk to get updated content
+      // This triggers useDocumentView to re-parse with fresh content
+      refreshFileContent()
     },
     onSaveError: (error) => {
       setAppMessage({
