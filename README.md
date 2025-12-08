@@ -18,7 +18,9 @@ npm run tauri dev
 - **Rust** toolchain ([install via rustup](https://rustup.rs/))
 - **Platform-specific dependencies:**
   - **macOS:** Xcode Command Line Tools (`xcode-select --install`)
-  - **Windows:** [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+  - **Windows:**
+    - [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) (select "Desktop development with C++" workload)
+    - [WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (pre-installed on Windows 10 1803+ and Windows 11)
 
 Verify Rust is installed:
 ```bash
