@@ -185,6 +185,30 @@ describe('useDashboard helpers', () => {
       expect(result.percentage).toBe(100)
     })
 
+    it('calculates remaining items as total minus complete', () => {
+      // Spec scenario: 10 items, 3 complete, 2 in_progress
+      // Remaining should be 7 (10 - 3 = total - complete)
+      const items = [
+        { status: 'complete' as const },
+        { status: 'complete' as const },
+        { status: 'complete' as const },
+        { status: 'in_progress' as const },
+        { status: 'in_progress' as const },
+        { status: 'pending' as const },
+        { status: 'pending' as const },
+        { status: 'pending' as const },
+        { status: 'pending' as const },
+        { status: 'pending' as const },
+      ]
+      const result = calculateProgress(items, 10)
+      expect(result.total).toBe(10)
+      expect(result.complete).toBe(3)
+      expect(result.inProgress).toBe(2)
+      expect(result.pending).toBe(5)
+      // Remaining = total - complete = 10 - 3 = 7
+      expect(result.total - result.complete).toBe(7)
+    })
+
     it('handles all pending', () => {
       const items = [
         { status: 'pending' as const },

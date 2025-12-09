@@ -76,6 +76,21 @@ describe('FileCard', () => {
       expect(screen.getByText('0 remaining')).toBeInTheDocument()
     })
 
+    it('displays remaining as total minus complete (spec scenario)', () => {
+      // Spec scenario: total=10, complete=3, inProgress=2, pending=5
+      // Remaining should be 7 (10 - 3), not 5 (pending only)
+      render(<FileCard file={createMockFile({
+        progress: {
+          total: 10,
+          complete: 3,
+          inProgress: 2,
+          pending: 5,
+          percentage: 30,
+        },
+      })} />)
+      expect(screen.getByText('7 remaining')).toBeInTheDocument()
+    })
+
     it('renders in-progress badge when file has in-progress items', () => {
       render(<FileCard file={createMockFile({ hasInProgress: true })} />)
       expect(screen.getByText('In Progress')).toBeInTheDocument()
