@@ -142,11 +142,17 @@ export const DocumentView = ({
 
   // Sync with external focused item (e.g., restore focus after modal close)
   // Always set when externalFocusedItemId has a value to ensure focus is restored
+  // Also restore DOM focus to the container so keyboard events fire
   useEffect(() => {
     if (externalFocusedItemId) {
       setFocusedItemId(externalFocusedItemId)
+      // Also focus the container element so keyboard events (like spacebar) work
+      // This is critical for restoring keyboard navigation after modal close
+      setTimeout(() => {
+        keyboardContainerRef.current?.focus()
+      }, 0)
     }
-  }, [externalFocusedItemId, setFocusedItemId])
+  }, [externalFocusedItemId, setFocusedItemId, keyboardContainerRef])
 
   // Scroll to target item and highlight it
   useEffect(() => {

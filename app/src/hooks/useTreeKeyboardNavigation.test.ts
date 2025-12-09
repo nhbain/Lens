@@ -502,4 +502,130 @@ describe('useTreeKeyboardNavigation', () => {
       expect(result.current.focusedItemId).toBeNull()
     })
   })
+
+  describe('spacebar after external focus restoration (modal close scenario)', () => {
+    /**
+     * These tests verify that spacebar status cycling works correctly after
+     * the focused item is set externally (e.g., when externalFocusedItemId
+     * is set after closing the editor modal).
+     */
+
+    it('cycles status with spacebar after setFocusedItemId is called externally', () => {
+      // Simulate: modal was open, now closed, externalFocusedItemId restores focus
+      const onStatusChange = vi.fn()
+      const { result } = renderHook(() =>
+        useTreeKeyboardNavigation({
+          ...defaultProps,
+          onStatusChange,
+          itemStatuses: { '1': 'pending' },
+        })
+      )
+
+      // Simulate external focus restoration (what happens when modal closes)
+      act(() => {
+        result.current.setFocusedItemId('1')
+      })
+
+      // Now spacebar should work
+      act(() => {
+        result.current.handleKeyDown(createKeyboardEvent(' '))
+      })
+
+      expect(onStatusChange).toHaveBeenCalledWith('1', 'in_progress')
+    })
+
+    it('maintains handleKeyDown binding after focus restoration', () => {
+      const onStatusChange = vi.fn()
+      const { result } = renderHook(() =>
+        useTreeKeyboardNavigation({
+          ...defaultProps,
+          onStatusChange,
+          itemStatuses: { '1': 'pending', '2': 'pending' },
+        })
+      )
+
+      // Initial navigation
+      act(() => {
+        result.current.setFocusedItemId('1')
+      })
+
+      // Change focus externally (simulating modal open/close cycle)
+      act(() => {
+        result.current.setFocusedItemId(null) // Modal opens, focus lost
+      })
+      act(() => {
+        result.current.setFocusedItemId('2') // Modal closes, focus restored
+      })
+
+      // Handler should still work after multiple focus changes
+      act(() => {
+        result.current.handleKeyDown(createKeyboardEvent(' '))
+      })
+
+      expect(onStatusChange).toHaveBeenCalledWith('2', 'in_progress')
+    })
+
+    it('cycles status correctly with full status cycle after focus restoration', () => {
+      const onStatusChange = vi.fn()
+      const { result } = renderHook(() =>
+        useTreeKeyboardNavigation({
+          ...defaultProps,
+          onStatusChange,
+          itemStatuses: { '1': 'complete' },
+        })
+      )
+
+      // Simulate modal open/close cycle
+      act(() => {
+        result.current.setFocusedItemId('1')
+      })
+
+      // Press spacebar - should cycle complete -> pending
+      act(() => {
+        result.current.handleKeyDown(createKeyboardEvent(' '))
+      })
+
+      expect(onStatusChange).toHaveBeenCalledWith('1', 'pending')
+    })
+
+    it('preserves focus after multiple navigation then external focus reset', () => {
+      const onStatusChange = vi.fn()
+      const { result } = renderHook(() =>
+        useTreeKeyboardNavigation({
+          ...defaultProps,
+          onStatusChange,
+          itemStatuses: {},
+        })
+      )
+
+      // Navigate down to item 1
+      act(() => {
+        result.current.handleKeyDown(createKeyboardEvent('ArrowDown'))
+      })
+      expect(result.current.focusedItemId).toBe('1')
+
+      // Navigate down to item 1.1
+      act(() => {
+        result.current.handleKeyDown(createKeyboardEvent('ArrowDown'))
+      })
+      expect(result.current.focusedItemId).toBe('1.1')
+
+      // Simulate modal open (focus lost)
+      act(() => {
+        result.current.setFocusedItemId(null)
+      })
+
+      // Simulate modal close (focus restored to 1.1)
+      act(() => {
+        result.current.setFocusedItemId('1.1')
+      })
+
+      // Spacebar should work on restored item
+      act(() => {
+        result.current.handleKeyDown(createKeyboardEvent(' '))
+      })
+
+      expect(onStatusChange).toHaveBeenCalledWith('1.1', 'in_progress')
+    })
+  })
 })
