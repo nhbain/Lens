@@ -342,6 +342,174 @@ Paragraph text here.
     })
   })
 
+  describe('sequential edit regression tests', () => {
+    /**
+     * These tests document the bug scenario where editing one section
+     * and adding/removing lines causes subsequent edits to use stale positions.
+     *
+     * The extractMarkdownSlice function itself is stateless and correct -
+     * it extracts the right content when given correct positions.
+     * The real bug is at the application level where stale positions are used.
+     */
+
+    it('extracts correct slice after previous edit added lines', () => {
+      // SCENARIO:
+      // Original document has Section A (lines 1-3) and Section B (lines 5-7)
+      // User edits Section A and adds 2 lines (now lines 1-5)
+      // Document is now different, Section B is now at lines 7-9
+      // If we extract Section B using OLD positions (5-7), we get wrong content
+
+      // Original document (for context):
+      // # Section A
+      // Content A1
+      //
+      // # Section B
+      // Content B1
+      // Content B2
+
+      // After editing Section A and adding 2 lines:
+      const modifiedDocument = `# Section A
+Content A1
+Added Line 1
+Added Line 2
+
+# Section B
+Content B1
+Content B2`
+
+      // Section B's NEW correct position (after the edit)
+      const sectionBItem: TrackableItem = {
+        id: 'section-b',
+        type: 'header',
+        content: 'Section B',
+        depth: 1,
+        position: { line: 6, column: 1, endLine: 8, endColumn: 11 },
+        children: [],
+      }
+
+      // With correct (fresh) positions, extraction works correctly
+      const result = extractMarkdownSlice(modifiedDocument, sectionBItem)
+      expect(result).toBe(`# Section B
+Content B1
+Content B2`)
+    })
+
+    it('extracts correct slice after previous edit removed lines', () => {
+      // SCENARIO:
+      // Original document has Section A (lines 1-5) and Section B (lines 7-9)
+      // User edits Section A and removes 2 lines (now lines 1-3)
+      // Document is now different, Section B is now at lines 5-7
+
+      const modifiedDocument = `# Section A
+Content A1
+
+# Section B
+Content B1
+Content B2`
+
+      // Section B's NEW correct position (after lines were removed)
+      const sectionBItem: TrackableItem = {
+        id: 'section-b',
+        type: 'header',
+        content: 'Section B',
+        depth: 1,
+        position: { line: 4, column: 1, endLine: 6, endColumn: 11 },
+        children: [],
+      }
+
+      const result = extractMarkdownSlice(modifiedDocument, sectionBItem)
+      expect(result).toBe(`# Section B
+Content B1
+Content B2`)
+    })
+
+    it('handles sequential edits to different sections without corruption', () => {
+      // Full workflow test:
+      // 1. Start with document
+      // 2. Edit Section A (add lines)
+      // 3. Edit Section B (should use FRESH positions)
+      // Both sections should have correct content
+
+      // After Section A was edited and lines were added:
+      const documentAfterFirstEdit = `# Section A
+Content A1
+New content line 1
+New content line 2
+
+# Section B
+Content B1
+
+# Section C
+Content C1`
+
+      // Section B with CORRECT positions for the modified document
+      const sectionB: TrackableItem = {
+        id: 'section-b',
+        type: 'header',
+        content: 'Section B',
+        depth: 1,
+        position: { line: 6, column: 1, endLine: 7, endColumn: 11 },
+        children: [],
+      }
+
+      // Section C with CORRECT positions for the modified document
+      const sectionC: TrackableItem = {
+        id: 'section-c',
+        type: 'header',
+        content: 'Section C',
+        depth: 1,
+        position: { line: 9, column: 1, endLine: 10, endColumn: 11 },
+        children: [],
+      }
+
+      // Both extractions should work correctly with fresh positions
+      expect(extractMarkdownSlice(documentAfterFirstEdit, sectionB)).toBe(`# Section B
+Content B1`)
+      expect(extractMarkdownSlice(documentAfterFirstEdit, sectionC)).toBe(`# Section C
+Content C1`)
+    })
+
+    it('demonstrates stale position issue - extraction with wrong positions', () => {
+      // This test documents what happens when STALE positions are used
+      // (the bug scenario we're fixing)
+
+      // Document AFTER Section A was edited and 2 lines were added
+      const modifiedDocument = `# Section A
+Content A1
+Added Line 1
+Added Line 2
+
+# Section B
+Content B1
+Content B2`
+
+      // Section B's OLD (stale) position from BEFORE the edit
+      // Originally Section B was at lines 4-6, but now it's at lines 6-8
+      const staleItem: TrackableItem = {
+        id: 'section-b',
+        type: 'header',
+        content: 'Section B',
+        depth: 1,
+        position: { line: 4, column: 1, endLine: 6, endColumn: 12 }, // STALE! (endColumn 12 = "# Section B" which is 11 chars)
+        children: [],
+      }
+
+      // With stale positions, we extract the WRONG content
+      const result = extractMarkdownSlice(modifiedDocument, staleItem)
+
+      // This extracts lines 4-6 of the modified document, which is:
+      // "Added Line 2\n\n# Section B" - NOT the expected Section B content!
+      expect(result).not.toBe(`# Section B
+Content B1
+Content B2`)
+
+      // It actually extracts this wrong content:
+      expect(result).toBe(`Added Line 2
+
+# Section B`)
+    })
+  })
+
   describe('edge cases', () => {
     it('extracts from first line of multi-line document', () => {
       const markdown = `# First Line

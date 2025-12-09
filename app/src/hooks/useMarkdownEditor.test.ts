@@ -340,6 +340,143 @@ describe('useMarkdownEditor helpers', () => {
     })
   })
 
+  describe('content integrity - sequential edits', () => {
+    /**
+     * These tests document the expected behavior for preventing content corruption
+     * when editing multiple sections sequentially.
+     *
+     * The key requirement: after saving content that changes line counts,
+     * the system must ensure fresh positions are used before allowing another edit.
+     */
+
+    it('replaceContentSlice maintains document integrity with sequential edits', () => {
+      // Simulate the full workflow of sequential edits:
+
+      // Step 1: Original document
+      const original = `# Section A
+Content A1
+
+# Section B
+Content B1
+Content B2
+
+# Section C
+Content C1`
+
+      // Step 2: Edit Section A (lines 1-2) and add 2 lines
+      const afterFirstEdit = replaceContentSlice(
+        original,
+        1, // startLine
+        2, // endLine
+        `# Section A
+Content A1
+Added Line 1
+Added Line 2`
+      )
+
+      expect(afterFirstEdit).toBe(`# Section A
+Content A1
+Added Line 1
+Added Line 2
+
+# Section B
+Content B1
+Content B2
+
+# Section C
+Content C1`)
+
+      // Step 3: Now edit Section B - must use NEW positions
+      // Section B is now at lines 6-8 (was 4-6)
+      // With correct positions, this works:
+      const afterSecondEdit = replaceContentSlice(
+        afterFirstEdit,
+        6, // NEW correct startLine
+        8, // NEW correct endLine
+        `# Section B
+Content B1 - MODIFIED`
+      )
+
+      expect(afterSecondEdit).toBe(`# Section A
+Content A1
+Added Line 1
+Added Line 2
+
+# Section B
+Content B1 - MODIFIED
+
+# Section C
+Content C1`)
+
+      // Verify Section C is still intact
+      expect(afterSecondEdit).toContain('# Section C\nContent C1')
+    })
+
+    it('detects stale positions would cause corruption', () => {
+      // This test documents what happens with STALE positions
+
+      // Step 1: Original document
+      const original = `# Section A
+Content A1
+
+# Section B
+Content B1
+Content B2
+
+# Section C
+Content C1`
+
+      // Step 2: Edit Section A (lines 1-2) and add 2 lines
+      const afterFirstEdit = replaceContentSlice(
+        original,
+        1,
+        2,
+        `# Section A
+Content A1
+Added Line 1
+Added Line 2`
+      )
+
+      // Step 3: If we use STALE positions for Section B (lines 4-6 instead of 6-8)
+      // This would overwrite the wrong content!
+      const corruptedResult = replaceContentSlice(
+        afterFirstEdit,
+        4, // STALE position (should be 6)
+        6, // STALE position (should be 8)
+        `# Section B
+Content B1 - MODIFIED`
+      )
+
+      // This produces CORRUPTED content - Section B appears twice!
+      expect(corruptedResult).not.toContain('Added Line 2')
+      // The original Section B is still at lines 6-8, unmodified
+      expect(corruptedResult).toContain('Content B1\nContent B2')
+    })
+
+    it('validates line numbers should be within document bounds', () => {
+      // Helper to check if positions are valid for a document
+      const isValidPosition = (
+        content: string,
+        startLine: number,
+        endLine: number
+      ): boolean => {
+        const lineCount = content.split('\n').length
+        return startLine >= 1 && endLine <= lineCount && startLine <= endLine
+      }
+
+      const document = `Line 1
+Line 2
+Line 3`
+
+      expect(isValidPosition(document, 1, 3)).toBe(true)
+      expect(isValidPosition(document, 1, 1)).toBe(true)
+      expect(isValidPosition(document, 2, 3)).toBe(true)
+      expect(isValidPosition(document, 0, 3)).toBe(false) // line 0 invalid
+      expect(isValidPosition(document, 1, 4)).toBe(false) // line 4 out of bounds
+      expect(isValidPosition(document, 3, 1)).toBe(false) // end before start
+    })
+  })
+
   describe('edge cases', () => {
     it('handles content with no newlines', () => {
       const fullContent = 'Single line content'

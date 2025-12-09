@@ -50,6 +50,7 @@ export const App = () => {
   const [dashboardRefreshTrigger, setDashboardRefreshTrigger] = useState(0)
   const [focusedItemIdForRestore, setFocusedItemIdForRestore] = useState<string | null>(null)
   const [focusedItemLineForRestore, setFocusedItemLineForRestore] = useState<number | null>(null)
+  const [isRefreshingContent, setIsRefreshingContent] = useState(false)
 
   // Settings state
   const [watchedDirectories, setWatchedDirectories] = useState<WatchedDirectory[]>([])
@@ -167,16 +168,29 @@ export const App = () => {
   })
 
   // Function to refresh file content from disk after save
+  // Sets isRefreshingContent to prevent opening editor with stale positions
   const refreshFileContent = useCallback(async () => {
     if (!selectedFile) return
+    // Set refreshing state BEFORE async operation to prevent stale position usage
+    setIsRefreshingContent(true)
     try {
       const content = await readTextFile(selectedFile.path)
       setFileContent(content)
+      // Note: isRefreshingContent will be cleared when document loading completes
     } catch (err) {
       console.error('Failed to refresh file content:', err)
-      // Don't show error message since save succeeded - just log it
+      // Clear refreshing state on error since we won't be reloading
+      setIsRefreshingContent(false)
     }
   }, [selectedFile])
+
+  // Clear refreshing state when document loading completes
+  // This ensures the editor can be opened again with fresh positions
+  useEffect(() => {
+    if (isRefreshingContent && !isDocumentLoading) {
+      setIsRefreshingContent(false)
+    }
+  }, [isRefreshingContent, isDocumentLoading])
 
   // Update focused item ID when document refreshes (item IDs change when content is edited)
   useEffect(() => {
@@ -308,6 +322,13 @@ export const App = () => {
     async (item: TrackableItem) => {
       if (!selectedFile) return
 
+      // Prevent opening editor while document is refreshing or loading
+      // This ensures we always use fresh position data after a save
+      if (isRefreshingContent || isDocumentLoading) {
+        console.log('Editor opening blocked: document is refreshing/loading')
+        return
+      }
+
       // Store the focused item ID and line number before opening editor (for restoring focus on close)
       // Line number is needed because item IDs change when content is edited
       setFocusedItemIdForRestore(item.id)
@@ -323,7 +344,7 @@ export const App = () => {
         })
       }
     },
-    [selectedFile, openEditor]
+    [selectedFile, openEditor, isRefreshingContent, isDocumentLoading]
   )
 
   // Handle item status change (keyboard space or other triggers)
