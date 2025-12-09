@@ -133,7 +133,7 @@ Disable the buggy auto-save functionality by defaulting it to `false` and hiding
 
 ---
 
-### [ ] 4.0 Theme Compliance - Define New CSS Variables
+### [x] 4.0 Theme Compliance - Define New CSS Variables
 
 Define missing CSS custom properties in the root theme to support replacing hardcoded colors. This establishes the foundation for subsequent CSS file updates.
 
@@ -145,16 +145,16 @@ Define missing CSS custom properties in the root theme to support replacing hard
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Create new test file `app/src/lib/theme/css-theme-compliance.test.ts` with test infrastructure
-- [ ] 4.2 Write test: "App.css defines --shimmer-color variable" - parse App.css and verify variable exists
-- [ ] 4.3 Write test: "App.css defines --backdrop-color variable" - for modal/overlay backgrounds
-- [ ] 4.4 Write test: "App.css defines --color-white variable" - for text on colored backgrounds
-- [ ] 4.5 Write test: "App.css defines --color-accent-glow-rgb variable" - RGB values for rgba() usage
-- [ ] 4.6 Write test: "App.css defines --color-secondary-glow-rgb variable" - for secondary accent glows
-- [ ] 4.7 Write test: "App.css defines --color-error-rgb variable" - for error color rgba() usage
-- [ ] 4.8 Run tests to confirm they fail (variables don't exist yet)
-- [ ] 4.9 Add new CSS variables to `App.css` `:root` section with appropriate values
-- [ ] 4.10 Run tests to confirm all variable definition tests pass
+- [x] 4.1 Create new test file `app/src/lib/theme/css-theme-compliance.test.ts` with test infrastructure
+- [x] 4.2 Write test: "App.css defines --shimmer-color variable" - parse App.css and verify variable exists
+- [x] 4.3 Write test: "App.css defines --backdrop-color variable" - for modal/overlay backgrounds
+- [x] 4.4 Write test: "App.css defines --color-white variable" - for text on colored backgrounds
+- [x] 4.5 Write test: "App.css defines --color-accent-glow-rgb variable" - RGB values for rgba() usage
+- [x] 4.6 Write test: "App.css defines --color-secondary-glow-rgb variable" - for secondary accent glows
+- [x] 4.7 Write test: "App.css defines --color-error-rgb variable" - for error color rgba() usage
+- [x] 4.8 Run tests to confirm they fail (variables don't exist yet) - 8 tests failed as expected
+- [x] 4.9 Add new CSS variables to `App.css` `:root` section with appropriate values
+- [x] 4.10 Run tests to confirm all variable definition tests pass (1494 tests passing)
 
 ---
 
