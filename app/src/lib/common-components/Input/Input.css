@@ -103,7 +103,7 @@
   box-shadow:
     0 0 0 2px var(--color-black),
     0 0 0 4px var(--color-error),
-    0 0 20px rgba(239, 68, 68, 0.2);
+    0 0 20px rgba(var(--color-error-rgb), 0.2);
 }
 
 .input__error {

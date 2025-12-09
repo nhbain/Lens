@@ -72,6 +72,7 @@
   --color-secondary-glow-rgb: 16, 185, 129;
   --color-accent-muted-rgb: 10, 58, 59;
   --color-intermediary-muted-rgb: 46, 8, 26;
+  --color-error-muted-rgb: 46, 10, 10;
 
   /* ==========================================================================
      Enhanced Glow System
@@ -156,20 +157,20 @@
 /* Breathing glow effect */
 @keyframes glowBreathing {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 240, 244, 0.2);
+    box-shadow: 0 0 20px rgba(var(--color-accent-glow-rgb), 0.2);
   }
   50% {
-    box-shadow: 0 0 40px rgba(0, 240, 244, 0.4), 0 0 60px rgba(0, 240, 244, 0.1);
+    box-shadow: 0 0 40px rgba(var(--color-accent-glow-rgb), 0.4), 0 0 60px rgba(var(--color-accent-glow-rgb), 0.1);
   }
 }
 
 /* Emerald breathing glow */
 @keyframes glowBreathingEmerald {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 20px rgba(var(--color-secondary-glow-rgb), 0.2);
   }
   50% {
-    box-shadow: 0 0 40px rgba(16, 185, 129, 0.4), 0 0 60px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 40px rgba(var(--color-secondary-glow-rgb), 0.4), 0 0 60px rgba(var(--color-secondary-glow-rgb), 0.1);
   }
 }
 
@@ -211,11 +212,11 @@
 @keyframes borderGlow {
   0%, 100% {
     border-color: var(--color-accent);
-    box-shadow: 0 0 15px rgba(0, 240, 244, 0.2);
+    box-shadow: 0 0 15px rgba(var(--color-accent-glow-rgb), 0.2);
   }
   50% {
     border-color: var(--color-accent-hover);
-    box-shadow: 0 0 30px rgba(0, 240, 244, 0.4);
+    box-shadow: 0 0 30px rgba(var(--color-accent-glow-rgb), 0.4);
   }
 }
 
@@ -227,7 +228,7 @@
   }
   50% {
     border-color: var(--color-accent);
-    box-shadow: 0 0 20px rgba(0, 240, 244, 0.1);
+    box-shadow: 0 0 20px rgba(var(--color-accent-glow-rgb), 0.1);
   }
 }
 
@@ -380,7 +381,7 @@ code, pre, .mono {
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--color-text-primary);
-  text-shadow: 0 2px 20px rgba(0, 240, 244, 0.1);
+  text-shadow: 0 2px 20px rgba(var(--color-accent-glow-rgb), 0.1);
 }
 
 .app-header p {
@@ -454,7 +455,7 @@ code, pre, .mono {
 
 .settings-icon-button:hover {
   color: var(--color-accent);
-  background: rgba(0, 240, 244, 0.1);
+  background: rgba(var(--color-accent-glow-rgb), 0.1);
   transform: scale(1.05);
   box-shadow: 0 0 20px var(--color-accent-glow);
 }

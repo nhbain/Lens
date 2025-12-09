@@ -24,7 +24,7 @@
 .modal__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(var(--color-black-rgb), 0.7);
   backdrop-filter: blur(4px);
   animation: modal-backdrop-in var(--transition-normal) var(--ease-out-expo);
 }

@@ -212,4 +212,114 @@ describe('CSS Theme Compliance', () => {
       })
     })
   })
+
+  describe('Remaining CSS Files - No Hardcoded Colors', () => {
+    /**
+     * Check if CSS has hardcoded rgba() with raw RGB values (excluding variable definitions).
+     */
+    const hasHardcodedRgba = (css: string): boolean => {
+      // Remove CSS variable definition lines (lines containing --)
+      const withoutVarDefs = css
+        .split('\n')
+        .filter(line => !line.includes('--'))
+        .join('\n')
+      return /rgba\(\s*\d+\s*,/.test(withoutVarDefs)
+    }
+
+    describe('App.css animations', () => {
+      let appCss: string
+
+      beforeAll(async () => {
+        appCss = await readCssFile('src/App.css')
+      })
+
+      it('contains no hardcoded rgba() values outside variable definitions', () => {
+        expect(hasHardcodedRgba(appCss)).toBe(false)
+      })
+    })
+
+    describe('Dashboard.css', () => {
+      let dashboardCss: string
+
+      beforeAll(async () => {
+        dashboardCss = await readCssFile('src/components/Dashboard/Dashboard.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(dashboardCss)).toBe(false)
+      })
+    })
+
+    describe('EditorModal.css', () => {
+      let editorModalCss: string
+
+      beforeAll(async () => {
+        editorModalCss = await readCssFile('src/components/EditorModal/EditorModal.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(editorModalCss)).toBe(false)
+      })
+    })
+
+    describe('EditorToolbar.css', () => {
+      let editorToolbarCss: string
+
+      beforeAll(async () => {
+        editorToolbarCss = await readCssFile('src/components/EditorModal/EditorToolbar.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(editorToolbarCss)).toBe(false)
+      })
+    })
+
+    describe('Modal.css', () => {
+      let modalCss: string
+
+      beforeAll(async () => {
+        modalCss = await readCssFile('src/lib/common-components/Modal/Modal.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(modalCss)).toBe(false)
+      })
+    })
+
+    describe('ColorPicker.css', () => {
+      let colorPickerCss: string
+
+      beforeAll(async () => {
+        colorPickerCss = await readCssFile('src/lib/common-components/ColorPicker/ColorPicker.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(colorPickerCss)).toBe(false)
+      })
+    })
+
+    describe('Input.css', () => {
+      let inputCss: string
+
+      beforeAll(async () => {
+        inputCss = await readCssFile('src/lib/common-components/Input/Input.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(inputCss)).toBe(false)
+      })
+    })
+
+    describe('ResumeSection.css', () => {
+      let resumeSectionCss: string
+
+      beforeAll(async () => {
+        resumeSectionCss = await readCssFile('src/components/Dashboard/ResumeSection.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(resumeSectionCss)).toBe(false)
+      })
+    })
+  })
 })

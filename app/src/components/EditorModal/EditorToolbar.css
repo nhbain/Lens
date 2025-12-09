@@ -43,7 +43,7 @@
 }
 
 .editor-toolbar__button:hover:not(:disabled) {
-  background: rgba(0, 240, 244, 0.1);
+  background: rgba(var(--color-accent-glow-rgb), 0.1);
   color: var(--color-accent);
   transform: scale(1.05);
 }
@@ -120,12 +120,12 @@
 }
 
 .editor-toolbar__dropdown-item:hover {
-  background: rgba(0, 240, 244, 0.1);
+  background: rgba(var(--color-accent-glow-rgb), 0.1);
   color: var(--color-accent);
 }
 
 .editor-toolbar__dropdown-item:active {
-  background: rgba(0, 240, 244, 0.2);
+  background: rgba(var(--color-accent-glow-rgb), 0.2);
 }
 
 /* ==========================================================================
