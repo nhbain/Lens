@@ -3,7 +3,8 @@
  * Manages editor view mode and auto-save preferences.
  */
 
-import { Select, Checkbox, Input, type SelectOption } from '@/lib/common-components'
+import { Select, type SelectOption } from '@/lib/common-components'
+// Note: Checkbox and Input imports removed - auto-save UI temporarily disabled
 import type { EditorSettings } from '@/lib/settings/types'
 import './EditorSettingsSection.css'
 
@@ -40,17 +41,20 @@ export const EditorSettingsSection = ({
     onViewModeChange(e.target.value as EditorSettings['viewMode'])
   }
 
-  const handleAutoSaveChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onAutoSaveChange(e.target.checked)
-  }
+  // Note: Auto-save handlers temporarily disabled - see commented UI below
+  // const handleAutoSaveChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   onAutoSaveChange(e.target.checked)
+  // }
 
-  const handleAutoSaveDelayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10)
-    // Clamp between 1 and 10 seconds (1000-10000ms)
-    if (!isNaN(value) && value >= 1 && value <= 10) {
-      onAutoSaveDelayChange(value * 1000)
-    }
-  }
+  // const handleAutoSaveDelayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = parseInt(e.target.value, 10)
+  //   // Clamp between 1 and 10 seconds (1000-10000ms)
+  //   if (!isNaN(value) && value >= 1 && value <= 10) {
+  //     onAutoSaveDelayChange(value * 1000)
+  //   }
+  // }
+  void onAutoSaveChange
+  void onAutoSaveDelayChange
 
   return (
     <section className="settings-section editor-settings-section">
@@ -70,6 +74,7 @@ export const EditorSettingsSection = ({
           />
         </div>
 
+        {/* DISABLED: Auto-save feature temporarily disabled pending bug fixes
         <div className="editor-settings-section__row">
           <Checkbox
             label="Enable Auto-save"
@@ -93,6 +98,7 @@ export const EditorSettingsSection = ({
             Delay between 1-10 seconds before auto-saving changes
           </p>
         </div>
+        */}
       </div>
     </section>
   )

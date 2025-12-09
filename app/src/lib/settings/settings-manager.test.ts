@@ -437,7 +437,8 @@ describe('settings-manager', () => {
       expect(result.settings?.version).toBe(3)
       expect(result.settings?.editor).toBeDefined()
       expect(result.settings?.editor.viewMode).toBe('overlay')
-      expect(result.settings?.editor.autoSave).toBe(true)
+      // Note: autoSave default is now false (feature temporarily disabled)
+      expect(result.settings?.editor.autoSave).toBe(false)
       expect(result.settings?.editor.autoSaveDelay).toBe(2000)
 
       // Verify migration saved to disk
@@ -454,7 +455,8 @@ describe('settings-manager', () => {
       expect(result.settings?.version).toBe(3)
       expect(result.settings?.editor).toBeDefined()
       expect(result.settings?.editor.viewMode).toBe('overlay')
-      expect(result.settings?.editor.autoSave).toBe(true)
+      // Note: autoSave default is now false (feature temporarily disabled)
+      expect(result.settings?.editor.autoSave).toBe(false)
       expect(result.settings?.editor.autoSaveDelay).toBe(2000)
     })
   })

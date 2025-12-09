@@ -113,7 +113,7 @@ export const DEFAULT_FILE_PATTERNS = ['*.md', '*.markdown'] as const
  */
 export const createDefaultEditorSettings = (): EditorSettings => ({
   viewMode: 'overlay',
-  autoSave: true,
+  autoSave: false, // DISABLED: Auto-save feature temporarily disabled pending bug fixes
   autoSaveDelay: 2000,
 })
 
