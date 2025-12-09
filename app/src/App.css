@@ -7,6 +7,7 @@
      OLED Black Foundations
      ========================================================================== */
   --color-black: #000000;
+  --color-black-rgb: 0, 0, 0;
   --color-surface-1: #0a0a0a;
   --color-surface-2: #111111;
   --color-surface-3: #1a1a1a;

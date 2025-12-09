@@ -72,7 +72,7 @@
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--color-text-primary);
-  text-shadow: 0 2px 20px rgba(0, 240, 244, 0.1);
+  text-shadow: 0 2px 20px rgba(var(--color-accent-glow-rgb), 0.1);
 }
 
 /* ==========================================================================
@@ -115,8 +115,8 @@
   padding: 12px 16px;
   margin-bottom: 16px;
   border-radius: 6px;
-  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(46, 10, 10, 0.8) 100%);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(var(--color-error-rgb), 0.1) 100%);
+  border: 1px solid rgba(var(--color-error-rgb), 0.3);
   color: var(--color-error);
   font-size: 14px;
   animation: scaleIn var(--transition-normal) var(--ease-spring);
@@ -128,8 +128,8 @@
   padding: 12px 16px;
   margin-bottom: 16px;
   border-radius: 6px;
-  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, rgba(6, 78, 59, 0.8) 100%);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, rgba(var(--color-secondary-glow-rgb), 0.1) 100%);
+  border: 1px solid rgba(var(--color-secondary-glow-rgb), 0.3);
   color: var(--color-accent-secondary);
   font-size: 14px;
   animation: scaleIn var(--transition-normal) var(--ease-spring);
@@ -238,13 +238,13 @@
 .settings-button--danger {
   background: var(--color-error);
   border-color: var(--color-error);
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .settings-button--danger:hover:not(:disabled) {
-  background: #DC2626;
-  border-color: #DC2626;
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), var(--shadow-elevated);
+  background: var(--color-error);
+  border-color: var(--color-error);
+  box-shadow: 0 0 20px rgba(var(--color-error-rgb), 0.3), var(--shadow-elevated);
 }
 
 /* ==========================================================================
@@ -365,20 +365,20 @@
 }
 
 .watched-directory__toggle--enabled {
-  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, rgba(6, 78, 59, 0.6) 100%);
-  border-color: rgba(16, 185, 129, 0.4);
+  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, rgba(var(--color-secondary-glow-rgb), 0.1) 100%);
+  border-color: rgba(var(--color-secondary-glow-rgb), 0.4);
   color: var(--color-accent-secondary);
   box-shadow: var(--glow-emerald);
 }
 
 .watched-directory__remove {
   color: var(--color-error);
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(var(--color-error-rgb), 0.3);
 }
 
 .watched-directory__remove:hover {
   background: var(--color-error-muted);
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(var(--color-error-rgb), 0.3);
 }
 
 /* ==========================================================================
@@ -597,13 +597,13 @@
 }
 
 .data-management__action--danger {
-  border-color: rgba(239, 68, 68, 0.3);
-  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(46, 10, 10, 0.6) 100%);
+  border-color: rgba(var(--color-error-rgb), 0.3);
+  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(var(--color-error-rgb), 0.1) 100%);
 }
 
 .data-management__action--danger:hover {
   border-color: var(--color-error);
-  box-shadow: var(--shadow-card-hover), 0 0 20px rgba(239, 68, 68, 0.2);
+  box-shadow: var(--shadow-card-hover), 0 0 20px rgba(var(--color-error-rgb), 0.2);
 }
 
 .data-management__action-title {
@@ -622,8 +622,8 @@
 .data-management__confirm {
   margin-top: 16px;
   padding: 16px;
-  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(46, 10, 10, 0.8) 100%);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: linear-gradient(180deg, var(--color-error-muted) 0%, rgba(var(--color-error-rgb), 0.1) 100%);
+  border: 1px solid rgba(var(--color-error-rgb), 0.3);
   border-radius: 8px;
   animation: scaleIn var(--transition-normal) var(--ease-spring);
 }

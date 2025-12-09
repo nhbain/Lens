@@ -65,4 +65,93 @@ describe('CSS Theme Compliance', () => {
       expect(hasVariable(appCss, '--color-success-rgb')).toBe(true)
     })
   })
+
+  describe('Critical Component CSS - No Hardcoded Colors', () => {
+    /**
+     * Check if CSS has hardcoded HEX colors (excluding CSS variable definitions).
+     * Matches #RGB, #RRGGBB patterns not preceded by -- (variable definition).
+     */
+    const hasHardcodedHexColors = (css: string): boolean => {
+      // Remove CSS variable definitions (lines containing --)
+      const withoutVarDefs = css
+        .split('\n')
+        .filter(line => !line.includes('--'))
+        .join('\n')
+      // Check for hex colors
+      return /#[0-9a-fA-F]{3,6}\b/.test(withoutVarDefs)
+    }
+
+    /**
+     * Check if CSS has hardcoded rgba() with raw RGB values.
+     * Matches rgba(N, N, N, ...) patterns not using var().
+     */
+    const hasHardcodedRgba = (css: string): boolean => {
+      // Match rgba( followed by digits (not var)
+      return /rgba\(\s*\d+\s*,/.test(css)
+    }
+
+    describe('Settings.css', () => {
+      let settingsCss: string
+
+      beforeAll(async () => {
+        settingsCss = await readCssFile('src/components/Settings/Settings.css')
+      })
+
+      it('contains no hardcoded HEX colors', () => {
+        expect(hasHardcodedHexColors(settingsCss)).toBe(false)
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(settingsCss)).toBe(false)
+      })
+    })
+
+    describe('Button.css', () => {
+      let buttonCss: string
+
+      beforeAll(async () => {
+        buttonCss = await readCssFile('src/lib/common-components/Button/Button.css')
+      })
+
+      it('contains no hardcoded HEX colors', () => {
+        expect(hasHardcodedHexColors(buttonCss)).toBe(false)
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(buttonCss)).toBe(false)
+      })
+    })
+
+    describe('Badge.css', () => {
+      let badgeCss: string
+
+      beforeAll(async () => {
+        badgeCss = await readCssFile('src/lib/common-components/Badge/Badge.css')
+      })
+
+      it('contains no hardcoded HEX colors', () => {
+        expect(hasHardcodedHexColors(badgeCss)).toBe(false)
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(badgeCss)).toBe(false)
+      })
+    })
+
+    describe('FilterButtons.css', () => {
+      let filterButtonsCss: string
+
+      beforeAll(async () => {
+        filterButtonsCss = await readCssFile('src/components/DocumentView/FilterButtons.css')
+      })
+
+      it('contains no hardcoded HEX colors', () => {
+        expect(hasHardcodedHexColors(filterButtonsCss)).toBe(false)
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        expect(hasHardcodedRgba(filterButtonsCss)).toBe(false)
+      })
+    })
+  })
 })
