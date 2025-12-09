@@ -70,6 +70,8 @@
      ========================================================================== */
   --color-accent-glow-rgb: 0, 240, 244;
   --color-secondary-glow-rgb: 16, 185, 129;
+  --color-accent-muted-rgb: 10, 58, 59;
+  --color-intermediary-muted-rgb: 46, 8, 26;
 
   /* ==========================================================================
      Enhanced Glow System

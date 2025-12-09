@@ -38,7 +38,7 @@
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--color-text-primary);
-  text-shadow: 0 2px 20px rgba(0, 240, 244, 0.1);
+  text-shadow: 0 2px 20px rgba(var(--color-accent-glow-rgb), 0.1);
 }
 
 .document-header-filepath {

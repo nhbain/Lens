@@ -154,4 +154,62 @@ describe('CSS Theme Compliance', () => {
       })
     })
   })
+
+  describe('Document View CSS - No Hardcoded Colors', () => {
+    describe('DocumentView.css', () => {
+      let documentViewCss: string
+
+      beforeAll(async () => {
+        documentViewCss = await readCssFile('src/components/DocumentView/DocumentView.css')
+      })
+
+      it('contains no hardcoded HEX colors', () => {
+        const hasHardcodedHexColors = (css: string): boolean => {
+          const withoutVarDefs = css
+            .split('\n')
+            .filter(line => !line.includes('--'))
+            .join('\n')
+          return /#[0-9a-fA-F]{3,6}\b/.test(withoutVarDefs)
+        }
+        expect(hasHardcodedHexColors(documentViewCss)).toBe(false)
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        const hasHardcodedRgba = (css: string): boolean => {
+          return /rgba\(\s*\d+\s*,/.test(css)
+        }
+        expect(hasHardcodedRgba(documentViewCss)).toBe(false)
+      })
+    })
+
+    describe('DocumentHeader.css', () => {
+      let documentHeaderCss: string
+
+      beforeAll(async () => {
+        documentHeaderCss = await readCssFile('src/components/DocumentView/DocumentHeader.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        const hasHardcodedRgba = (css: string): boolean => {
+          return /rgba\(\s*\d+\s*,/.test(css)
+        }
+        expect(hasHardcodedRgba(documentHeaderCss)).toBe(false)
+      })
+    })
+
+    describe('SectionProgressBar.css', () => {
+      let sectionProgressBarCss: string
+
+      beforeAll(async () => {
+        sectionProgressBarCss = await readCssFile('src/components/DocumentView/SectionProgressBar.css')
+      })
+
+      it('contains no hardcoded rgba() values', () => {
+        const hasHardcodedRgba = (css: string): boolean => {
+          return /rgba\(\s*\d+\s*,/.test(css)
+        }
+        expect(hasHardcodedRgba(sectionProgressBarCss)).toBe(false)
+      })
+    })
+  })
 })

@@ -38,7 +38,7 @@
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--color-text-primary);
-  text-shadow: 0 2px 20px rgba(0, 240, 244, 0.1);
+  text-shadow: 0 2px 20px rgba(var(--color-accent-glow-rgb), 0.1);
 }
 
 .document-view-filepath {
@@ -170,11 +170,11 @@
 @keyframes highlight-pulse {
   0% {
     background-color: var(--color-accent-muted);
-    box-shadow: 0 0 0 2px var(--color-accent-ring), 0 0 8px rgba(0, 240, 244, 0.1);
+    box-shadow: 0 0 0 2px var(--color-accent-ring), 0 0 8px rgba(var(--color-accent-glow-rgb), 0.1);
   }
   50% {
     background-color: var(--color-accent-muted);
-    box-shadow: 0 0 0 2px rgba(0, 240, 244, 0.05);
+    box-shadow: 0 0 0 2px rgba(var(--color-accent-glow-rgb), 0.05);
   }
   100% {
     background-color: var(--color-accent-muted);
@@ -204,7 +204,7 @@
 
 /* Header badges - cyan gradient tint */
 .item-type-badge--header {
-  background: linear-gradient(180deg, var(--color-accent-muted) 0%, rgba(10, 58, 59, 0.6) 100%);
+  background: linear-gradient(180deg, var(--color-accent-muted) 0%, rgba(var(--color-accent-muted-rgb), 0.6) 100%);
   color: var(--color-accent);
   box-shadow: 0 0 3px var(--color-accent-glow);
 }
@@ -234,7 +234,7 @@
 
 /* Checkbox badges */
 .item-type-badge--checkbox {
-  background: linear-gradient(180deg, var(--color-intermediary-muted) 0%, rgba(46, 8, 26, 0.6) 100%);
+  background: linear-gradient(180deg, var(--color-intermediary-muted) 0%, rgba(var(--color-intermediary-muted-rgb), 0.6) 100%);
   color: var(--color-intermediary);
   font-size: 1rem;
 }
@@ -253,7 +253,7 @@
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.03em;
-  text-shadow: 0 2px 20px rgba(0, 240, 244, 0.05);
+  text-shadow: 0 2px 20px rgba(var(--color-accent-glow-rgb), 0.05);
 }
 
 .trackable-item-row--h2 .trackable-item-content {
@@ -324,15 +324,15 @@
 /* Subtle breathing glow for document view */
 @keyframes docViewGlowSubtle {
   0%, 100% {
-    box-shadow: 0 0 4px rgba(0, 240, 244, 0.06);
+    box-shadow: 0 0 4px rgba(var(--color-accent-glow-rgb), 0.06);
   }
   50% {
-    box-shadow: 0 0 8px rgba(0, 240, 244, 0.12);
+    box-shadow: 0 0 8px rgba(var(--color-accent-glow-rgb), 0.12);
   }
 }
 
 .trackable-item-row--in-progress:hover {
-  background-color: rgba(0, 240, 244, 0.12);
+  background-color: rgba(var(--color-accent-glow-rgb), 0.12);
 }
 
 /* Complete - Emerald success styling */
@@ -346,9 +346,9 @@
 }
 
 .trackable-item-row--complete .item-type-badge {
-  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, rgba(6, 78, 59, 0.6) 100%);
+  background: linear-gradient(180deg, var(--color-accent-secondary-muted) 0%, rgba(var(--color-secondary-glow-rgb), 0.1) 100%);
   color: var(--color-accent-secondary);
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 6px rgba(var(--color-secondary-glow-rgb), 0.1);
 }
 
 /* ==========================================================================
@@ -616,7 +616,7 @@
 }
 
 .document-view-clear-filter:hover {
-  background-color: rgba(0, 240, 244, 0.15);
+  background-color: rgba(var(--color-accent-glow-rgb), 0.15);
   border-color: var(--color-accent);
 }
 
