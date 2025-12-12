@@ -93,7 +93,9 @@ describe('isFileTrackingState', () => {
     const valid = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123hash',
+      totalItemCount: 0,
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -104,6 +106,7 @@ describe('isFileTrackingState', () => {
     const valid = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123hash',
+      totalItemCount: 10,
       items: {
         item1: {
           itemId: 'item1',
@@ -116,6 +119,7 @@ describe('isFileTrackingState', () => {
           updatedAt: '2024-01-01T00:00:00.000Z',
         },
       },
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -129,7 +133,9 @@ describe('isFileTrackingState', () => {
   it('returns false when sourcePath is missing', () => {
     const invalid = {
       contentHash: 'abc123hash',
+      totalItemCount: 5,
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -139,7 +145,9 @@ describe('isFileTrackingState', () => {
   it('returns false when contentHash is missing', () => {
     const invalid = {
       sourcePath: '/path/to/file.md',
+      totalItemCount: 5,
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -150,7 +158,9 @@ describe('isFileTrackingState', () => {
     const invalid = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123hash',
+      totalItemCount: 5,
       items: 'not an object',
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -161,7 +171,9 @@ describe('isFileTrackingState', () => {
     const invalid = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123hash',
+      totalItemCount: 5,
       items: null,
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -172,12 +184,14 @@ describe('isFileTrackingState', () => {
     const invalid = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123hash',
+      totalItemCount: 5,
       items: {
         item1: {
           itemId: 'item1',
           // missing status and updatedAt
         },
       },
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
@@ -188,7 +202,9 @@ describe('isFileTrackingState', () => {
     const invalid = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123hash',
+      totalItemCount: 5,
       items: {},
+      collapsedItems: {},
       updatedAt: '2024-01-01T00:00:00.000Z',
     }
     expect(isFileTrackingState(invalid)).toBe(false)
@@ -198,7 +214,9 @@ describe('isFileTrackingState', () => {
     const invalid = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123hash',
+      totalItemCount: 5,
       items: {},
+      collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
     }
     expect(isFileTrackingState(invalid)).toBe(false)
@@ -221,7 +239,9 @@ describe('isAppState', () => {
         '/path/to/file.md': {
           sourcePath: '/path/to/file.md',
           contentHash: 'abc123hash',
+          totalItemCount: 5,
           items: {},
+          collapsedItems: {},
           createdAt: '2024-01-01T00:00:00.000Z',
           updatedAt: '2024-01-01T00:00:00.000Z',
         },
@@ -270,7 +290,7 @@ describe('isAppState', () => {
       files: {
         '/path/to/file.md': {
           sourcePath: '/path/to/file.md',
-          // missing other required fields
+          // missing other required fields (contentHash, totalItemCount, items, etc.)
         },
       },
     }
@@ -297,19 +317,20 @@ describe('createEmptyAppState', () => {
 
 describe('createFileTrackingState', () => {
   it('creates FileTrackingState with given values', () => {
-    const state = createFileTrackingState('/path/to/file.md', 'hash123')
+    const state = createFileTrackingState('/path/to/file.md', 'hash123', 10)
     expect(state.sourcePath).toBe('/path/to/file.md')
     expect(state.contentHash).toBe('hash123')
+    expect(state.totalItemCount).toBe(10)
   })
 
   it('creates FileTrackingState with empty items', () => {
-    const state = createFileTrackingState('/path/to/file.md', 'hash123')
+    const state = createFileTrackingState('/path/to/file.md', 'hash123', 5)
     expect(state.items).toEqual({})
   })
 
   it('creates FileTrackingState with timestamps', () => {
     const before = new Date().toISOString()
-    const state = createFileTrackingState('/path/to/file.md', 'hash123')
+    const state = createFileTrackingState('/path/to/file.md', 'hash123', 5)
     const after = new Date().toISOString()
 
     expect(state.createdAt >= before).toBe(true)
@@ -318,7 +339,7 @@ describe('createFileTrackingState', () => {
   })
 
   it('creates valid FileTrackingState', () => {
-    const state = createFileTrackingState('/path/to/file.md', 'hash123')
+    const state = createFileTrackingState('/path/to/file.md', 'hash123', 5)
     expect(isFileTrackingState(state)).toBe(true)
   })
 })

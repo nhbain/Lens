@@ -28,6 +28,8 @@ export interface FileTrackingState {
   sourcePath: string
   /** Content hash of the source file for change detection */
   contentHash: string
+  /** Total count of trackable items in the document (headers, list items, checkboxes) */
+  totalItemCount: number
   /** Map of item IDs to their tracking states */
   items: Record<string, ItemTrackingState>
   /** Map of header item IDs to their collapsed state (true = collapsed) */
@@ -81,6 +83,7 @@ export function isFileTrackingState(value: unknown): value is FileTrackingState 
   if (
     typeof obj.sourcePath !== 'string' ||
     typeof obj.contentHash !== 'string' ||
+    typeof obj.totalItemCount !== 'number' ||
     typeof obj.createdAt !== 'string' ||
     typeof obj.updatedAt !== 'string'
   ) {
@@ -151,12 +154,14 @@ export function createEmptyAppState(): AppState {
  */
 export function createFileTrackingState(
   sourcePath: string,
-  contentHash: string
+  contentHash: string,
+  totalItemCount: number
 ): FileTrackingState {
   const now = new Date().toISOString()
   return {
     sourcePath,
     contentHash,
+    totalItemCount,
     items: {},
     collapsedItems: {},
     createdAt: now,

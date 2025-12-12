@@ -12,12 +12,14 @@ vi.mock('../state', () => ({
   createFileTrackingState: vi.fn(() => ({
     sourcePath: '',
     contentHash: '',
+    totalItemCount: 0,
     items: {},
     collapsedItems: {},
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })),
   saveFileState: vi.fn().mockResolvedValue(undefined),
+  updateTotalItemCount: vi.fn().mockResolvedValue(null),
 }))
 
 // Mock the file-picker module
@@ -283,15 +285,15 @@ describe('Tracked Files Management', () => {
 
       await addTrackedFile('/path/file.md')
 
-      const updated = updateItemCount('/path/file.md', 15)
+      const updated = await updateItemCount('/path/file.md', 15)
 
       expect(updated).toBeDefined()
       expect(updated!.itemCount).toBe(15)
       expect(getTrackedFile('/path/file.md')!.itemCount).toBe(15)
     })
 
-    it('returns undefined for untracked file', () => {
-      const result = updateItemCount('/path/unknown.md', 10)
+    it('returns undefined for untracked file', async () => {
+      const result = await updateItemCount('/path/unknown.md', 10)
       expect(result).toBeUndefined()
     })
   })
@@ -328,6 +330,7 @@ describe('Tracked Files Management', () => {
         .mockResolvedValueOnce({
           sourcePath: '/path/file1.md',
           contentHash: 'hash1',
+          totalItemCount: 10,
           items: { item1: { itemId: 'item1', status: 'pending', updatedAt: '' } },
           collapsedItems: {},
           createdAt: '2024-01-01T00:00:00.000Z',
@@ -336,6 +339,7 @@ describe('Tracked Files Management', () => {
         .mockResolvedValueOnce({
           sourcePath: '/path/file2.md',
           contentHash: 'hash2',
+          totalItemCount: 5,
           items: {},
           collapsedItems: {},
           createdAt: '2024-01-03T00:00:00.000Z',
@@ -346,9 +350,9 @@ describe('Tracked Files Management', () => {
 
       expect(loaded).toHaveLength(2)
       expect(loaded[0].path).toBe('/path/file1.md')
-      expect(loaded[0].itemCount).toBe(1)
+      expect(loaded[0].itemCount).toBe(10) // Uses totalItemCount from state
       expect(loaded[1].path).toBe('/path/file2.md')
-      expect(loaded[1].itemCount).toBe(0)
+      expect(loaded[1].itemCount).toBe(5) // Uses totalItemCount from state
       expect(getTrackedFilesCount()).toBe(2)
       expect(isCacheInitialized()).toBe(true)
     })
@@ -359,6 +363,7 @@ describe('Tracked Files Management', () => {
         .mockResolvedValueOnce({
           sourcePath: '/path/file1.md',
           contentHash: 'hash1',
+          totalItemCount: 3,
           items: {},
           collapsedItems: {},
           createdAt: '2024-01-01T00:00:00.000Z',

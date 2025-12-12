@@ -68,6 +68,7 @@ describe('saveFileState', () => {
     const state: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
+      totalItemCount: 5,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -92,6 +93,7 @@ describe('saveFileState', () => {
     const state: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
+      totalItemCount: 5,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -120,6 +122,7 @@ describe('saveFileState', () => {
     const state: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
+      totalItemCount: 5,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -158,6 +161,7 @@ describe('loadFileState', () => {
     const state: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
+      totalItemCount: 5,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -175,6 +179,7 @@ describe('loadFileState', () => {
     const validState: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'abc123',
+      totalItemCount: 5,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -235,6 +240,7 @@ describe('listTrackedFiles', () => {
     const state1: FileTrackingState = {
       sourcePath: '/path/to/file1.md',
       contentHash: 'hash1',
+      totalItemCount: 5,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -243,6 +249,7 @@ describe('listTrackedFiles', () => {
     const state2: FileTrackingState = {
       sourcePath: '/path/to/file2.md',
       contentHash: 'hash2',
+      totalItemCount: 3,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -270,6 +277,7 @@ describe('listTrackedFiles', () => {
       JSON.stringify({
         sourcePath: '/path/to/file.md',
         contentHash: 'hash',
+        totalItemCount: 5,
         items: {},
         collapsedItems: {},
         createdAt: '2024-01-01T00:00:00.000Z',
@@ -292,6 +300,7 @@ describe('listTrackedFiles', () => {
         JSON.stringify({
           sourcePath: '/path/to/valid.md',
           contentHash: 'hash',
+          totalItemCount: 5,
           items: {},
           collapsedItems: {},
           createdAt: '2024-01-01T00:00:00.000Z',
@@ -336,6 +345,7 @@ describe('getOrCreateFileState', () => {
     const existingState: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'existing-hash',
+      totalItemCount: 5,
       items: { item1: { itemId: 'item1', status: 'complete', updatedAt: '2024-01-01T00:00:00.000Z' } },
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -344,7 +354,7 @@ describe('getOrCreateFileState', () => {
 
     vi.mocked(fs.readStateFile).mockResolvedValue(JSON.stringify(existingState))
 
-    const result = await getOrCreateFileState('/path/to/file.md', 'new-hash')
+    const result = await getOrCreateFileState('/path/to/file.md', 'new-hash', 10)
 
     expect(result).toEqual(existingState)
     // Should not write new state
@@ -356,10 +366,11 @@ describe('getOrCreateFileState', () => {
     vi.mocked(fs.stateFileExists).mockResolvedValue(false)
     vi.mocked(fs.writeStateFileAtomic).mockResolvedValue(undefined)
 
-    const result = await getOrCreateFileState('/path/to/file.md', 'new-hash')
+    const result = await getOrCreateFileState('/path/to/file.md', 'new-hash', 10)
 
     expect(result.sourcePath).toBe('/path/to/file.md')
     expect(result.contentHash).toBe('new-hash')
+    expect(result.totalItemCount).toBe(10)
     expect(result.items).toEqual({})
     expect(fs.writeStateFileAtomic).toHaveBeenCalled()
   })
@@ -382,6 +393,7 @@ describe('updateItemStatus', () => {
     const existingState: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'hash',
+      totalItemCount: 5,
       items: {
         item1: { itemId: 'item1', status: 'pending', updatedAt: '2024-01-01T00:00:00.000Z' },
       },
@@ -405,6 +417,7 @@ describe('updateItemStatus', () => {
     const existingState: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'hash',
+      totalItemCount: 5,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -441,6 +454,7 @@ describe('updateContentHash', () => {
     const existingState: FileTrackingState = {
       sourcePath: '/path/to/file.md',
       contentHash: 'old-hash',
+      totalItemCount: 5,
       items: {},
       collapsedItems: {},
       createdAt: '2024-01-01T00:00:00.000Z',

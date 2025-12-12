@@ -76,7 +76,7 @@ describe('State Persistence Integration', () => {
 `
       // Step 1: Initial app start - create state for a new file
       const contentHash = computeContentHash(markdownContent)
-      const initialState = await getOrCreateFileState(sourcePath, contentHash)
+      const initialState = await getOrCreateFileState(sourcePath, contentHash, 3)
 
       expect(initialState.sourcePath).toBe(sourcePath)
       expect(initialState.contentHash).toBe(contentHash)
@@ -104,7 +104,7 @@ describe('State Persistence Integration', () => {
 
       // Create initial state
       const originalHash = computeContentHash(originalContent)
-      await getOrCreateFileState(sourcePath, originalHash)
+      await getOrCreateFileState(sourcePath, originalHash, 1)
 
       // Simulate file modification
       const state = await loadFileState(sourcePath)
@@ -129,9 +129,9 @@ describe('State Persistence Integration', () => {
       const file3 = '/project/nested/file3.md'
 
       // Create states for multiple files
-      await getOrCreateFileState(file1, 'hash1')
-      await getOrCreateFileState(file2, 'hash2')
-      await getOrCreateFileState(file3, 'hash3')
+      await getOrCreateFileState(file1, 'hash1', 5)
+      await getOrCreateFileState(file2, 'hash2', 3)
+      await getOrCreateFileState(file3, 'hash3', 2)
 
       // Update items in different files
       await updateItemStatus(file1, 'item-a', 'complete')
@@ -159,7 +159,7 @@ describe('State Persistence Integration', () => {
       const sourcePath = '/project/temp.md'
 
       // Create and populate state
-      await getOrCreateFileState(sourcePath, 'original-hash')
+      await getOrCreateFileState(sourcePath, 'original-hash', 3)
       await updateItemStatus(sourcePath, 'item-1', 'complete')
 
       // Delete the state
@@ -170,7 +170,7 @@ describe('State Persistence Integration', () => {
       expect(deletedState).toBeNull()
 
       // Recreate with new content
-      const newState = await getOrCreateFileState(sourcePath, 'new-hash')
+      const newState = await getOrCreateFileState(sourcePath, 'new-hash', 5)
       expect(newState.contentHash).toBe('new-hash')
       expect(Object.keys(newState.items)).toHaveLength(0) // Fresh state
     })
@@ -179,7 +179,7 @@ describe('State Persistence Integration', () => {
   describe('State file format validation', () => {
     it('persists state as valid JSON', async () => {
       const sourcePath = '/project/test.md'
-      await getOrCreateFileState(sourcePath, 'test-hash')
+      await getOrCreateFileState(sourcePath, 'test-hash', 5)
       await updateItemStatus(sourcePath, 'item-1', 'in_progress')
 
       // Get the raw stored content
@@ -223,7 +223,7 @@ describe('State Persistence Integration', () => {
       const sourcePath = '/project/important.md'
 
       // Create initial state
-      const state = createFileTrackingState(sourcePath, 'hash-v1')
+      const state = createFileTrackingState(sourcePath, 'hash-v1', 5)
       await saveFileState(state)
 
       // Update the state (should create backup)

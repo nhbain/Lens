@@ -10,6 +10,7 @@ import {
   deleteFileState,
   createFileTrackingState,
   saveFileState,
+  updateTotalItemCount as updateStateItemCount,
 } from '../state'
 import { validateMarkdownFile } from './file-picker'
 import { createTrackedFile } from './types'
@@ -99,7 +100,7 @@ export const addTrackedFile = async (path: string): Promise<AddFileResult> => {
   trackedFilesCache.set(path, trackedFile)
 
   // Create and save initial state file for persistence
-  const initialState = createFileTrackingState(path, trackedFile.contentHash)
+  const initialState = createFileTrackingState(path, trackedFile.contentHash, trackedFile.itemCount)
   await saveFileState(initialState)
 
   return {
@@ -149,15 +150,16 @@ export const updateLastAccessed = (path: string): TrackedFile | undefined => {
 
 /**
  * Updates the item count for a tracked file.
+ * Also updates the totalItemCount in the persisted state file.
  *
  * @param path - Path to the tracked file
  * @param itemCount - New item count
  * @returns Updated TrackedFile, or undefined if not tracked
  */
-export const updateItemCount = (
+export const updateItemCount = async (
   path: string,
   itemCount: number
-): TrackedFile | undefined => {
+): Promise<TrackedFile | undefined> => {
   const file = trackedFilesCache.get(path)
   if (!file) {
     return undefined
@@ -170,6 +172,10 @@ export const updateItemCount = (
   }
 
   trackedFilesCache.set(path, updated)
+
+  // Also update the totalItemCount in the state file
+  await updateStateItemCount(path, itemCount)
+
   return updated
 }
 
@@ -221,7 +227,7 @@ export const loadTrackedFiles = async (): Promise<TrackedFile[]> => {
       const trackedFile: TrackedFile = {
         path: state.sourcePath,
         fileName,
-        itemCount: Object.keys(state.items).length,
+        itemCount: state.totalItemCount,
         contentHash: state.contentHash,
         addedAt: state.createdAt,
         lastAccessedAt: state.updatedAt,

@@ -200,7 +200,8 @@ export async function hasTrackingState(sourcePath: string): Promise<boolean> {
  */
 export async function getOrCreateFileState(
   sourcePath: string,
-  contentHash: string
+  contentHash: string,
+  totalItemCount: number
 ): Promise<FileTrackingState> {
   const existingState = await loadFileState(sourcePath)
 
@@ -208,7 +209,7 @@ export async function getOrCreateFileState(
     return existingState
   }
 
-  const newState = createFileTrackingState(sourcePath, contentHash)
+  const newState = createFileTrackingState(sourcePath, contentHash, totalItemCount)
   await saveFileState(newState)
   return newState
 }
@@ -268,6 +269,33 @@ export async function updateContentHash(
   const updatedState: FileTrackingState = {
     ...fileState,
     contentHash: newHash,
+  }
+
+  await saveFileState(updatedState)
+  return updatedState
+}
+
+/**
+ * Updates the total item count for a file's tracking state.
+ * Called when the source file has been re-parsed.
+ *
+ * @param sourcePath - Absolute path to the source markdown file
+ * @param totalItemCount - New total item count from document parsing
+ * @returns The updated file state, or null if file state doesn't exist
+ */
+export async function updateTotalItemCount(
+  sourcePath: string,
+  totalItemCount: number
+): Promise<FileTrackingState | null> {
+  const fileState = await loadFileState(sourcePath)
+
+  if (!fileState) {
+    return null
+  }
+
+  const updatedState: FileTrackingState = {
+    ...fileState,
+    totalItemCount,
   }
 
   await saveFileState(updatedState)

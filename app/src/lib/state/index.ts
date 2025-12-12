@@ -66,6 +66,7 @@ export {
   getOrCreateFileState,
   updateItemStatus,
   updateContentHash,
+  updateTotalItemCount,
   loadAllFileStates,
   updateCollapseState,
   setAllCollapsed,
